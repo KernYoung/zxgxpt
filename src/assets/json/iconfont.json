@@ -1,0 +1,16 @@
+{
+  "id": "2155958",
+  "name": "el-icon",
+  "font_family": "iconfont",
+  "css_prefix_text": "el-icon-mhcx",
+  "description": "模糊查询",
+  "glyphs": [
+    {
+      "icon_id": "705660",
+      "name": "地球",
+      "font_class": "diqiu",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    }
+  ]
+}
