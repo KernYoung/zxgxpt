@@ -1,29 +1,29 @@
 <template>
   <!-- 主页布局 -->
   <div class="home">
-    <div class="header" v-if="$route.path!='/'&&$route.path!='/homePage'">
+    <div class="header" v-if="$route.path!='/'&&$route.path!='/homePage'&&$route.path!='/zxbReportSummary'">
       <Header></Header>
     </div>
     <div class="content">
       <router-view />
       <span class="button-wrapper" v-if="$Cookies.get(this.$getCookieKey())">
-        <el-badge :is-dot="newMsg" class="item">
-          <el-popover placement="left-end" width="300" trigger="click" title="消息提醒">
-            <div class="message-wrapper">
-              <div class="message-box" v-for="(item,index) in messageData" :key="index">
-                <div class="message-content">
-                  <i class="el-icon-s-promotion" style="margin-right: 5px;color:#617be3"></i>
-                  <div class="content-right">{{item.content}}</div>
-                </div>
-                <!-- <div class="message-bottom">
-								<span>{{item.name}}</span>
-								<span>{{item.date}}</span>
-							</div> -->
-              </div>
-            </div>
-            <el-button type="success" icon="el-icon-message" circle slot="reference" @click="checkMsg"></el-button>
-          </el-popover>
-        </el-badge>
+<!--        <el-badge :is-dot="newMsg" class="item">-->
+<!--          <el-popover placement="left-end" width="300" trigger="click" title="消息提醒">-->
+<!--            <div class="message-wrapper">-->
+<!--              <div class="message-box" v-for="(item,index) in messageData" :key="index">-->
+<!--                <div class="message-content">-->
+<!--                  <i class="el-icon-s-promotion" style="margin-right: 5px;color:#617be3"></i>-->
+<!--                  <div class="content-right">{{item.content}}</div>-->
+<!--                </div>-->
+<!--                &lt;!&ndash; <div class="message-bottom">-->
+<!--								<span>{{item.name}}</span>-->
+<!--								<span>{{item.date}}</span>-->
+<!--							</div> &ndash;&gt;-->
+<!--              </div>-->
+<!--            </div>-->
+<!--            <el-button type="success" icon="el-icon-message" circle slot="reference" @click="checkMsg"></el-button>-->
+<!--          </el-popover>-->
+<!--        </el-badge>-->
       </span>
     </div>
     <!-- <div class="footer-box" v-if="this.$route.path!='/essInfo'">

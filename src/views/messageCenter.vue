@@ -46,7 +46,7 @@
 <!--	</div>-->
    <div style="height: calc(100% - 50px);min-height: 800px;border: none;">
     <!-- <iframe :src="srcUrl"  width="100%" height="100%" frameborder="0" scrolling="no" marginwidth="0" marginheight="5"></iframe> -->
-        <template>
+      <template>
         <el-tabs v-model="activeName" @tab-click="handleClick">
           <el-tab-pane label="实时预警" name="first">
 		    <real-time-warning></real-time-warning>
@@ -82,6 +82,8 @@ import PlatformNews  from './components/PlatformNews'
     data(){
 			return{
         activeName: 'first',
+        companyName: '',
+        careBy:'',
 				activeAlarmTab: "1",
 				qichachaData: [
 				    {
@@ -90,7 +92,7 @@ import PlatformNews  from './components/PlatformNews'
 				        'reason': '鉴于国内猪肉价格上涨',
 				        'person': '张三',
 				        'time': '2020-7-24'
-				
+
 				    },
 				    {
 				        'company': 'ABC有限公司',
@@ -124,6 +126,13 @@ import PlatformNews  from './components/PlatformNews'
 
 			}
 		},
+
+    created() {
+      this.activeName = this.$route.query.activeName,
+      this.companyName = this.$route.query.companyName,
+      this.careBy = this.$route.query.careBy
+    },
+
 		mounted() {
 			var h = document.documentElement.clientHeight || document.body.clientHeight;
 			this.curHeight =h-230;

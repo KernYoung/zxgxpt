@@ -139,7 +139,8 @@ export default {
       //htmlPage: () => import('../../static/zhongchengxin.html')
       loading: false,
       fileName: '',
-      isIndustryLeader: '1'
+      isIndustryLeader: '1',
+      existFlag: true
     }
   },
   watch: {
@@ -157,6 +158,7 @@ export default {
   },
   created () {
     this.getIndustry();
+    this.reportExist();
   },
   mounted () {
   },
@@ -183,6 +185,13 @@ export default {
           this.$message.warning('请选择是否是头部企业');
           return;
         }
+
+        //提前判断是否有报告 Kern on 20220424
+        if(!this.existFlag){
+          this.$msgbox.alert("非常抱歉，第三方接口内无财报数据，无法生成对应报告！");
+          return;
+        }
+
       } else if (this.active == 1) {
         this.getHtml();
       }
@@ -196,6 +205,18 @@ export default {
         this.lastDisabled = true
       }
       this.multipleSelection = []
+    },
+    reportExist() {
+      this.existFlag = true;
+      let param = {
+        creditCode: this.$route.query.creditCode,
+        reportType: this.$route.query.reportType
+      }
+      this.$ajax.manage.reportExist(param).then(res => {
+        if (res.status == 200) {
+          this.existFlag = res.data.existFlag;
+        }
+      })
     },
     getHtml () {
       let param = {

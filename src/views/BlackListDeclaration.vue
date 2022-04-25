@@ -28,7 +28,7 @@
         </el-table-column>
         <el-table-column
             prop="startDate"
-            label="公示开始时间"
+            label="公示开始时间"黑名单申请
             width="150">
         </el-table-column>
         <el-table-column
@@ -112,11 +112,13 @@
         <el-form-item label="企业名称:" prop="entName">
 <!--          <el-input v-model="blackInfo.entName" ></el-input>-->
           <el-autocomplete
+              style="width: 500px"
               class="inline-input"
               v-model="blackInfo.entName"
               :fetch-suggestions="querySearch"
               placeholder="请输入企业名称"
               @select="handleSelect"
+			  v-bind:disabled="blackInfo.isNew !=true"
           ></el-autocomplete>
         </el-form-item>
         <el-form-item label="社会统一信用代码:" prop="creditCode">
@@ -205,6 +207,7 @@
               v-model="blackInfo.entName"
               :fetch-suggestions="querySearch"
               placeholder="请输入企业名称"
+			   v-bind:disabled="blackInfo.status!='未申请'"
           ></el-autocomplete>
         </el-form-item>
         <el-form-item label="操作选择:" prop="operationSelection">
@@ -239,22 +242,35 @@
 export default {
     data(){
       var statusExists = (rule, value, callback) => { //校验公司名称
-	  console.log("rule:"+rule+"value"+value)
+	      console.log(this.blackInfo.companyStatus)
+	      console.log(value)
+		  if(this.blackInfo.pid ==undefined){
+			/*  if((this.blackInfo.companyStatus == true&&this.blackInfo.isMe != true) ||(this.blackInfo.isMe == true && value =='已审核'||value =='未审核')){  */
+				if((value =='已审核'||value =='未审核')&&this.blackInfo.companyStatus == true){
+				  callback(new Error("已申请"));
+			  }else{
+				  callback();
+			  }
+		  }else{
+			  callback();
+		  }
+	   };
+	  /* console.log("rule:"+rule+"value"+value)
 	  console.log(this.blackInfo.pid)
         if (value == "未申请") {
-			console.log(1111)
+			
           callback();
       }else{
 		  if(this.blackInfo.pid !=undefined){
-			  console.log(2222)
+			  
 			 callback(); 
 		  }else{
-			  console.log(3333)
+			
 			  callback(new Error("已申请"));
 		  }
           
-        }
-      };
+        } */
+     
       return{
         headers:'',
         status:[],
@@ -272,8 +288,10 @@ export default {
         isNew:false,
         formData:null,
         tableData:[],
-        statusList:['未审核','已审核','被驳回','已撤销'],
+        statusList:['未审核','已审核','被驳回','已撤销','已过期'],
         blackInfo:{
+		  companyStatus:'',
+		  isMe:'',
           pid:'',//pid
           publishDept:'',   // 申请单位
           publishTime:'', // 申请时间
@@ -356,6 +374,7 @@ export default {
       },
       closeDialog() {
         this.editBlackDialog = false
+		this.$refs['blackInfo'].clearValidate();
       },
       closeRenewalCancellationDialog(){
         this.editRenewalCancellationDialog = false
@@ -389,6 +408,8 @@ export default {
     },
     clearBlackInfo() {
       this.blackInfo = {
+		companyStatus:'', //是否已被当前登录人的同一二级公司已申请
+		isMe:'',
         publishDept:'',   // 申请单位
         publishTime:'', // 申请时间
         entName:'',     // 企业名称
@@ -436,6 +457,9 @@ export default {
               case "已撤销":
                 this.statusCopy.push(4)
                 break
+              case "已过期":
+                this.statusCopy.push(5)
+                break
             }
           }
         console.log(this.statusCopy)
@@ -466,6 +490,7 @@ export default {
         })
       },
       searchData(page){
+		this.page.currentPage = page
         let param = {
           pageIndex: page ? page : 1,
           pageSize: this.page.pageSize,
@@ -513,6 +538,7 @@ export default {
         })
       },
     querySearch(queryString, cb) {
+
       var results = queryString ? this.compayNameAndCreditCodes.filter(this.createFilter(queryString)) : this.compayNameAndCreditCodes;
       let newCompayNameAndCreditCodes = [];
       for(let item of results){
@@ -539,6 +565,9 @@ export default {
       }
       this.$ajax.manage.getCompanyStatus(param).then(res => {
           if(res.data.code === 0){
+			  this.blackInfo.companyStatus = res.data.companyStatus
+			  console.log(res.data.isMe)
+			  this.blackInfo.isMe = res.data.isMe
             switch(res.data.status){
               case "1":
                 this.blackInfo.status = '未审核';

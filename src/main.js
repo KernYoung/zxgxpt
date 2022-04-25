@@ -11,7 +11,6 @@ Vue.config.productionTip = false
 
 import less from 'less'
 Vue.use(less)
-
 //引入elementui
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'

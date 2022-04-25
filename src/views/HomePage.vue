@@ -5,6 +5,7 @@
       <div class="header-box">
         <img src="../../public/img/logo2.png" alt="" >
         <span style="font-size:16px">
+          <el-button type="primary" round @click="vueInterfaceDownload" style="margin: 0 10px">下发接口服务</el-button>
           <el-button type="primary" round @click="downloadFile" style="margin: 0 10px">用户手册下载</el-button>
            <el-dropdown style="margin-right:20px" @command="TycHandleCommand">
             <el-button type="primary" round>
@@ -20,6 +21,8 @@
                <el-dropdown-item command="7">资本成分穿透</el-dropdown-item>
               <el-dropdown-item command="8">企业画像</el-dropdown-item>
               <el-dropdown-item command="9">数据导出</el-dropdown-item>
+              <el-dropdown-item command="10">高级搜索</el-dropdown-item>
+<!--              <el-dropdown-item command="11">监控管理</el-dropdown-item>-->
             </el-dropdown-menu>
           </el-dropdown>
           <el-dropdown style="margin-right:20px" @command="handleCommand">
@@ -33,11 +36,18 @@
               <el-dropdown-item command="4" v-if="zxbReportApply">信保报告申请</el-dropdown-item>
               <el-dropdown-item command="7" v-if="zxbReportlist">信保报告列表</el-dropdown-item>
               <el-dropdown-item command="10" v-if="zxbreportAudit">信保报告审核</el-dropdown-item>
+<!--              <el-dropdown-item command="13" v-if="true">信保信息</el-dropdown-item>-->
+			  <!-- jina-->
+			  <el-dropdown-item command="12" v-if="zxbReportlist">我的信保报告</el-dropdown-item>
+              <el-dropdown-item command="14" v-if="$Cookies.get('username')=='admin'">信保代码维护</el-dropdown-item>
               <el-dropdown-item command="5" v-if="userManage||sub_manage">用户管理</el-dropdown-item>
               <el-dropdown-item command="11" v-if="$Cookies.get('username')=='admin'">角色管理</el-dropdown-item>
               <el-dropdown-item command="6" v-if="newsAll">消息中心</el-dropdown-item>
-              <el-dropdown-item command="8" v-if="$Cookies.get('username')=='admin'">访问日志</el-dropdown-item>
+              <el-dropdown-item command="8" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">访问日志</el-dropdown-item>
               <el-dropdown-item command="9" v-if="$Cookies.get('username')=='admin'">组织架构维护</el-dropdown-item>
+              <el-dropdown-item command="15" v-if="$Cookies.get('username')=='admin'">点数填报</el-dropdown-item>
+              <el-dropdown-item command="16" v-if="$Cookies.get('username')=='admin'">下发Token管理</el-dropdown-item>
+              <el-dropdown-item command="17" v-if="$Cookies.get('username')=='admin'">下发接口次数限制</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
           <span style="margin-right: 15px;cursor:pointer" @click="showUserInfo">
@@ -77,22 +87,105 @@
           </div>
           <div class="tab-content-wrapper">
             <div v-for="(item,index) in careList" :key="index" class="care-list">
+
+<!--              <span v-if="item.messageNumber >= 1" style="border-radius: 50%; height: 25px; width: 25px; display: inline-block; background: #ff9900; float:right">-->
+<!--                <span-->
+<!--                    @click="go2MessageCenter(item.tianyancha,item.companyName)"-->
+<!--                    style="display: block; font-size:1px; color: #FFFFFF; height: 25px; line-height: 25px; text-align: center">{{getMessageShow(item.messageNumber)}}</span>-->
+<!--              </span>-->
+
               <img src="../../public/img/focus.png" alt="" @click="cancleFocus(item)">
-              <span @click="moreNews(item,'0')">{{item.companyName}}</span>
+<!--              <span @click="moreNews(item,'0') ">{{item.companyName}}</span>-->
+
+              <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,null)}}</span>
+              <span v-show="!isOverLength(item.companyName)" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,null)}}</span>
+
+<!--              <span :title="item.companyName" style="width:100%;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;text-align: left;">item.companyNameitem.companyNameitem.companyName</span>-->
+
               <img src="../../public/img/images/index_icon01.png" alt="" v-if="item.zhongchengxin===1" class="care">
               <img src="../../public/img/images/index_icon02.png" alt="" v-if="item.tianyancha===1" class="care">
+
+              <span v-if="item.messageNumber >= 1" style="position:relative;width:45px;height:30px; float: right;margin: 0;">
+                <img src="../../public/img/images/messageNumberIcon.png"
+                     style="width:45px;height:29px"alt=""
+                     @click="go2MessageCenter(item.tianyancha, item.zhongchengxin, item.companyName)"
+                >
+                <span
+                    @click="go2MessageCenter(item.tianyancha, item.zhongchengxin, item.companyName)"
+                    style="position:absolute;top:80%;left:42%;transform: translate(-50%,-50%); text-align: center;color: white;font-size: 10px">{{getMessageShow(item.messageNumber)}}</span>
+              </span>
+
             </div>
           </div>
+		<div style="text-align: center;margin-top: 10px;">
+		      <el-pagination background layout="prev, pager, next,total,jumper" :total="page1.total"
+		                     :current-page.sync="page1.currentPage" :pageSize="page1.pageSize" @current-change="handleCurrentChange1">
+		      </el-pagination>
+		  </div>
         </div>
         <div class="content-item rightBox">
-          <div class="title">
-            <span>黑名单</span>
-          </div>
-          <div class="tab-content-wrapper">
-            <div v-for="(item,index) in blackListData" :key="index" class="care-list">
-              <img src="../../public/img/focusB.png" alt="">
-              <span @click="moreNews(item,'0')">{{item.entName}}</span>
+
+<!--            <div class="title">-->
+<!--              <span class="response" style="color:#a54f4f;float: right; cursor:pointer" @click="toBlackListDetail()">详情》</span>-->
+<!--            </div>-->
+
+            <div class="title">
+
+              <span style="padding-right: 1%;cursor:pointer" @click="setCurrentShow('black')">黑名单</span>
+              <el-tooltip class="item" effect="light" placement="top">
+                <i class="el-icon-question smartTip"></i>
+                <div style="width: 200px;" slot="content">
+                  存在历史交易且对手违约导致形成一定金额以上历史风险资产的交易对手。
+                </div>
+              </el-tooltip>
+              <span style="padding-right: 1%;padding-left: 4%;cursor:pointer" @click="setCurrentShow('grey')">灰名单</span>
+              <el-tooltip class="item" effect="light" placement="top">
+                <i class="el-icon-question smartTip"></i>
+                <div style="width: 200px;" slot="content">
+                  已处置完的历史风险资产对应的历史交易对手。
+                </div>
+              </el-tooltip>
+              <span class="response" v-show="sortCriteria != 'amount' && currentShow == 'black'" style="color:#a54f4f;float: right; cursor:pointer" @click="setSortCriteria('amount')">金额排序</span>
+              <span class="response" v-show="sortCriteria == 'amount' && currentShow == 'black'" style="color:#274ed9;float: right; cursor:pointer" @click="setSortCriteria('amount')">金额排序</span>
+              <span class="response" v-show="sortCriteria != 'startDate' && currentShow == 'black'" style="color:#a54f4f;padding-right: 10px;float: right; cursor:pointer" @click="setSortCriteria('startDate')">时间排序</span>
+              <span class="response" v-show="sortCriteria == 'startDate' && currentShow == 'black'" style="color:#274ed9;padding-right: 10px;float: right; cursor:pointer" @click="setSortCriteria('startDate')">时间排序</span>
+
             </div>
+            <div class="tab-content-wrapper">
+              <div v-if="currentShow == 'black'" v-for="(item,index) in blackListData" :key="index" class="care-list">
+                <img src="../../public/img/focusB.png" alt="">
+
+                <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
+                <span v-show="!isOverLength(item.companyName)" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
+<!--                <span @click="moreNews(item,'0')">{{item.companyName}}</span>-->
+
+
+              </div>
+              <div v-if="currentShow == 'grey'" v-for="(item,index) in greyListData" :key="index" class="care-list">
+                <img src="../../public/img/focusGrey.png" alt="">
+                <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
+                <span v-show="!isOverLength(item.companyName)" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
+<!--                <span @click="moreNews(item,'0')">{{item.companyName}}</span>-->
+              </div>
+            </div>
+      <div v-if="currentShow == 'black'" style="text-align: center;margin-top: 10px;">
+            <el-pagination background layout="prev, pager, next, total, jumper"
+                           :total="page2.total"
+                           :current-page.sync="page2.currentPage"
+                           :pageSize="page2.pageSize"
+                           pager-count="3"
+                           @current-change="handleCurrentChange2">
+            </el-pagination>
+        </div>
+
+          <div v-if="currentShow == 'grey'" style="text-align: center;margin-top: 10px;">
+            <el-pagination background layout="prev, pager, next, total, jumper"
+                           :total="page3.total"
+                           :current-page.sync="page3.currentPage"
+                           :pageSize="page3.pageSize"
+                           pager-count="3"
+                           @current-change="handleCurrentChange3">
+            </el-pagination>
           </div>
         </div>
       </div>
@@ -113,12 +206,14 @@
               <li class="clear" v-for="(item,index) in searchList" :key=" index">
                 <div class="fl-left proList_content">
                   <span v-if="item.isBlack" style="color:white;background-color: #c1c1c1;padding: 3px;float: right">黑名单</span>
+                  <span v-if="item.isGrey" style="color:white;background-color: #c1c1c1;padding: 3px;float: right">灰名单</span>
                   <p class="proList_txt" @click="moreNews(item,'0')"
                     v-html="brightenKeyword(item.companyName,searchVal)">
                   </p>
                   <p>社会统一信用代码：{{item.creditCode}}</p>
                   <p>法人代表：{{item.operName}}</p>
                   <p>成立时间：{{item.buildDate}}</p>
+                  <p>关联代码：{{item.id}}</p>
                 </div>
                 <dl class="fl-right proList_btn">
                   <el-button plain type="primary" size="medium" @click="moreNews(item,'0')">企业基本信息
@@ -133,19 +228,19 @@
       </div>
     </div>
 
-    <el-dialog title="账号设置" :visible.sync="userSettingDialog" width="450px">
-      <el-form :model="userSettingForm">
+    <el-dialog title="账号设置" :visible.sync="userSettingDialog" width="450px" :rules="rules">
+      <el-form :model="userSettingForm" :rules="rules" ref="userSettingForm">
         <el-form-item label="用户名：" label-width="100px">
           <el-input v-model="userSettingForm.username" disabled style="width:250px"></el-input>
         </el-form-item>
         <el-form-item label="姓名：" label-width="100px">
           <el-input v-model="userSettingForm.name" style="width:250px"></el-input>
         </el-form-item>
-        <el-form-item label="密码：" label-width="100px">
+        <el-form-item label="密码：" label-width="100px" prop="password">
           <el-input v-model="userSettingForm.password" style="width:250px" type="password">
           </el-input>
         </el-form-item>
-        <el-form-item label="手机：" label-width="100px">
+        <el-form-item label="手机：" label-width="100px" prop="mobile">
           <el-input v-model="userSettingForm.mobile" style="width:250px"></el-input>
         </el-form-item>
         <el-form-item label="邮箱：" label-width="100px">
@@ -154,21 +249,97 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="userSettingDialog = false">取 消</el-button>
-        <el-button type="primary" @click="saveUserInfo">保 存</el-button>
+        <el-button type="primary" @click="saveUserInfo('userSettingForm')">保 存</el-button>
       </div>
     </el-dialog>
+
+    <el-dialog title="账号设置" :visible.sync="userSettingDialogCompulsory" width="450px" :rules="rules"
+               :show-close="false" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-form :model="userSettingForm" :rules="rules" ref="userSettingForm">
+        <el-form-item label="用户名：" label-width="100px">
+          <el-input v-model="userSettingForm.username" disabled style="width:250px"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名：" label-width="100px">
+          <el-input v-model="userSettingForm.name" style="width:250px"></el-input>
+        </el-form-item>
+        <el-form-item label="密码：" label-width="100px" prop="password">
+          <el-input v-model="userSettingForm.password" style="width:250px" type="password">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="手机：" label-width="100px" prop="mobile">
+          <el-input v-model="userSettingForm.mobile" style="width:250px"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱：" label-width="100px">
+          <el-input v-model="userSettingForm.email" style="width:250px"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+<!--        <el-button @click="userSettingDialogCompulsory = false">取 消</el-button>-->
+        <el-button type="primary" @click="saveUserInfo('userSettingForm')">保 存</el-button>
+      </div>
+    </el-dialog>
+
     <ZxbReportApply :dialogXBVisible.sync="dialogXBVisible"></ZxbReportApply>
+<!--    <InterfaceDownload :dialogInterfaceDownload.sync="dialogInterfaceDownload"></InterfaceDownload>-->
   </div>
 </template>
 
 <script>
 import ZxbReportApply from "../components/zxbReportApply";
+// import InterfaceDownload from "../components/interfaceDownload";
+
 export default {
   components:{
     ZxbReportApply,
   },
   data () {
+    var validateMobile = (rule, value, callback) => {
+      let TEL_REGEXP = /^[1][3,4,5,7,8,9][0-9]{9}$/;
+      if (value === ""||typeof value=='undefined') {
+        callback();
+      } else if (value && !TEL_REGEXP.test(value)) {
+        callback(new Error("请输入正确的手机号!"));
+      } else {
+        callback();
+      }
+    };
+    var validatePassword = (rule, value, callback) => {
+      let modes = 0;
+      if (value.length < 8) callback(new Error("密码长度不小于8位,需由数字、字母、字符中的两种组成。"));
+      if (/\d/.test(value)) modes++; //数字
+      if ((/[a-z]/.test(value)) || (/[A-Z]/.test(value)) )modes++; //字母
+      // if (/[A-Z]/.test(value)) modes++; //大写
+      if (/\W/.test(value)) modes++; //特殊字符
+
+      if (value && modes < 2) {
+        callback(new Error("密码长度不小于8位,需由数字、字母、字符中的两种组成。"));
+      }else {
+        callback();
+      }
+    };
     return {
+      // backgroundDiv: {
+      //   backgroundImage: 'url(' + require('../../public/img/images/messageNumberIcon.png') + ')'
+      // },
+      otimer:null,
+	 	page1:{
+		    total:0,
+		    currentPage:0,
+		    pageSize:10
+		},
+		page2:{
+		    total:0,
+		    currentPage:0,
+		    pageSize:10
+		},
+      page3:{
+        total:0,
+        currentPage:0,
+        pageSize:10
+      },
+      currentShow: 'black',
+      currentSort: '',
+      sortCriteria: 'startDate',
       searchVal: '',
       latestSearchList: [],
       activeUserTab: '1',
@@ -177,14 +348,19 @@ export default {
       showBox: 1,
       careList: [],
       blackListData: [],
+      greyListData: [],
+      blackListWithoutPagination:[],
+      greyListWithoutPagination:[],
       userSettingDialog: false,
+      userSettingDialogCompulsory: false,
       userSettingForm: {
         // username: this.$Cookies.get('username'),
         username: this.$Cookies.get('userCode'),
         name: '',
         password: '',
         email: '',
-        mobile: ''
+        mobile: '',
+        // permissionRoles: this.$Cookies.get('permissionRoles')
       },
 	  blacklistAudit:false,
 	  userManage: false,
@@ -193,9 +369,22 @@ export default {
       newsAll:false,
       zxbreportAudit:false,
       zxbReportApply:false,
+      InterfaceDownload:false,
       zxbReportlist:false,
 	  blacklistApply: false,
       dialogXBVisible: false,
+      zxbMessageList:false,
+      // dialogInterfaceDownload: false,
+      rules: {
+        mobile: [
+          {  validator: validateMobile, trigger: 'blur' },
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'change' },
+          //新增密码复杂度校验(Kern on 20210615)
+          { validator: validatePassword, trigger: 'blur' }
+        ],
+      },
     }
   },
   created(){
@@ -211,16 +400,38 @@ export default {
     if (this.$Cookies.get(this.$getCookieKey())) {
       this.getLatestSearchList();
       this.getCareList();//关注清单
-      this.getBlackList();//黑名单
+      this.getBlackList(1);//黑名单
+      this.getBlackListWithoutPagination();
+      this.getGreyList(1);
+      this.getGreyListWithoutPagination();
 	  this.verifyPermissions();
+    };
+    if (this.$route.query.row == 1) {
+      this.showUserInfoCompulsory();
     }
+
+    // this.timer = setInterval(this.getCareList, 5000)
+    // this.$nextTick(() => {
+    //   setInterval(this.getCareList, 5000);
+    // });
+    this.otimer = setInterval(() => {
+      this.getCareList(this.page1.currentPage);
+    }, 30 * 1000);
+    this.$once('hook:beforeDestroy', () => {//页面关闭
+      console.log('自动刷新已停止')
+      clearInterval(this.otimer);//停止
+    });
+
   },
   methods: {
+    // beforeDestroy() {
+    //   clearInterval(this.timer)
+    // },
 	verifyPermissions(){
 		//权限
 		let param = {
 			userId: this.$Cookies.get("userId"),
-			permissionPoint:"user.manage,user.sub_manage,blacklist.audit,blacklist.apply,zxbreport.audit,merchant.screening,news.all,zxbreport.apply,zxbreport.list"
+			permissionPoint:"user.manage,user.sub_manage,blacklist.audit,blacklist.apply,zxbreport.audit,merchant.screening,news.all,zxbreport.apply,zxbreport.list,zxbMessage.list"
 		}
 		this.$ajax.manage.verifyPermissions(param).then(res=>{
 			console.log(res)
@@ -236,7 +447,9 @@ export default {
 				this.merchant = res.data.verifyPermissionResult['merchant.screening'];
         this.newsAll = res.data.verifyPermissionResult['news.all'];
         this.zxbReportApply = res.data.verifyPermissionResult['zxbreport.apply'];
+        // this.interfaceDownload = res.data.verifypermissions['InterfaceDownload.apply'];
         this.zxbReportlist  = res.data.verifyPermissionResult['zxbreport.list'];
+        this.zxbMessageList = res.data.verifyPermissionResult['zxbMessage.list'];
         if(this.userManage||this.sub_manage){
           this.$Cookies.set('userManage','true');
         }
@@ -244,6 +457,7 @@ export default {
 			}
 		})
 	},
+
     goHmdsb () {
       this.$router.push({
         path: '/iframePage',
@@ -281,6 +495,16 @@ export default {
         }
       })
     },
+    goCreditCodeMaintenance (){
+      this.$router.push({
+        path: '/iframePage',
+        query: {
+          title: encodeURIComponent('信保代码维护'),
+          url: encodeURIComponent(`${process.env.VUE_APP_FR_URL}/webroot/decision/view/form?viewlet=/Homepage/INPUT_HR_ZXB_CLINETNO.cpt&op=write&userCode=${sessionStorage.getItem('userCode')}`)
+        }
+      })
+    },
+
     goOrgEdit (){
       this.$router.push({
         path: '/iframePage',
@@ -327,23 +551,48 @@ export default {
       this.$router.push({ path: '/' });
       // this.$router.go(0);
     },
-    saveUserInfo () {
-      let param = {
-        userId: this.$Cookies.get("userId"),
-        username: this.$Cookies.get("userCode"),
-        name: this.userSettingForm.name,
-        password: this.userSettingForm.password,
-        email: this.userSettingForm.email,
-        mobile: this.userSettingForm.mobile
-      }
-      this.$ajax.manage.updateUser(param).then(res => {
-        console.log(res);
-        if (res.data.code == 0) {
-          this.$message.success(res.data.msg);
-          this.userSettingDialog = false
+    saveUserInfo (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let param = {
+            userId: this.$Cookies.get("userId"),
+            username: this.$Cookies.get("userCode"),
+            name: this.userSettingForm.name,
+            password: this.userSettingForm.password,
+            email: this.userSettingForm.email,
+            mobile: this.userSettingForm.mobile,
+            // permissionRoles: this.$Cookies.get("permissionRoles"),
+          }
+          this.$ajax.manage.updateUser(param).then(res => {
+            console.log(res);
+            if (res.data.code == 0) {
+              this.$message.success(res.data.msg);
+              this.userSettingDialog = false
+              this.userSettingDialogCompulsory = false
+            }
+          })
+        } else {
+          return false;
         }
-      })
+      });
     },
+    // saveUserInfo () {
+    //   let param = {
+    //     userId: this.$Cookies.get("userId"),
+    //     username: this.$Cookies.get("userCode"),
+    //     name: this.userSettingForm.name,
+    //     password: this.userSettingForm.password,
+    //     email: this.userSettingForm.email,
+    //     mobile: this.userSettingForm.mobile
+    //   }
+    //   this.$ajax.manage.updateUser(param).then(res => {
+    //     console.log(res);
+    //     if (res.data.code == 0) {
+    //       this.$message.success(res.data.msg);
+    //       this.userSettingDialog = false
+    //     }
+    //   })
+    // },
     clearUserForm () {
       this.userSettingForm = {
         // username: this.$Cookies.get('username'),
@@ -351,12 +600,18 @@ export default {
         name: '',
         password: '',
         email: '',
-        mobile: ''
+        mobile: '',
+        // permissionRoles: this.$Cookies.get('permissionRoles')
       }
     },
     showUserInfo () {
       //维护用户基本信息弹框
       this.userSettingDialog = true;
+      this.getUserInfo()
+    },
+    showUserInfoCompulsory () {
+      //维护用户基本信息弹框
+      this.userSettingDialogCompulsory = true;
       this.getUserInfo()
     },
     TycHandleCommand(command){
@@ -392,6 +647,12 @@ export default {
         }else if(command == 9){
           //数据导出
           this.goToTycPage("数据导出","/tools/export-company-list");
+        }else if(command == 10){
+          //高级搜索
+          this.goToTycPage("高级搜索","/searchx");
+        }else if(command == 11){
+          //监控管理
+          this.goToTycPage("监控管理","/std/monitor/event");
         }
 
     },
@@ -399,12 +660,12 @@ export default {
       console.log(command)
       if (command == 1) {
         //黑名单申报
-        // this.goHmdsb()
-         this.$router.push({ path: '/BlackListDeclaration' })
+       // this.goHmdsb() 
+      this.$router.push({ path: '/BlackListDeclaration' }) 
       } else if (command == 2) {
         //黑名单审批
-        // this.goHmdsp()
-        this.$router.push({ path: '/BlacklistApproval' })
+         // this.goHmdsp()
+       this.$router.push({ path: '/BlacklistApproval' }) 
       } else if (command == 3) {
         //客商初筛
        // this.goKstb()
@@ -421,7 +682,11 @@ export default {
           this.$router.push({ path: '/userManage' })
         }
       } else if (command == 6) {
-        this.$router.push({ path: '/messageCenter' })
+        this.$router.push({
+          path: '/messageCenter',
+          query: {
+            activeName: 'first'
+          } })
       } else if (command == 7) {
         this.$router.push({ path: '/zxbReportList' })
       } else if (command == 8){
@@ -432,18 +697,108 @@ export default {
         this.$router.push({ path: '/ZxbApplyList' })
       }else if(command == 11){
         this.$router.push({ path: '/RoleManage' })
+      }else if(command == 12){
+        this.$router.push({ path: '/zxbApplyProgressList' })
+      }else if(command == 13){
+        this.$router.push({ path: '/zxbMessageList'})
+      }else if (command == 14){
+        this.goCreditCodeMaintenance()
+      }else if(command == 15){
+        this.$router.push({ path: '/tycPointsDistribute'})
+      }else if(command == 16){
+        this.$router.push({ path: '/TokenManage'})
+      }else if(command == 17){
+        this.$router.push({ path: '/InterfaceUsedLimit'})
       }
     },
-    getBlackList () {
+    toBlackListDetail() {
+      this.$router.push({ path: '/BlacklistDetail'})
+    },
+    // getBlackList (page) {
+    //   let param = {
+		// pageIndex: page ? page : 1,
+		// pageSize: this.page2.pageSize,
+    //     "userCode": sessionStorage.getItem('userCode')
+    //   }
+    //   this.$ajax.manage.getBlackList(param).then(res => {
+    //     if (res.data.code == 0) {
+    //       this.blackListData = res.data.blackList
+		//   this.page2.total = JSON.parse(res.data.total)
+    //     }
+    //   })
+    // },
+    getBlackList (page) {
       let param = {
-        "userCode": sessionStorage.getItem('userCode')
+        pageIndex: page ? page : 1,
+        pageSize: this.page2.pageSize,
+        "userCode": sessionStorage.getItem('userCode'),
+
+        sortCriteria: this.sortCriteria == '' ? 'startDate' : this.sortCriteria,
       }
       this.$ajax.manage.getBlackList(param).then(res => {
         if (res.data.code == 0) {
           this.blackListData = res.data.blackList
+          this.page2.total = JSON.parse(res.data.total)
         }
       })
     },
+
+    getGreyList (page) {
+      let param = {
+        pageIndex: page ? page : 1,
+        pageSize: this.page3.pageSize,
+        "userCode": sessionStorage.getItem('userCode'),
+
+        sortCriteria: this.sortCriteria == '' ? 'startDate' : this.sortCriteria,
+      }
+      this.$ajax.manage.getGreyList(param).then(res => {
+        if (res.data.code == 0) {
+          this.greyListData = res.data.greyList
+          this.page3.total = JSON.parse(res.data.total)
+        }
+      })
+    },
+
+    getBlackListWithoutPagination () {
+      let paramWithoutPagination = {
+        "userCode": sessionStorage.getItem('userCode'),
+      }
+      this.$ajax.manage.getBlackListDetailList(paramWithoutPagination).then(res => {
+        if (res.data.code == 0) {
+          this.blackListWithoutPagination = res.data.blackListDetailResultList
+        }
+      })
+    },
+
+    getGreyListWithoutPagination () {
+      let paramWithoutPagination = {
+        "userCode": sessionStorage.getItem('userCode'),
+      }
+      this.$ajax.manage.getGreyList(paramWithoutPagination).then(res => {
+        if (res.data.code == 0) {
+          this.greyListWithoutPagination = res.data.greyList
+        }
+      })
+    },
+
+
+    setSortCriteria (criteria) {
+      this.sortCriteria = criteria;
+	    if(this.currentShow == 'black'){
+        this.getBlackList();
+        this.page2.currentPage = 1;//重新查询刷新当前页
+      }else {
+        this.getGreyList();
+        this.page3.currentPage = 1;//重新查询刷新当前页
+      }
+    },
+
+    setCurrentShow (currentValue){
+      this.currentShow = currentValue;
+
+      this.setSortCriteria('startDate');
+    },
+
     seachContent () {
       if (this.searchVal == '') {
         this.showBox = 1;
@@ -457,11 +812,12 @@ export default {
           "userId": parseInt(this.$Cookies.get('userId'))
         }
         this.$ajax.manage.getSearchList(param).then(res => {
-          console.log(res);
+          console.log("getSearchList: "+ res);
           if (res.status == 200) {
             //console.log(res.data);
             this.searchList = res.data.searchList
-            this.getIsBlack(this.blackListData,this.searchList)
+            this.getIsBlack(this.blackListWithoutPagination,this.searchList)
+            this.isGrey(this.greyListWithoutPagination,this.searchList)
             this.sourceType = res.data.sourceType;
             this.showBox = 2;
             this.getLatestSearchList()
@@ -491,8 +847,13 @@ export default {
       } else if (index === 4) {
         //更多详情
       }
-      if(item.entName){
-        this.$ajax.manage.getCompanyInfoByName({companyName:item.entName}).then(res=>{
+      if(item.companyName){
+        let param = {
+          userId: this.$Cookies.get('userId'),
+          companyName:item.companyName
+        }
+
+        this.$ajax.manage.getCompanyInfoByName(param).then(res=>{
           if(res.status == 200){
             if(res.data.code == 0){
               item.id = res.data.company.id
@@ -528,16 +889,29 @@ export default {
         })
       }
     },
-    getCareList () {
+    getCareList (page) {
       //关注清单列表
       let param = {
+		pageIndex: page ? page : 1,
+		pageSize: this.page1.pageSize,
         userId: this.$Cookies.get('userId')
       }
       this.$ajax.manage.getCareList(param).then(res => {
         if (res.data.code == 0) {
           this.careList = JSON.parse(res.data.careList)
+		this.page1.total = JSON.parse(res.data.total)
         }
       })
+      console.log("开始自动刷新了: " + new Date())
+    },
+	handleCurrentChange1(val){
+		this.getCareList (val)
+	},
+	handleCurrentChange2(val){
+		this.getBlackList (val)
+	},
+    handleCurrentChange3(val){
+      this.getGreyList (val)
     },
     cancleFocus (item) {
       //取消关注
@@ -567,7 +941,9 @@ export default {
       this.$ajax.manage.directSearchList(param).then(res => {
         if (res.status == 200) {
           this.searchList = res.data.searchList
-          this.getIsBlack(this.blackListData,this.searchList);
+          this.getIsBlack(this.blackListWithoutPagination,this.searchList)
+          this.isGrey(this.greyListWithoutPagination,this.searchList)
+          // this.getIsBlack(this.blackListData,this.searchList);
           this.sourceType = res.data.sourceType;
           this.showBox = 2;
         }
@@ -599,6 +975,72 @@ export default {
       //打开报告申请弹框
       this.dialogXBVisible = true;
     },
+    vueInterfaceDownload() {
+      //打开下发接口服务页面
+      this.$router.push({ path: '/InterfaceDownload' })
+    },
+    go2MessageCenter(tycFlag, zcxFlag, companyNameStr){
+      let activeName;
+      let careFlag;
+
+      if(tycFlag === 1){
+        activeName = 'first'
+      }else{
+        activeName = 'second'
+      }
+
+      if(tycFlag === 1 && zcxFlag != 1){
+        careFlag = 'tycOnly'
+      }else if(tycFlag != 1 && zcxFlag === 1){
+        careFlag = 'zcxOnly'
+      }else{
+        careFlag = 'both'
+      }
+
+      this.$router.push({
+          path: '/messageCenter',
+          query: {
+            activeName: activeName,
+            companyName: companyNameStr,
+            careBy: careFlag
+          }
+        })
+    },
+
+    OmitTheCompanyName(companyName, currentShow){
+      let nameLength = companyName.length;
+      let scope;
+      if(currentShow != null){
+        scope = 22
+      }else{
+        scope = 16
+      }
+      if(nameLength > scope){
+        let shortName = companyName.substring(0,scope);
+        let symbol = '...';
+        return shortName + symbol;
+      }else{
+        return companyName;
+      }
+
+    },
+    isOverLength(companyName){
+      let nameLength = companyName.length;
+      if(nameLength > 16){
+        return true;
+      }else{
+        return false;
+      }
+    },
+
+    getMessageShow(messageNumber){
+	    if(messageNumber > 99){
+	      return '99+'
+      }else{
+	      return messageNumber
+      }
+    },
+
     downloadFile() {
       //用户手册下载
       let param = {
@@ -629,13 +1071,24 @@ export default {
       for(let i = 0; i < searchList.length; i++){
         searchList[i].isBlack = false;
         for(let j = 0; j < blackList.length; j++){
-          if(blackList[j].code == searchList[i].creditCode){
+          if(blackList[j].tycCompanyId == searchList[i].id){
             searchList[i].isBlack = true;
           }
         }
       }
-      console.log(searchList)
-    }
+      console.log("searchList:"+searchList)
+    },
+    isGrey(greyList,searchList){
+      for(let i = 0; i < searchList.length; i++){
+        searchList[i].isGrey = false;
+        for(let j = 0; j < greyList.length; j++){
+          if(greyList[j].tycCompanyId == searchList[i].id){
+            searchList[i].isGrey = true;
+          }
+        }
+      }
+      console.log("searchList:"+searchList)
+    },
   },
 }
 </script>
@@ -717,6 +1170,22 @@ export default {
         border: none;
       }
     }
+    //.latest-search {
+    //  font-size: 14px;
+    //  color: #fff;
+    //  margin: 25px auto;
+    //  text-align: left;
+    //  width: 920px;
+    //  font-size: 16px;
+    //  span {
+    //    color: #00f1fe;
+    //    margin-right: 20px;
+    //    cursor: pointer;
+    //    &:hover {
+    //      color: #fff;
+    //    }
+    //  }
+    //}
     .latest-search {
       font-size: 14px;
       color: #fff;
@@ -734,6 +1203,7 @@ export default {
       }
     }
   }
+
 
   .main-content {
     margin: auto;
@@ -952,7 +1422,27 @@ export default {
     .gbGray {
       background: #f1f3f4;
     }
+
+
   }
+  .response {
+    font-size:14px;
+    color: #3e3e3e;
+    &:hover{
+      font-weight: bold;
+    }
+    &+.response {
+      font-weight: bold;
+    }
+  }
+
+  .middle {
+    height: 445px;
+    width: 300px;
+    background: no-repeat center top;
+    background-size: contain;
+  }
+
 
 }
 </style>

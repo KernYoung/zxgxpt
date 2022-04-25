@@ -8,7 +8,6 @@ async function login (param) {
     let login = await ajax.post(`/api/user/login`, param)
     return login
 }
-
 //最近搜索记录
 async function latestWords (param) {
     let latestWords = await ajax.post(`/api/company/latestWords`, param)
@@ -181,6 +180,11 @@ async function getBusinessInfo (param) {
     return getBusinessInfo
 }
 // 获取摘要窗口所需要的信息
+async function getAllBusinessInfoNoToken (param) {
+    let getAllBusinessInfoNoToken = await ajax.post(`/api/company/zhongxinbao/getAllBusinessInfoNoToken`, param)
+    return getAllBusinessInfoNoToken
+}
+// 获取摘要窗口所需要的信息
 async function getAllBusinessInfo (param) {
     let getAllBusinessInfo = await ajax.post(`/api/company/zhongxinbao/getAllBusinessInfo`, param)
     return getAllBusinessInfo
@@ -205,6 +209,12 @@ async function getUserCompany (param) {
     let getUserCompany = await ajax.post(`/api/common/getUserCompany`, param)
     return getUserCompany
 }
+
+// //维护用户的时候的公司列表
+// async function getUserRole () {
+//     let getUserRole = await ajax.post(`/api/common/getUserRole`)
+//     return getUserRole
+// }
 //获取操作者对某个用户操作修改能拿到的权限
 async function getEnablePermission (param) {
     let getEnablePermission = await ajax.post(`/api/user/getEnablePermission`, param)
@@ -224,6 +234,16 @@ async function updateUserStatus (param) {
 async function getPDFListAll (param) {
     let getPDFListAll = await ajax.post(`/api/company/getPDFListAll`, param)
     return getPDFListAll
+}
+//获取我的信保报告
+async function getApplyProgressList (param) {
+    let getApplyProgressList = await ajax.post(`/api/company/getApplyProgressList`, param)
+    return getApplyProgressList
+}
+//获取我的信保报告
+async function getApplyProgressListNoToken (param) {
+    let getApplyProgressListNoToken = await ajax.post(`/api/company/getApplyProgressListNoToken`, param)
+    return getApplyProgressListNoToken
 }
 //记录日志
 async function logPath (param) {
@@ -260,6 +280,12 @@ async function getRolePermission (param) {
     let getRolePermission = await ajax.post(`/api/user/getRolePermission`, param)
     return getRolePermission
 }
+
+async function getRole (param) {
+    let getRole = await ajax.post(`/api/user/getRole`, param)
+    return getRole
+}
+
 async function roleNameExists (param) {
     let roleNameExists = await ajax.post(`/api/user/roleNameExists`, param)
     return roleNameExists
@@ -379,6 +405,164 @@ async function getMorningNews (param) {
     return getMorningNews
 }
 
+// 新增收件人
+async function addPAFCUser (param) {
+    let addPAFCUser = await ajax.post(`/api/common/addPAFCUser`, param)
+    return addPAFCUser
+}
+// 更新收件人
+async function updatePAFCUser (param) {
+    let updatePAFCUser = await ajax.post(`/api/common/updatePAFCUser`, param)
+    return updatePAFCUser
+}
+// 删除收件人
+async function deletePAFCUser (param) {
+    let deletePAFCUser = await ajax.post(`/api/common/deletePAFCUser`, param)
+    return deletePAFCUser
+}
+
+// // 保存收件人
+// async function savePAFCUser (param) {
+//     let savePAFCUser = await ajax.post(`/api/common/savePAFCUser`, param)
+//     return savePAFCUser
+// }
+// 查询版本信息
+async function getPAFCVersionList (param) {
+    let getPAFCVersionList = await ajax.post(`/api/common/getPAFCVersionList`, param)
+    return getPAFCVersionList
+}
+// 查询点数分配情况
+async function getPAFCPointsList (param) {
+    let getPAFCPointsList = await ajax.post(`/api/common/getPAFCPointsList`, param)
+    return getPAFCPointsList
+}
+
+// 查询人员
+async function getPAFCUserInfoList (param) {
+    let getPAFCUserInfoList = await ajax.post(`/api/common/getPAFCUserInfoList`, param)
+    return getPAFCUserInfoList
+}
+
+// 查询收件人
+async function getRecipientInfoList (param) {
+    let getRecipientInfoList = await ajax.post(`/api/common/getRecipientInfoList`, param)
+    return getRecipientInfoList
+}
+
+// 保存版本信息
+async function savePAFCVersion (param) {
+    let savePAFCVersion = await ajax.post(`/api/common/savePAFCVersion`, param)
+    return savePAFCVersion
+}
+
+// 保存点数分配信息
+async function savePAFCPoints (param) {
+    let savePAFCPoints = await ajax.post(`/api/common/savePAFCPoints`, param)
+    return savePAFCPoints
+}
+
+// 将二级公司同步到填报公司表
+async function syncODSCompany2PAFCCompany (param) {
+    let syncODSCompany2PAFCCompany = await ajax.post(`/api/common/syncODSCompany2PAFCCompany`, param)
+    return syncODSCompany2PAFCCompany
+}
+
+// 获取黑名单详情信息
+async function getBlackListDetailList (param) {
+    let getBlackListDetailList = await ajax.post(`/api/common/getBlackListDetailList`, param)
+    return getBlackListDetailList
+}
+
+// 获取灰名单信息
+async function getGreyList (param) {
+    let getGreyList = await ajax.post(`/api/common/getGreyList`, param)
+    return getGreyList
+}
+// 判断是否是灰名单
+async function getIsGrey (param) {
+    let getIsGrey = await ajax.post(`/api/common/getIsGrey`, param)
+    return getIsGrey
+}
+// 获取二级公司
+async function getLV2Company (param) {
+    let getLV2Company = await ajax.post(`/api/company/getLV2Company`, param)
+    return getLV2Company
+}
+
+// 获取token list
+async function getTokenList (param) {
+    let getTokenList = await ajax.post(`/api/common/getTokenList`, param)
+    return getTokenList
+}
+
+// 更新天眼查token状态(启用/停用)
+async function updateOpenAPIStatus (param) {
+    let updateOpenAPIStatus = await ajax.post(`/api/common/updateOpenAPIStatus`, param)
+    return updateOpenAPIStatus
+}
+
+// 获取下发给成员公司的token
+async function getTokenRelation (param) {
+    let getTokenRelation = await ajax.post(`/api/common/getTokenRelation`, param)
+    return getTokenRelation
+}
+
+// 保存成员公司下发的token前三码
+async function saveTokenRelation (param) {
+    let saveTokenRelation = await ajax.post(`/api/common/saveTokenRelation`, param)
+    return saveTokenRelation
+}
+
+// 保存成员公司下发的token前三码
+async function saveToken (param) {
+    let saveToken = await ajax.post(`/api/common/saveToken`, param)
+    return saveToken
+}
+
+// 获取接口次数限制列表
+async function getInterfaceLimitList (param) {
+    let getInterfaceLimitList = await ajax.post(`/api/common/getInterfaceLimitList`, param)
+    return getInterfaceLimitList
+}
+
+// 保存接口次数限制列表
+async function saveInterfaceLimit (param) {
+    let saveInterfaceLimit = await ajax.post(`/api/common/saveInterfaceLimit`, param)
+    return saveInterfaceLimit
+}
+
+async function getReportFromFTP (param) {
+    let getReportFromFTP = await fileAjax.post(`/api/company/zhongChengXin/getReportFromFTP`, param)
+    return getReportFromFTP
+}
+
+async function deleteTokenRelation (param) {
+    let deleteTokenRelation = await ajax.post(`/api/common/deleteTokenRelation`, param)
+    return deleteTokenRelation
+}
+
+async function tokenValidate (param) {
+    let tokenValidate = await ajax.post(`/api/common/tokenValidate`, param)
+    return tokenValidate
+}
+
+//验证是否有相同的token前三码
+async function tokenPrefixValidate (param) {
+    let tokenPrefixValidate = await ajax.post(`/api/common/tokenPrefixValidate`, param)
+    return tokenPrefixValidate
+}
+
+async function deleteInterfaceLimit (param) {
+    let deleteInterfaceLimit = await ajax.post(`/api/common/deleteInterfaceLimit`, param)
+    return deleteInterfaceLimit
+}
+
+//判断某时间范围内，某公司是否有中诚信报告
+async function reportExist (param) {
+    let reportExist = await ajax.post(`/api/report/zhongChengXin/reportExist`, param)
+    return reportExist
+}
+
 const manage = {
     login: login,
     latestWords: latestWords,
@@ -415,14 +599,18 @@ const manage = {
     getShareInfo: getShareInfo,
     getBusinessInfo: getBusinessInfo,
     getAllBusinessInfo:getAllBusinessInfo,
+    getAllBusinessInfoNoToken:getAllBusinessInfoNoToken,
     getNationCode: getNationCode,
 	verifyPermissions: verifyPermissions,
     getUserCompany: getUserCompany,
+    // getUserRole: getUserRole,
     getEnablePermission: getEnablePermission,
     userExists: userExists,
     updateUserStatus: updateUserStatus,
 	getLatestFinancialDeminingHtml: getLatestFinancialDeminingHtml,
     getPDFListAll: getPDFListAll,
+	getApplyProgressList: getApplyProgressList,
+    getApplyProgressListNoToken: getApplyProgressListNoToken,
     logPath: logPath,
     searchApplyList: searchApplyList,
     getAllCompanyLevel:getAllCompanyLevel,
@@ -430,6 +618,7 @@ const manage = {
     getAllRole:getAllRole,
     saveOrEditRole:saveOrEditRole,
     getRolePermission:getRolePermission,
+    getRole:getRole,
     roleNameExists:roleNameExists,
     // getUserManual:getUserManual,
     getReviewer:getReviewer,
@@ -452,6 +641,35 @@ const manage = {
     getRiskMorningPost:getRiskMorningPost,
     getMorningNews:getMorningNews,
     getCompanyStatus:getCompanyStatus,
+    // savePAFCUser:savePAFCUser,
+    addPAFCUser:addPAFCUser,
+    updatePAFCUser:updatePAFCUser,
+    deletePAFCUser:deletePAFCUser,
+    savePAFCVersion:savePAFCVersion,
+    savePAFCPoints:savePAFCPoints,
+    getPAFCVersionList:getPAFCVersionList,
+    getPAFCPointsList:getPAFCPointsList,
+    getPAFCUserInfoList:getPAFCUserInfoList,
+    getRecipientInfoList:getRecipientInfoList,
+    syncODSCompany2PAFCCompany:syncODSCompany2PAFCCompany,
+    getBlackListDetailList:getBlackListDetailList,
+    // getBlackListAll:getBlackListAll,
+    getGreyList:getGreyList,
+    getIsGrey:getIsGrey,
+    getLV2Company:getLV2Company,
+    getTokenList:getTokenList,
+    updateOpenAPIStatus:updateOpenAPIStatus,
+    getTokenRelation: getTokenRelation,
+    saveTokenRelation:saveTokenRelation,
+    saveToken:saveToken,
+    getInterfaceLimitList:getInterfaceLimitList,
+    saveInterfaceLimit:saveInterfaceLimit,
+    getReportFromFTP:getReportFromFTP,
+    deleteTokenRelation:deleteTokenRelation,
+    tokenValidate:tokenValidate,
+    tokenPrefixValidate:tokenPrefixValidate,
+    deleteInterfaceLimit:deleteInterfaceLimit,
+    reportExist:reportExist,
 }
 
 export default manage

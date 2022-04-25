@@ -2,8 +2,8 @@
 <template>
   <div>
     <el-row class="searchBox">
-      <el-select collapse-tags v-model="search.companyName" placeholder="请选择企业名称" clearable style="width: 310px;margin-right:5px;" multiple   @change="changeCompanyName">
-       <el-option :class="[{'all': isIndeterminate === 'all'} , {'part':isIndeterminate === 'part'}, {'no': isIndeterminate === 'no' }]" label="全选" value="全选"></el-option>
+      <el-select v-model="search.companyName" collapse-tags placeholder="请选择企业名称" clearable style="width: 310px;margin-right:5px;" multiple   @change="changeCompanyName">
+        <el-option :class="[{'all': isIndeterminate === 'all'} , {'part':isIndeterminate === 'part'}, {'no': isIndeterminate === 'no' }]" label="全选" value="全选"></el-option>
 		<el-option v-for="item in companyNameList" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
@@ -33,14 +33,13 @@
       <span style="float: right; font-size: 13px;">更新时间: 8.30 AM</span>
       <span style="float: right; font-size: 13px;margin-right: 30px;">数据来源：中诚信</span>
     </div>
+	<div v-if="loading"  style="width: 100px;height: 100px;margin-left: 700px;">
+	      <i class="el-icon-loading" style="font-size: 40px;"></i>
+	    </div>
+			  <div
+			  v-else
+			  >
     <div style="margin: 35px 0;clear: both;">
-		<div v-if="loading"  style="width: 100px;height: 100px;margin-left: 700px;">
-		      <i class="el-icon-loading" style="font-size: 40px;"></i>
-		    </div>
-				  <div
-				  v-else
-				  >
-		
       <el-table
           :data="tableData">
         <el-table-column
@@ -59,6 +58,11 @@
             prop="levelType"
             label="风险等级"
             width="80px">
+			<template scope="scope">
+			        <span v-if="scope.row.levelType=='警示'" style="color:#FD97AC">警示</span>
+			        <span v-else-if="scope.row.levelType=='重大'" style="color:#F8B263">重大</span>
+					<span v-else style="color:#0060F3 ">一般</span>
+			    </template>
         </el-table-column>
         <el-table-column
             prop="typeName"
@@ -84,9 +88,8 @@
         >
         </el-table-column>
       </el-table>
-	  </div>
     </div>
-
+ </div>
     <div style="text-align: center;margin-top: 10px;">
       <el-pagination background layout="prev, pager, next,total,jumper" :total="page.total"
                      :current-page.sync="page.currentPage" :pageSize="page.pageSize" @current-change="handleCurrentChange">
@@ -99,6 +102,7 @@
 export default {
   data(){
     return{
+	  loading:false,
 	  isIndeterminate: false,
 	  isIndeterminate1: false,
 	  checked: false,
@@ -129,9 +133,21 @@ export default {
 	      let d = new Date
 	      let year1,month1,day1;
 	      [year1,month1,day1] = [d.getFullYear(),d.getMonth(),d.getDate()]
-	      let date1 = new Date(year1, month1, day1,7)
+        // let date1 = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+	      // let date1 = new Date(year1, month1, day1,7)
+    let date1 = this.formatDate(d, 'yyyy-MM-dd');
 	      this.search.startDate = date1
 		  this.search.endDate = date1
+    if(this.$route.query.careBy == 'zcxOnly' || this.$route.query.careBy == 'both'){
+      this.search.companyName = [this.$route.query.companyName]
+      this.searchData(1)
+    }
+    // if(this.$route.query.companyName != null){
+    //   this.search.companyName = [this.$route.query.companyName]
+    //   if(this.$route.query.activeName == 'second'){
+    //     this.searchData(1)
+    //   }
+    // }
   },
   computed: {
           allChecked() {
@@ -142,7 +158,50 @@ export default {
 		  }
       },
    methods:{
+
+
+     formatDate(date, fmt) {
+       if (/(y+)/.test(fmt)) {
+         fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+       }
+       let o = {
+         'M+': date.getMonth() + 1,
+         'd+': date.getDate(),
+         'h+': date.getHours(),
+         'm+': date.getMinutes(),
+         's+': date.getSeconds()
+       }
+       for (let k in o) {
+         if (new RegExp(`(${k})`).test(fmt)) {
+           let str = o[k] + ''
+           fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : this.padLeftZero(str))
+         }
+       }
+       return fmt
+     },
+
+     padLeftZero(str) {
+        return ('00' + str).substr(str.length)
+     },
+
+	    formateStatus (cellValue) {
+	       /*  let statusName = ''
+	         let statusColor = ''
+	         this.tableData.forEach(item => {
+				 if(cellValue === '重大'){
+					 return (`<span style="color:red"></span>`)
+				}
+	            if (item.levelType === cellValue) {
+	             statusName = item.statusName
+	             statusColor = item.statusColor
+	           } 
+	         }) */
+	        
+	       }, 
+	   
       searchData(page){
+		  this.loading = true
+		  this.page.currentPage = page
         /* this.changeRiskLeve(this.search.riskleve) */
         let param = {
           pageIndex: page ? page : 1,
@@ -165,6 +224,7 @@ export default {
             this.$message.success(res.data.msg);
           }
         })
+		this.loading = false
       },
       handleCurrentChange(val){
         this.searchData(val);
@@ -180,8 +240,20 @@ export default {
         })
       },
       changeRiskLeve(val) {
+		  
 		let allValues = [];
 		     for (let item of this.risklevelList) {
+			/* 	switch (item) {
+				  case "警示":
+				    allValues.push(2);
+				    break;
+				  case "重大":
+				    allValues.push(1);
+				    break;
+				  case "一般":
+				    allValues.push(0);
+				    break;
+				} */
 		           allValues.push(item);
 		         }
 		  		 allValues = ['全选'].concat(allValues);
@@ -204,7 +276,7 @@ export default {
 		  		            }
 		  		            if (!oldInclude0 && !newInclude0) {
 		  		                if (val.length === allValues.length - 1) {
-		  		                    this.search.riskleve = ['全选'].concat(val);
+		  		                    this.search.riskleve = ['全选'].concat(vals);
 		  		                    this.isIndeterminate1 = 'all';
 		  		                } else if (!val.length) {
 		  		                    this.isIndeterminate1 = '';

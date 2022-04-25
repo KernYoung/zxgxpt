@@ -9,11 +9,11 @@
     </div>
 
     <el-row>
-      <el-select v-model="search.userName" placeholder="请选择填报人" clearable style="width: 200px;margin-right: 10px;" @change="changeProfession">
+      <el-select v-model="search.userName"  clearable style="width: 200px;margin-right: 10px;" @change="changeProfession">
         <el-option v-for="item in users" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
-      <el-select v-model="search.serialNumber" placeholder="请选择流水号" clearable style="width: 200px;margin-right: 10px;">
+      <el-select v-model="search.serialNumber"  clearable style="width: 200px;margin-right: 10px;">
         <el-option v-for="item in serialNumbers" :key="item" :label="item" :value="item">
         </el-option>
       </el-select>
@@ -57,6 +57,7 @@
         </el-table-column>
         <el-table-column
             prop="businessScope"
+			show-overflow-tooltip
             label="经营范围">
         </el-table-column>
         <el-table-column
@@ -83,6 +84,10 @@
             prop="totime"
             label="登记到期日">
         </el-table-column>
+        <el-table-column
+            prop="id"
+            label="关联代码">
+        </el-table-column>
       </el-table>
     </div>
 
@@ -101,13 +106,15 @@ import { export_json_to_excel } from "../assets/Export2Excel";
 export default {
   data() {
     return {
+	  time:'',
+	  placeValue:'',
       users: [],
       serialNumbers: [],
       backData: [],
       tableData:[],
       excelData:[],
       search: {
-        userName: '',
+        userName: this.$Cookies.get('userCode'),
         serialNumber: ''
       },
       page: {
@@ -130,27 +137,62 @@ export default {
           console.log(res.data)
           this.users = res.data.allUpdataBy[0];
           this.backData = res.data.allSerialid;
+		  this.changeProfession(this.$Cookies.get('userCode'))
         }
       })
     },
     changeProfession(val) {
       for (let i in this.users) {
         if (this.users[i] === val) {
-          this.serialNumbers = this.backData[i];
-          console.log(this.serialNumbers);
-        }
+			for(var j=0;j<this.backData[i].length;j++){
+				 this.time = this.backData[i][j];
+				if(this.time.startsWith(val)){
+					this.time= this.backData[i][j].replace(val,'');
+					var year = this.time.substring(0,4)
+					console.log("==========================="+year)
+					var month = this.time.substring(4,6)
+					var date = this.time.substring(6,8)
+					var hour = this.time.substring(8,10)
+					var minutes = this.time.substring(10,12)
+					var second = this.time.substring(12,14)
+					 this.backData[i][j] = year+"-"+month+"-"+date+" "+hour+":"+minutes+":"+second
+					
+				}else{
+					this.backData[i][j] = this.time
+				}
+				 this.serialNumbers = this.backData[i];
+			 } 
+			  
+		}
+         
+          console.log(this.serialNumbers+"11111111111111111");
+         this.search.serialNumber = this.serialNumbers[0]
       }
     }
     ,
     searchData(){
       this.getData();
     },
+	changeTime(option) {
+	       // currentTime当前时间，假设是 2019-7-2 19:03
+	       var currentTime = option;
+	       var reg = new RegExp("-","g");//去掉时间里面的-
+	       var a = currentTime.replace(reg,"");
+	       var regs = new RegExp(" ","g");//去掉时间里面的空格
+	       var b = a.replace(regs,"");
+	       var regss = new RegExp(":","g");//去掉时间里面的:冒号
+	       var c = b.replace(regss,"");
+	       console.log('时间变成数字的结果:',c)
+		   return c;
+	},
     getData(page) {
+		var c = this.changeTime(this.search.serialNumber)
+		var serialid = this.search.userName+c
       let param = {
         pageIndex: page ? page : 1,
         pageSize: this.page.pageSize,
         updataBy:this.search.userName,
-        serialid:this.search.serialNumber
+        serialid:serialid
       }
 
       this.$ajax.manage.getMerchantsViewResults(param).then(res => {
@@ -172,9 +214,9 @@ export default {
     },
     handleExport() {
       var tHeader = ["客商全称-填报", "社会信用代码-填报", "客商名称", "统一社会信用代码", "公司类型", "行业","注册地址","经营范围","联系电话",
-      "注册资本","企业法人","成立时间","登记开始日","登记到期日"];
+      "注册资本","企业法人","成立时间","登记开始日","登记到期日","关联代码"];
       var filterVal = ["customName1", "customSocialCode", "name", "creditCode", "companyorgtype", "industry","reglocation","businessScope","phoneNumber",
-      "regcapital","legalpersonname","estiblishtime","fromtime","totime"];
+      "regcapital","legalpersonname","estiblishtime","fromtime","totime","id"];
       var filename = "客商初筛检索结果";
       var data = this.formatJson(filterVal, this.excelData);
       export_json_to_excel(

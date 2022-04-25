@@ -31,14 +31,16 @@
                   {{scope.row.reportcorpchnname}}/{{scope.row.reportcorpengname}}
                 </template>
               </el-table-column>
-                <el-table-column prop="reportName" show-overflow-tooltip label="PDF名称">
+                <el-table-column prop="reportName" width="100px" show-overflow-tooltip label="PDF名称">
                 </el-table-column>
                 <el-table-column prop="updatetime" show-overflow-tooltip label="更新时间">
                 </el-table-column>
               <el-table-column prop="getTime" label="摘要时间">
               </el-table-column>
-                <el-table-column align="center" width="250px" label="操作">
+                <el-table-column align="center" width="300px" label="操作">
                     <template slot-scope="scope">
+<!--                      <el-button size="mini" type="primary" @click="doMessage(scope.row)" plain>-->
+<!--                        消息</el-button>-->
                         <el-button size="mini" type="primary" @click="viewPdf(scope.row)" plain>
                             预览</el-button>
                         <el-button size="mini" type="primary" @click="downPdf(scope.row)" plain>
@@ -207,6 +209,63 @@
           </div>
         </div>
       </el-dialog>
+
+      <el-dialog title="信保消息沟通" :visible.sync="doMessageDialog" style="width: 100%" @close="closeDialog" :close-on-click-modal='false'>
+        <table border="1" class="report-table">
+          <tr>
+            <td colspan="12" style="background:#E3E3E3;font-weight:bold">信保报告申请（已有信保代码）</td>
+          </tr>
+          <tr class="gbGray">
+            <th width="80px">买方代码</th>
+            <th width="200px">待调查企业中国信保企业代码</th>
+            <th width="100px">待调查企业国别</th>
+            <th width="150px">待调查企业中文名称</th>
+            <th width="150px">待调查企业英文名称 </th>
+            <th width="100px">待调查企业地址</th>
+            <th width="220px">待调查企业统一社会信用代码</th>
+            <th width="35px">是否导读</th>
+            <th width="70px">待调查企业联系电话</th>
+            <th width="70px">待调查企业邮箱</th>
+            <th width="35px">紧急度</th>
+            <th></th>
+          </tr>
+<!--          <tr>-->
+<!--            <td>-->
+<!--              <el-input disabled v-model="haveCreditCode.clientNo"></el-input>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--              <el-input v-model="haveCreditCode.reportbuyerNo"></el-input>-->
+<!--            </td>-->
+<!--            <td style="background:#FAFAFA"></td>-->
+<!--            <td>-->
+<!--              <el-input v-model="haveCreditCode.reportCorpChnName"></el-input>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--              <el-input v-model="haveCreditCode.reportCorpEngName"></el-input>-->
+<!--            </td>-->
+<!--            <td style="background:#FAFAFA"></td>-->
+<!--            <td style="background:#FAFAFA"></td>-->
+<!--            <td>-->
+<!--              <el-select v-model="haveCreditCode.istranslation">-->
+<!--                <el-option v-for="(item,index) in istranslation" :value="item.id" :key="item.id" :label="item.name">-->
+<!--                </el-option>-->
+<!--              </el-select>-->
+<!--            </td>-->
+<!--            <td style="background:#FAFAFA"></td>-->
+<!--            <td style="background:#FAFAFA"></td>-->
+<!--            <td>-->
+<!--              <el-select v-model="haveCreditCode.speed">-->
+<!--                <el-option v-for="(item,index) in speedSelected" :value="item.id" :key="item.id" :label="item.name">-->
+<!--                </el-option>-->
+<!--              </el-select>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--              <el-button type="primary" size="mini" @click="applyHaveCode">点击申请</el-button>-->
+<!--            </td>-->
+<!--          </tr>-->
+        </table>
+
+      </el-dialog>
     </div>
 </template>
 
@@ -243,7 +302,8 @@
                 pdfBasicInformation: false,
                 progressNum: 0,
                 startTimer: '',
-                endTimer: ''
+                endTimer: '',
+              doMessageDialog: false
             }
         },
         mounted () {
@@ -288,7 +348,7 @@
                 reportcorpchnname:row.reportcorpchnname,
                 reportcorpengname:row.reportcorpengname,
 				reportbuyerno:row.reportbuyerno
-				
+
               }
               this.$ajax.manage.getAllBusinessInfo(param).then(res => {
                 console.log("param"+param);
@@ -300,7 +360,7 @@
               })
             },
             downPdf (row) {
-                //pdf下载
+                //pdf下载file:///Users/yangwenqiang/Temp/
                 let param = {
                      userId: parseInt(this.$Cookies.get('userId')),
                     "noticeSerialno":row.reportName,
@@ -380,6 +440,41 @@
             finishProgress () {
                 this.$emit('finishProgress', false)
             },
+          doMessage(row) {
+
+            // this.clearUserInfo();
+            // this.isNew = false;
+            // this.editType = '编辑用户';
+            // row.newCompanyFlag = 0;
+            // this.getRolePermission();
+            // this.getRoleAll();
+            // this.userInfo = Object.assign({},row);
+            // console.log(this.userInfo)
+            // debugger;
+            // if(this.userInfo.roleName){
+            //   debugger;
+            //   this.userInfo.permissionRoles = this.userInfo.roleName;
+            //   console.log( this.userInfo.permissionRoles)
+            //
+            // }else{
+            //   this.userInfo.permissionRoles = null;
+            // }
+            this.doMessageDialog = true;
+          },
+          closeDialog() {
+            // this.clearUserInfo();
+            // this.$nextTick(() => {
+            //   this.$refs.userInfo.data = this.userInfoTemp;
+            // });
+            this.doMessageDialog = false;
+          },
+          sendMessage() {
+            // this.clearUserInfo();
+            // this.$nextTick(() => {
+            //   this.$refs.userInfo.data = this.userInfoTemp;
+            // });
+            // this.doMessageDialog = false;
+          }
         }
     }
 </script>

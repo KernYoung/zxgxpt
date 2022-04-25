@@ -59,13 +59,29 @@
 					<div style="flex: 1;margin-right: 15px;"><ZXBPage></ZXBPage></div>
 					<div style="flex: 1;"> <ZCXPage></ZCXPage></div>
 				</div>
-				 
+
+              <pre>
+
+
+
+
+
+
+
+              </pre>
+<!--				 -->
             </el-tab-pane>
 			<!-- 天眼查 -->
-            <el-tab-pane label="工商舆情">
-<!--                <TYCPage class="tyc" :target="tycUrl"></TYCPage>-->
-               <iframe id="tycUrl" width="100%" :height="curHeight"  frameborder="0" marginwidth="0" marginheight="5" :src="tycUrl"></iframe>
-            </el-tab-pane>
+<!--            <el-tab-pane label="工商舆情">-->
+<!--&lt;!&ndash;                <TYCPage class="tyc" :target="tycUrl"></TYCPage>&ndash;&gt;-->
+<!--               <iframe id="tycUrl" width="100%" :height="curHeight"  frameborder="0" marginwidth="0" marginheight="5" :src="tycUrl"></iframe>-->
+<!--            </el-tab-pane>-->
+
+          <el-tab-pane label="工商舆情">
+<!--            <iframe id="tycUrl" width="100%" :height="curHeight"  frameborder="0" marginwidth="0" marginheight="5" :src="tycUrl"></iframe>-->
+            <iframe :src="tycUrl" id="tycUrl" frameborder="0" width="100%" :height="curHeight"></iframe>
+          </el-tab-pane>
+
 			<!-- 中信保 -->
            <!-- <el-tab-pane label="信保报告">
                 <ZXBPage></ZXBPage>
@@ -74,7 +90,25 @@
             <!-- <el-tab-pane label="企业评级报告">
                 <ZCXPage></ZCXPage>
             </el-tab-pane> -->
+
+
+
+<!--          <el-tab-pane label="测试">-->
+<!--            &lt;!&ndash;                <TYCPage class="tyc" :target="tycUrl"></TYCPage>&ndash;&gt;-->
+<!--            <iframe id="test" width="100%" :height="curHeight"  frameborder="0" marginwidth="0" marginheight="5" :src="testUrl"></iframe>-->
+<!--          </el-tab-pane>-->
+
+<!--          <el-tab-pane label="测试1">-->
+<!--            	<span>-->
+<!--						<el-button type="primary" size="small" @click="toBaidu" >-->
+<!--							<i class="el-icon-star-on" style="font-size: 16px;"></i>-->
+<!--							跳转测试</el-button>-->
+<!--					</span>-->
+<!--          </el-tab-pane>-->
+
+
         </el-tabs>
+
         <el-dialog title="关注" :visible.sync="dialogFormVisible" width="450px" @close="cancle">
             <div slot="title" class="header-title">
                 <span>关注 &nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -145,6 +179,7 @@ import ZXBPage from './components/ZXBPage'//中信保
 import TYCPage from './components/TYCPage' //天眼查
 import ZCXPage from './components/ZCXPage' //中诚信
 export default {
+
     components: {
         CompanyBasicInfo,
         ZXBPage,
@@ -268,6 +303,7 @@ export default {
                 ]
             },
             tycUrl:'',
+            testUrl:'',
             curHeight:'',
             maxHeight: document.documentElement.clientHeight || document.body.clientHeight,
             isFullscreen: false
@@ -283,13 +319,36 @@ export default {
     },
     mounted() {
         var h = document.documentElement.clientHeight || document.body.clientHeight;
-        this.curHeight =h-180; //减去页面上固定高度height
-        this.getTYCUrl()
+        this.curHeight =h-50; //减去页面上固定高度height
+        this.getTYCUrl();
+      this.getTestUrl();
+
+      /**
+       * iframe-宽高自适应显示
+       */
+      function changeMobsfIframe(){
+        const tycUrl = document.getElementById('tycUrl');
+        const deviceWidth = document.body.clientWidth||document.documentElement.clientWidth;
+        const deviceHeight = document.body.clientHeight||document.documentElement.clientHeight;
+
+
+        tycUrl.style.width = (Number(deviceWidth)-120) + 'px'; //数字是页面布局宽度差值
+        tycUrl.style.height = (Number(deviceHeight)-80) + 'px'; //数字是页面布局高度差
+
+
+      }
+
+      changeMobsfIframe()
+
+      window.onresize = function(){
+        changeMobsfIframe()
+      }
+
     },
     methods: {
-		handleClick(tab,event){
-			this.$Bus.$emit('showLargeBtn',tab.index)
-		},
+        handleClick(tab,event){
+          this.$Bus.$emit('showLargeBtn',tab.index)
+        },
         getCareStatus () {
             let param = {
                 companyId: parseInt(this.$route.query.companyId),
@@ -493,12 +552,15 @@ export default {
         getTYCUrl(){
             //TODO 组装天眼查URL
             let tycid = this.$route.query.id;
+          console.log('tycid: ' + tycid);
             let username = "zjb_"+this.$Cookies.get('userCode');
+          console.log('username: ' + username);
             let sign = this.$md5(username+"44bce5ef-873e-4689-b515-a1ef9775aa82");
+          console.log('sign: ' + sign);
             //this.tycUrl = `http://std.tianyancha.com/cloud-std-security/aut/login.json?username=1111&authId=2701&sign=4d53b6d11889e8eb3cd5c77cce7358d0&redirectUrl=/company/${tycid}/background`
             this.tycUrl = `https://pro.tianyancha.com/cloud-std-security/aut/login.json?username=${username}&authId=lf2b4yqy4lsfgp1x&sign=${sign}&redirectUrl=/company/${tycid}/background`
             //this.tycUrl = `https://std.test.s.tianyancha.cn/cloud-std-security/aut/login.json?username=${username}&authId=lf2b4yqy4lsfgp1x&sign=${sign}&redirectUrl=/company/${tycid}/background`
-
+          console.log('tycUrl: ' + tycUrl);
           /**
             this.$ajax.manage.getData(this.$route.query.companyName).then(res=>{
                 let tycid = res.data.result.items[0].id
@@ -507,8 +569,22 @@ export default {
             })
             */
         },
+      getTestUrl(){
+        this.testUrl = `https://pro.tianyancha.com/cloud-std-security/aut/login.json?username=zjb_admin&authId=lf2b4yqy4lsfgp1x&sign=83e7336999ffe9f03900f878c8c6db54&redirectUrl=/company/1211192073/background`;
+      },
+      toBaidu(){
+        window.location.href = this.testUrl;
+      },
+
+
     }
 }
+
+
+
+
+
+
 </script>
 <style lang="less" scoped>
 .essInfo {

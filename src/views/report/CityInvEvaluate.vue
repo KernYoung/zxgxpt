@@ -227,11 +227,15 @@ export default {
       ],
       radio: 0,
       fileName: '',
-      regionInfo: {}
+      regionInfo: {},
+      existFlag: true
     }
   },
   mounted () {
     this.getArea()
+  },
+  created () {
+    this.reportExist();
   },
   watch: {
     active (newVal, oldVal) {
@@ -320,6 +324,17 @@ export default {
       })
     },
     nextStep () {
+
+      if (this.active == 0) {
+        debugger;
+        //提前判断是否有报告 Kern on 20220424
+        if(!this.existFlag){
+          this.$msgbox.alert("非常抱歉，第三方接口内无财报数据，无法生成对应报告！");
+          return;
+        }
+      }
+
+
       if (this.active == 1) {
         if (this.form.areaLevel == '1') {
           if (this.form.provinceCode == '') {
@@ -349,6 +364,8 @@ export default {
           this.$message.warning('请选择行政级别');
           return;
         }
+
+
       }
       this.active++
       if (this.active == 2) {
@@ -357,6 +374,18 @@ export default {
     },
     lastStep () {
       this.active--;
+    },
+    reportExist() {
+      this.existFlag = true;
+      let param = {
+        creditCode: this.$route.query.creditCode,
+        reportType: this.$route.query.reportType
+      }
+      this.$ajax.manage.reportExist(param).then(res => {
+        if (res.status == 200) {
+          this.existFlag = res.data.existFlag;
+        }
+      })
     },
     getLiteRatingPDF () {
       //报告下载

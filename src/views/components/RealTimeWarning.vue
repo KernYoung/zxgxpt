@@ -24,7 +24,7 @@
       </el-date-picker>
       <el-select v-model="search.riskleve" collapse-tags placeholder="请选择风险等级" clearable style="width: 200px;margin:0 5px;" multiple @change="changeRiskLeve">
         <el-option :class="[{'all': isIndeterminate1 === 'all'} , {'part':isIndeterminate1 === 'part'}, {'no': isIndeterminate1 === 'no' }]" label="全选" value="全选"></el-option>
-		<el-option v-for="item in risklevelList" :key="item" :label="item" :value="item">
+		<el-option v-for="(item,index) in risklevelList" :key="item" :label="item" :value="item" :class="riskleveColor[index]">
         </el-option>
       </el-select>
       <el-select v-model="search.eventType"collapse-tags placeholder="请选择事件类型" clearable style="width: 200px;margin-right: 5px;" multiple  @change="changeEventType">
@@ -41,8 +41,9 @@
 	         </div> -->
     </el-row>
     <div style="margin: 10px 0;" >
-      <span style="font-size: 14px;color: #1fade5;font-weight: bold">注：部分第三方网站由于安全策略或终端不同（如微信公众号）无法直接跳转访问，请复制链接后查看；部分第三方网站由于网站本身问题可能存在过期或封停，请见谅。</span>
-      <span style="float: right; font-size: 14px;font-weight: bold">数据来源：天眼查</span>
+     <!-- <span style="font-size: 14px;color: #1fade5;font-weight: bold">注：部分第三方网站由于安全策略或终端不同（如微信公众号）无法直接跳转访问，请复制链接后查看；部分第三方网站由于网站本身问题可能存在过期或封停，请见谅。</span> -->
+      <span style="font-size: 14px;color: #1fade5;font-weight: bold">注：部分第三方网站由于网站本身问题可能存在过期或封停导致无法查看，请见谅。</span>
+	  <span style="float: right; font-size: 14px;font-weight: bold">数据来源：天眼查</span>
     </div>
       <div v-if="loading"  style="width: 100px;height: 100px;margin-left: 700px;">
             <i class="el-icon-loading" style="font-size: 40px;"></i>
@@ -80,6 +81,7 @@
 <script>
 
 export default {
+  props: ["companyName"],
   data(){
     return{
 		loading:false,
@@ -106,19 +108,34 @@ export default {
       companyNameList:[],//企业名称
       risklevelList:["高风险","一般风险"],// 风险等级
       eventTypeList:[],// 事件类型
+	  riskleveColor:["first","second"]
     }
   },
   created() {
     this.getCompanyNameList(),
-    this.getEventTypeList()
+    this.getEventTypeList(),
+        this.initPushParam()
 	//当前设定的日期时间
 	      let d = new Date
 	      let year1,month1,day1;
 	      [year1,month1,day1] = [d.getFullYear(),d.getMonth(),d.getDate()]
-	      let date1 = new Date(year1, month1, day1,7)
+        // let date1 = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+	      // let date1 = new Date(year1, month1, day1,7)
+    let date1 = this.formatDate(d, 'yyyy-MM-dd');
 	      this.search.startDate = date1
 		  this.search.endDate = date1
-		
+
+    if(this.$route.query.careBy == 'tycOnly' || this.$route.query.careBy == 'both'){
+      this.search.companyName = [this.$route.query.companyName]
+      this.searchData(1)
+    }
+
+    // if(this.$route.query.companyName != null){
+    //   this.search.companyName = [this.$route.query.companyName]
+    //   if(this.$route.query.activeName == 'first'){
+    //     this.searchData(1)
+    //   }
+    // }
   },
   computed: {
          /* allChecked() {
@@ -132,8 +149,35 @@ export default {
 	 	this.loading = true
 	 }, */
   methods:{
+    formatDate(date, fmt) {
+      if (/(y+)/.test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+      }
+      let o = {
+        'M+': date.getMonth() + 1,
+        'd+': date.getDate(),
+        'h+': date.getHours(),
+        'm+': date.getMinutes(),
+        's+': date.getSeconds()
+      }
+      for (let k in o) {
+        if (new RegExp(`(${k})`).test(fmt)) {
+          let str = o[k] + ''
+          fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : this.padLeftZero(str))
+        }
+      }
+      return fmt
+    },
+
+    padLeftZero(str) {
+      return ('00' + str).substr(str.length)
+    },
+    initPushParam(){
+      this.search.companyName = this.$route.query.companyName
+    },
     searchData(page){
-			this.loading = true
+		this.page.currentPage = page;
+		this.loading = true;
       let param = {
         pageIndex: page ? page : 1,
         pageSize: this.page.pageSize,
@@ -144,19 +188,19 @@ export default {
         startDate:this.search.startDate,
         endDate:this.search.endDate
       }
-
       this.$ajax.manage.getRealTimeWarning(param).then(res => {
         console.log(param)
         console.log(res.data)
         if(res.data.code == '0') {
+			this.loading = false 
           this.tableData = res.data.realTimeWarningList;
           console.log(this.tableData);
           this.page.total = res.data.totalRecords;
           this.tableData.splice(1, 0);
-          this.$message.success(res.data.msg);
-		  this.loading = false
+          this.$message.success(res.data.msg);	  
         }
       })
+	 
     },
     // 更改企业名称
    /* changeCompanyName(val){
@@ -321,6 +365,7 @@ export default {
 </script>
 
 <style scoped lang="less">
+
   .realTimeWarning{
 
   }

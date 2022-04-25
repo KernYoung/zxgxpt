@@ -51,6 +51,7 @@
                 <el-checkbox label="信保报告申请权限" ></el-checkbox>
                 <el-checkbox label="信保报告列表权限" ></el-checkbox>
                 <el-checkbox label="消息中心权限" ></el-checkbox>
+                <el-checkbox label="访问日志权限" ></el-checkbox>
               </el-checkbox-group>
             </template>
           </el-form-item>

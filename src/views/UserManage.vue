@@ -18,10 +18,12 @@
         <el-option v-for="item in statusOptions" :key="item.value" :label="item.label" :value="item.value">
         </el-option>
       </el-select>
-	  <el-select v-model="search.isSubAdmin" placeholder="是否为子管理员" clearable style="width: 200px;margin-right: 10px;">
-	    <el-option label="是" value="1"></el-option>
-		<el-option label="否" value="0"></el-option>
+	  <el-select v-model="search.isSubAdmin" placeholder="请选择角色" clearable style="width: 200px;margin-right: 10px;">
+      <el-option v-for="item in roleAll" :key="item.value" :label="item.label" :value="item.value"></el-option>
+<!--	    <el-option label="是" value="1" ></el-option>-->
+<!--		<el-option label="否" value="0" ></el-option>-->
 	  </el-select>
+<!--      <el-button type="primary" icon="el-icon-search" @click="getRoleAll">查询</el-button>-->
       <el-button type="primary" icon="el-icon-search" @click="searchData">查询</el-button>
       <el-button type="success" icon="el-icon-plus" v-on:click="newUser">新增</el-button>
     </div>
@@ -40,8 +42,7 @@
 			</template>
         </el-table-column>
         <!--<el-table-column prop="permissionLevel" label="权限级别">-->
-        <!--<el-table-column prop="permissionRoles" label="角色">
-        </el-table-column>-->
+<!--        <el-table-column prop="permissionRoles" label="角色"></el-table-column>-->
         <el-table-column prop="email" show-overflow-tooltip label="邮箱">
         </el-table-column>
         <el-table-column prop="mobile" label="手机号">
@@ -62,7 +63,9 @@
                         <el-button size="mini" type="primary" @click="handleDelete(scope.$index, scope.row)">点击停用
 
                         </el-button> -->
-            <el-button size="mini" type="primary" @click="editUser(scope.row)" plain>
+            <el-button size="mini" type="primary" @click="editUser(scope.row)" plain v-if="scope.row.status==1">
+              编辑</el-button>
+            <el-button size="mini" type="primary" @click="editUser(scope.row)" disabled=“submissionFlag” plain v-if="scope.row.status==0">
               编辑</el-button>
             <el-button size="mini" type="danger" @click="updateStatus(scope.row,'0')" plain v-if="scope.row.status==1">
               点击停用</el-button>
@@ -78,9 +81,6 @@
         </el-pagination>
       </div>
     </div>
-
-
-
 
     <el-dialog :title="editType" :visible.sync="editUserDialog" width="450px" @close="closeDialog" :rules="rules" :close-on-click-modal='false'>
       <el-form :model="userInfo" label-width="100px" :rules="rules" ref="userInfo">
@@ -103,7 +103,7 @@
         <el-form-item label="邮箱：">
           <el-input v-model="userInfo.email" style="width:300px"></el-input>
         </el-form-item>
-        <el-form-item label="公司代码：">
+        <el-form-item label="公司代码：" prop="companyCode">
           <el-input v-model="userInfo.companyCode" disabled style="width:300px"></el-input>
         </el-form-item>
         <el-form-item label="公司：" prop="companyName">
@@ -122,16 +122,29 @@
           <el-input v-model="userInfo.deptName" style="width:300px"></el-input>
         </el-form-item>
 		<el-form-item label="角色：">
-			 <el-select v-model="userInfo.permissionRoles" multiple placeholder="请选择" style="width:300px">
-			    <el-option
-			      v-for="item in permissionAll"
-			      :key="item.roleId"
-			      :label="item.roleName"
-			      :value="item.roleName"
-                  :disabled="item.disabled"
-                  :hidden="item.disabled">
-			    </el-option>
-			  </el-select>
+
+<!--			 <el-select v-model="userInfo.permissionRoles" multiple placeholder="请选择" style="width:300px">-->
+<!--			    <el-option-->
+<!--			      v-for="item in permissionAll"-->
+<!--			      :key="item.roleId"-->
+<!--			      :label="item.roleName"-->
+<!--			      :value="item.roleName"-->
+<!--                  :disabled="item.disabled"-->
+<!--                  :hidden="item.disabled">-->
+<!--			    </el-option>-->
+<!--			  </el-select>-->
+
+      <el-select v-model="userInfo.permissionRoles"  placeholder="请选择" @blur="onChange" clearable style="width:300px">
+        <el-option
+            v-for="item in permissionAll"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+            :disabled="item.disabled"
+            :hidden="item.disabled">
+        </el-option>
+      </el-select>
+
 		</el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -153,6 +166,30 @@ export default {
       } else if (value && !TEL_REGEXP.test(value)) {
         callback(new Error("请输入正确的手机号!"));
       } else {
+        callback();
+      }
+    };
+    var validatePassword = (rule, value, callback) => {
+
+      // if (value.length < 8) callback(new Error("密码长度不能低于8位!"));
+      // if (!(/\d/.test(value))) callback(new Error("密码必须包含一位数字!"));
+      // if (!(/[a-z]/.test(value))) callback(new Error("密码必须包含一位小写英文字母!"));
+      // if (!(/[A-Z]/.test(value))) callback(new Error("密码必须包含一位大写英文字母!"));
+      // if (!(/\W/.test(value))) callback(new Error("密码必须包含一位特殊字符!"));
+      //
+      //
+      // callback();
+
+      let modes = 0;
+      if (value.length < 8) callback(new Error("密码长度不小于8位,需由数字、字母、字符中的两种组成。"));
+      if (/\d/.test(value)) modes++; //数字
+      if ((/[a-z]/.test(value)) || (/[A-Z]/.test(value)) )modes++; //字母
+      // if (/[A-Z]/.test(value)) modes++; //大写
+      if (/\W/.test(value)) modes++; //特殊字符
+
+      if (value && modes < 2) {
+        callback(new Error("密码长度不小于8位,需由数字、字母、字符中的两种组成。"));
+      }else {
         callback();
       }
     };
@@ -276,7 +313,7 @@ export default {
       node:{id:this.$Cookies.get('companyCode'),isLevel:true},
       rules: {
         mobile: [
-          {  validator: validateMobile, trigger: 'blur' }
+          {  validator: validateMobile, trigger: 'blur' },
         ],
         companyName: [
           { required: true, message: '请选择公司名称', trigger: 'change' },
@@ -290,9 +327,16 @@ export default {
         name: [
           { required: true, message: '请输入用户名', trigger: 'change' }
         ],
+
         password: [
-          { required: true, message: '请输入密码', trigger: 'change' }
+          { required: true, message: '请输入密码', trigger: 'change' },
+          //新增密码复杂度校验(Kern on 20210615)
+          { validator: validatePassword, trigger: 'blur' }
         ],
+        companyCode: [
+          { required: true, message: '请选择公司名称', trigger: 'change' }
+        ],
+
       },
 	  permissionList:[],
       permissionAll:[
@@ -301,12 +345,18 @@ export default {
         // {permissionPointName:"信保报告审批权限",permissionRole:"zxb_report_reviewer",disabled:true},
         // {permissionPointName:"子管理员用户权限",permissionRole:"sub_admin",disabled:true}
       ],
+      roleAll:[
+        // {label: '审核专员测试', value: '1'}
+      ],
       treeData:[]
     }
   },
+
+
   created () {
     this.getData(1);
     this.getNewCompany();
+    this.getRoleAll();
     this.getAllCompanyLevel();
     this.getRolePermission();
   },
@@ -341,11 +391,34 @@ export default {
       let param = {
         userId: this.$Cookies.get('userId')
       }
-      this.$ajax.manage.getRolePermission(param).then(res => {
+      this.$ajax.manage.getRole().then(res => {
         console.log(res.data);
-        this.permissionAll = res.data.allRole;
+        let dataArray = [];
+        for(let j = 0;j < res.data.allRole.length;j++) {
+          let roleTemp = {
+            label: res.data.allRole[j],
+            value: res.data.allRole[j]
+          }
+          dataArray.push(roleTemp);
+        }
+        this.permissionAll = dataArray;
       })
     },
+    getRoleAll(){
+      this.$ajax.manage.getRole().then(res => {
+        console.log(res.data);
+        let dataArray = [];
+        for(let j = 0;j < res.data.allRole.length;j++) {
+            let roleTemp = {
+              label: res.data.allRole[j],
+              value: res.data.allRole[j]
+            }
+          dataArray.push(roleTemp);
+        }
+        this.roleAll = dataArray;
+      })
+    },
+
     searchData() {
       this.page.currentPage = 1;
       this.getData(1)
@@ -380,6 +453,7 @@ export default {
     newUser() {
       this.clearUserInfo();
       this.getRolePermission();
+      // this.getRoleAll();
       this.isNew = true;
       this.editType = '新增用户';
       this.userInfo = {newCompanyFlag: 1,status: 1};
@@ -393,26 +467,53 @@ export default {
       this.getData(1)
     },
     editUser(row) {
+
       this.clearUserInfo();
       this.isNew = false;
       this.editType = '编辑用户';
       row.newCompanyFlag = 0;
       this.getRolePermission();
-      //this.userInfo = row;
+      // this.getRoleAll();
       this.userInfo = Object.assign({},row);
       console.log(this.userInfo)
-       // if (this.userInfo.permissionRoles && !(this.userInfo.permissionRoles instanceof Array)) {
-     // this.userInfo.roleName != "zxb_report_apply,zxb_report_list,merchant,news_all,applicant"
-        if(this.userInfo.roleName){
-          this.userInfo.permissionRoles = this.userInfo.roleName.split(',');
-          console.log( this.userInfo.permissionRoles)
-        }else{
-          this.userInfo.permissionRoles = null;
-        }
-       // }
+      if(this.userInfo.roleName){
+        // this.userInfo.permissionRoles = this.userInfo.roleName.split(',');
+        this.userInfo.permissionRoles = this.userInfo.roleName;
+        console.log( this.userInfo.permissionRoles)
+
+      }else{
+        this.userInfo.permissionRoles = null;
+      }
 
       this.editUserDialog = true;
+
+
     },
+    onChange(){
+      this.$forceUpdate()//强制更新
+    },
+    // editUser(row) {
+    //   debugger;
+    //   this.clearUserInfo();
+    //   this.isNew = false;
+    //   this.editType = '编辑用户';
+    //   row.newCompanyFlag = 0;
+    //   this.getRolePermission();
+    //   //this.userInfo = row;
+    //   this.userInfo = Object.assign({},row);
+    //   console.log(this.userInfo)
+    //    // if (this.userInfo.permissionRoles && !(this.userInfo.permissionRoles instanceof Array)) {
+    //  // this.userInfo.roleName != "zxb_report_apply,zxb_report_list,merchant,news_all,applicant"
+    //     if(this.userInfo.roleName){
+    //       this.userInfo.permissionRoles = this.userInfo.roleName.split(',');
+    //       console.log( this.userInfo.permissionRoles)
+    //     }else{
+    //       this.userInfo.permissionRoles = null;
+    //     }
+    //    // }
+    //
+    //   this.editUserDialog = true;
+    // },
     getNewCompany() {
       let param = {
         operator: this.$Cookies.get('userCode')
@@ -423,6 +524,11 @@ export default {
         }
       })
     },
+    // getNewRole() {
+    //   this.$ajax.manage.getUserRole.then(res => {
+    //       this.newRole = res.data.allRole;
+    //   })
+    // },
     getEnablePermission() {
       let param = {
         operator: this.$Cookies.get('userCode')
@@ -439,7 +545,10 @@ export default {
     selectChange(selectValue) {
       // console.log(selectValue);
       this.userInfo.companyCode = selectValue.id;
+
+      this.$forceUpdate();
     },
+
     saveUserInfo(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {

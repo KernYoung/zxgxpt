@@ -10,6 +10,7 @@
                         <slot></slot>
                       </span>
                       <span v-if="isBlack" style="color:white;background-color: #c1c1c1;padding: 3px;">黑名单</span>
+                      <span v-if="isGrey" style="color:white;background-color: #c1c1c1;padding: 3px;">灰名单</span>
 					          </div>
                     <div class="table-wrapper">
                         <table border="1">
@@ -109,7 +110,8 @@ export default {
         return {
             basicInfo: {},
             main: 'userMap',
-            isBlack:false  // 判断当前企业是不是在黑名单列表中
+            isBlack:false,  // 判断当前企业是不是在黑名单列表中
+            isGrey:false
         }
     },
     created () {
@@ -117,6 +119,7 @@ export default {
 		   this.getBaseInfo()
 	   }
 	   this.getIsBlack()
+      this.getIsGrey()
     },
 	methods:{
 		getBaseInfo(){
@@ -139,11 +142,29 @@ export default {
       let param = {
         "userCode": sessionStorage.getItem('userCode'),
         "code": this.$route.query.creditCode,
+        "id": this.$route.query.id,
         "pid":this.$route.query.pid,
       }
       this.$ajax.manage.getIsBlack(param).then(res => {
         if (res.data.code == 0) {
             this.isBlack = res.data.isBlack
+        }
+      })
+
+    },
+    /**
+     *  判断当前企业是不是在黑名单列表中
+     */
+    getIsGrey(){
+      let param = {
+        "userCode": sessionStorage.getItem('userCode'),
+        "code": this.$route.query.creditCode,
+        "id": this.$route.query.id,
+        "pid":this.$route.query.pid,
+      }
+      this.$ajax.manage.getIsGrey(param).then(res => {
+        if (res.data.code == 0) {
+          this.isGrey = res.data.isGrey
         }
       })
 

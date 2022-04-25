@@ -14,7 +14,7 @@
 							 v-model="searchVal"
 							 :fetch-suggestions="querySearch"
 							 placeholder="请输入搜索内容"
-			  style="width: 300px;margin-left: 100px;">
+			  style="width: 250px;margin-left: 55px;">
 				<el-button slot="append" icon="el-icon-search" @click="searchData"></el-button>
         <el-button slot="append"  icon="iconfont el-icon-mhcxdiqiu"  @click="searchBlarSearch" ></el-button>
 			</el-autocomplete>
@@ -34,6 +34,8 @@
               <el-dropdown-item command="7">资本成分穿透</el-dropdown-item>
               <el-dropdown-item command="8">企业画像</el-dropdown-item>
               <el-dropdown-item command="9">数据导出</el-dropdown-item>
+              <el-dropdown-item command="10">高级搜索</el-dropdown-item>
+<!--              <el-dropdown-item command="11">监控管理</el-dropdown-item>-->
             </el-dropdown-menu>
           </el-dropdown>
 			<el-dropdown style="margin-right:20px" @command="handleCommand">
@@ -47,11 +49,18 @@
 					<el-dropdown-item command="4" v-if="zxbReportApply">信保报告申请</el-dropdown-item>
 					<el-dropdown-item command="7" v-if="zxbReportlist">信保报告列表</el-dropdown-item>
 					<el-dropdown-item command="10" v-if="zxbreportAudit">信保报告审核</el-dropdown-item>
+<!--          <el-dropdown-item command="13" v-if="true">信保信息</el-dropdown-item>-->
+					<!-- jina-->
+					<el-dropdown-item command="12" v-if="zxbReportlist">我的信保报告</el-dropdown-item>
+          <el-dropdown-item command="14" v-if="$Cookies.get('username')=='admin'">信保代码维护</el-dropdown-item>
 					<el-dropdown-item command="5" v-if="userManage||sub_manage">用户管理</el-dropdown-item>
           <el-dropdown-item command="11" v-if="$Cookies.get('username')=='admin'">角色管理</el-dropdown-item>
 					<el-dropdown-item command="6" v-if="newsAll">消息中心</el-dropdown-item>
-          <el-dropdown-item command="8" v-if="this.$Cookies.get('username')=='admin'">访问日志</el-dropdown-item>
+          <el-dropdown-item command="8" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">访问日志</el-dropdown-item>
           <el-dropdown-item command="9" v-if="this.$Cookies.get('username')=='admin'">组织架构维护</el-dropdown-item>
+          <el-dropdown-item command="15" v-if="$Cookies.get('username')=='admin'">点数填报</el-dropdown-item>
+          <el-dropdown-item command="16" v-if="$Cookies.get('username')=='admin'">下发Token管理</el-dropdown-item>
+          <el-dropdown-item command="17" v-if="$Cookies.get('username')=='admin'">下发接口次数限制</el-dropdown-item>
 				</el-dropdown-menu>
 			</el-dropdown>
 			<el-button type="success" round v-if="showLargeBtn&&$route.path=='/essInfo'" @click="larger" class="el-icon-full-screen"> 全屏</el-button>
@@ -79,30 +88,54 @@
 			</div>
 		</el-dialog>
 
-		<el-dialog title="账号设置" :visible.sync="userSettingDialog" width="450px">
-			<el-form :model="userSettingForm">
-				<el-form-item label="用户名：" label-width="100px">
-					<el-input v-model="userSettingForm.username" disabled style="width:250px"></el-input>
-				</el-form-item>
-				<el-form-item label="姓名：" label-width="100px">
-					<el-input v-model="userSettingForm.name" style="width:250px"></el-input>
-				</el-form-item>
-				<el-form-item label="密码：" label-width="100px">
-					<el-input v-model="userSettingForm.password" style="width:250px" type="password">
-					</el-input>
-				</el-form-item>
-				<el-form-item label="手机：" label-width="100px">
-					<el-input v-model="userSettingForm.mobile" style="width:250px"></el-input>
-				</el-form-item>
-				<el-form-item label="邮箱：" label-width="100px">
-					<el-input v-model="userSettingForm.email" style="width:250px"></el-input>
-				</el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click="userSettingDialog = false">取 消</el-button>
-				<el-button type="primary" @click="saveUserInfo">保 存</el-button>
-			</div>
-		</el-dialog>
+    <el-dialog title="账号设置" :visible.sync="userSettingDialog" width="450px" :rules="rules">
+      <el-form :model="userSettingForm" :rules="rules" ref="userSettingForm">
+        <el-form-item label="用户名：" label-width="100px">
+          <el-input v-model="userSettingForm.username" disabled style="width:250px"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名：" label-width="100px">
+          <el-input v-model="userSettingForm.name" style="width:250px"></el-input>
+        </el-form-item>
+        <el-form-item label="密码：" label-width="100px" prop="password">
+          <el-input v-model="userSettingForm.password" style="width:250px" type="password">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="手机：" label-width="100px" prop="mobile">
+          <el-input v-model="userSettingForm.mobile" style="width:250px"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱：" label-width="100px">
+          <el-input v-model="userSettingForm.email" style="width:250px"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="userSettingDialog = false">取 消</el-button>
+        <el-button type="primary" @click="saveUserInfo('userSettingForm')">保 存</el-button>
+      </div>
+    </el-dialog>
+<!--		<el-dialog title="账号设置" :visible.sync="userSettingDialog" width="450px" :rules="rules">-->
+<!--			<el-form :model="userSettingForm" :rules="rules" ref="userSettingForm">-->
+<!--				<el-form-item label="用户名：" label-width="100px">-->
+<!--					<el-input v-model="userSettingForm.username" disabled style="width:250px"></el-input>-->
+<!--				</el-form-item>-->
+<!--				<el-form-item label="姓名：" label-width="100px">-->
+<!--					<el-input v-model="userSettingForm.name" style="width:250px"></el-input>-->
+<!--				</el-form-item>-->
+<!--				<el-form-item label="密码：" label-width="100px">-->
+<!--					<el-input v-model="userSettingForm.password" style="width:250px" type="password">-->
+<!--					</el-input>-->
+<!--				</el-form-item>-->
+<!--				<el-form-item label="手机：" label-width="100px">-->
+<!--					<el-input v-model="userSettingForm.mobile" style="width:250px"></el-input>-->
+<!--				</el-form-item>-->
+<!--				<el-form-item label="邮箱：" label-width="100px">-->
+<!--					<el-input v-model="userSettingForm.email" style="width:250px"></el-input>-->
+<!--				</el-form-item>-->
+<!--			</el-form>-->
+<!--			<div slot="footer" class="dialog-footer">-->
+<!--				<el-button @click="userSettingDialog = false">取 消</el-button>-->
+<!--				<el-button type="primary" @click="saveUserInfo('userSettingForm')">保 存</el-button>-->
+<!--			</div>-->
+<!--		</el-dialog>-->
 
 		<ZxbReportApply :dialogXBVisible.sync="dialogXBVisible"></ZxbReportApply>
 	</div>
@@ -116,6 +149,30 @@
       ZxbReportApply,
     },
     data() {
+      var validateMobile = (rule, value, callback) => {
+        let TEL_REGEXP = /^[1][3,4,5,7,8,9][0-9]{9}$/;
+        if (value === ""||typeof value=='undefined') {
+          callback();
+        } else if (value && !TEL_REGEXP.test(value)) {
+          callback(new Error("请输入正确的手机号!"));
+        } else {
+          callback();
+        }
+      };
+      var validatePassword = (rule, value, callback) => {
+        let modes = 0;
+        if (value.length < 8) callback(new Error("密码长度不小于8位,需由数字、字母、字符中的两种组成。"));
+        if (/\d/.test(value)) modes++; //数字
+        if ((/[a-z]/.test(value)) || (/[A-Z]/.test(value)) )modes++; //字母
+        // if (/[A-Z]/.test(value)) modes++; //大写
+        if (/\W/.test(value)) modes++; //特殊字符
+
+        if (value && modes < 2) {
+          callback(new Error("密码长度不小于8位,需由数字、字母、字符中的两种组成。"));
+        }else {
+          callback();
+        }
+      };
       return {
         dialogVisible: false,
         form: {
@@ -145,7 +202,17 @@
         dialogXBVisible: false,
         searchVal: '',
         latestSearchList: [],
-        showLargeBtn: false
+        showLargeBtn: false,
+        rules: {
+          mobile: [
+            {  validator: validateMobile, trigger: 'blur' },
+          ],
+          password: [
+            { required: true, message: '请输入密码', trigger: 'change' },
+            //新增密码复杂度校验(Kern on 20210615)
+            { validator: validatePassword, trigger: 'blur' }
+          ],
+        },
       }
     },
     created() {
@@ -288,19 +355,24 @@
         }else if(command == 9){
           //数据导出
           this.goToTycPage("数据导出","/tools/export-company-list");
+        }else if(command == 10){
+          //高级搜索
+          this.goToTycPage("高级搜索","/searchx");
+        }else if(command == 11){
+          //监控管理
+          this.goToTycPage("监控管理","/std/monitor/event");
         }
-
 
       },
       handleCommand(command) {
         if (command == 1) {
           //黑名单申报
          // this.goHmdsb()
-          this.$router.push({ path: '/BlackListDeclaration' })
+         this.$router.push({ path: '/BlackListDeclaration' })
         } else if (command == 2) {
           //黑名单审批
-          //this.goHmdsp()
-          this.$router.push({ path: '/BlacklistApproval' })
+         // this.goHmdsp()
+         this.$router.push({ path: '/BlacklistApproval' })
         } else if (command == 3) {
           //客商初筛
          // this.goKstb()
@@ -320,7 +392,10 @@
           }
         } else if (command == 6) {
           this.$router.push({
-            path: '/messageCenter'
+            path: '/messageCenter',
+            query: {
+              activeName: 'first'
+            }
           })
         } else if (command == 7) {
           this.$router.push({path: '/zxbReportList'})
@@ -332,6 +407,18 @@
           this.$router.push({path: '/ZxbApplyList'})
         }else if(command == 11){
           this.$router.push({ path: '/RoleManage' })
+        }else if(command == 12){
+          this.$router.push({ path: '/zxbApplyProgressList' })
+        }else if(command == 13){
+          this.$router.push({ path: '/zxbMessageList'})
+        }else if (command == 14){
+          this.goCreditCodeMaintenance()
+        }else if(command == 15){
+          this.$router.push({ path: '/tycPointsDistribute'})
+        }else if(command == 16){
+          this.$router.push({ path: '/TokenManage'})
+        }else if(command == 17){
+          this.$router.push({ path: '/InterfaceUsedLimit'})
         }
       },
       goHmdsb() {
@@ -381,6 +468,15 @@
           }
         })
         this.reload()
+      },
+      goCreditCodeMaintenance (){
+        this.$router.push({
+          path: '/iframePage',
+          query: {
+            title: encodeURIComponent('信保代码维护'),
+            url: encodeURIComponent(`${process.env.VUE_APP_FR_URL}/webroot/decision/view/form?viewlet=/Homepage/INPUT_HR_ZXB_CLINETNO.cpt&op=write&userCode=${sessionStorage.getItem('userCode')}`)
+          }
+        })
       },
       goOrgEdit() {
         this.$router.push({
@@ -526,23 +622,46 @@
           }
         })
       },
-      saveUserInfo() {
-        let param = {
-          userId: this.$Cookies.get("userId"),
-          username: this.$Cookies.get("userCode"),
-          name: this.userSettingForm.name,
-          password: this.userSettingForm.password,
-          email: this.userSettingForm.email,
-          mobile: this.userSettingForm.mobile
-        }
-        this.$ajax.manage.updateUser(param).then(res => {
-          console.log(res);
-          if (res.data.code == 0) {
-            this.$message.success(res.data.msg);
-            this.userSettingDialog = false
+      saveUserInfo (formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            let param = {
+              userId: this.$Cookies.get("userId"),
+              username: this.$Cookies.get("userCode"),
+              name: this.userSettingForm.name,
+              password: this.userSettingForm.password,
+              email: this.userSettingForm.email,
+              mobile: this.userSettingForm.mobile
+            }
+            this.$ajax.manage.updateUser(param).then(res => {
+              console.log(res);
+              if (res.data.code == 0) {
+                this.$message.success(res.data.msg);
+                this.userSettingDialog = false
+              }
+            })
+          } else {
+            return false;
           }
-        })
+        });
       },
+      // saveUserInfo() {
+      //   let param = {
+      //     userId: this.$Cookies.get("userId"),
+      //     username: this.$Cookies.get("userCode"),
+      //     name: this.userSettingForm.name,
+      //     password: this.userSettingForm.password,
+      //     email: this.userSettingForm.email,
+      //     mobile: this.userSettingForm.mobile
+      //   }
+      //   this.$ajax.manage.updateUser(param).then(res => {
+      //     console.log(res);
+      //     if (res.data.code == 0) {
+      //       this.$message.success(res.data.msg);
+      //       this.userSettingDialog = false
+      //     }
+      //   })
+      // },
       clearUserForm() {
         this.userSettingForm = {
           // username: this.$Cookies.get('username'),

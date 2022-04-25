@@ -21,6 +21,7 @@
 		            <p>社会统一信用代码：{{item.creditCode}}</p>
 		            <p>法人代表：{{item.operName}}</p>
 		            <p>成立时间：{{item.buildDate}}</p>
+                <p>关联代码：{{item.id}}</p>
 		          </div>
 		          <dl class="fl-right proList_btn">
 		            <el-button plain type="primary" size="medium" @click="moreNews(item,'0')">企业基本信息
@@ -145,12 +146,12 @@
         for(let i = 0; i < searchList.length; i++){
           searchList[i].isBlack = false;
           for(let j = 0; j < blackList.length; j++){
-            if(blackList[j].code == searchList[i].creditCode){
+            if(blackList[j].orgNo == searchList[i].creditCode){
               searchList[i].isBlack = true;
             }
           }
         }
-        console.log(searchList)
+        console.log("searchList:" + searchList)
       },
       getBlackList () {
         let param = {
@@ -195,23 +196,23 @@
 		      }
 		    }
 		  }
-		
+
 		  .leftBox {
 		    margin-right: 30px;
 		    width: 500px;
 		    vertical-align: top;
 		  }
-		
+
 		  .rightBox {
 		    width: 500px;
 		    vertical-align: top;
 		  }
-		
+
 		  .title {
 		    margin-bottom: 10px;
 		    font-size: 16px;
 		    font-weight: bold;
-		
+
 		    .icon {
 		      display: inline-block;
 		      width: 5px;
@@ -220,12 +221,12 @@
 		      vertical-align: middle;
 		      margin-right: 5px;
 		    }
-		
+
 		    .text {
 		      font-size: 12px;
 		      color: #999;
 		      float: right;
-		
+
 		      .postLink {
 		        color: #1b7fbd;
 		        text-decoration-line: underline;
@@ -234,27 +235,27 @@
 		      }
 		    }
 		  }
-		
+
 		  .main {
 		    .proList_li {
 		      li {
 		        padding: 10px;
 		        border-bottom: 1px solid #d3d3d3;
 		      }
-		
+
 		      .clear {
 		        font-size: 12px;
 		        color: #666;
 		        display: flex;
 		        justify-content: space-between;
 		        border-bottom: 1px solid #e3e3e3;
-		
+
 		        .pro_content_right {
 		          display: flex;
 		          align-items: center;
 		        }
 		      }
-		
+
 		      .proList_txt {
 		        font-weight: 600;
 		        margin-bottom: 5px;
@@ -262,7 +263,7 @@
 		        font-size: 14px;
 		        cursor: pointer;
 		      }
-		
+
 		      .proList_btn {
 		        display: flex;
 		        align-items: center;

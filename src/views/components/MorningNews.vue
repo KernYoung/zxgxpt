@@ -35,11 +35,17 @@
       <el-button style="margin-left:10px;" type="primary" icon="el-icon-search" @click="searchData(1)">查询</el-button>
     </el-row>
     <div style="margin: 10px 0;">
-      <span style="font-size: 13px;color: #1fade5;font-weight: bold">注：部分第三方网站由于安全策略或终端不同（如微信公众号）无法直接跳转访问，请复制链接后查看；部分第三方网站由于网站本身问题可能存在过期或封停，请见谅。</span>
-      <span style="float: right; font-size: 12px;">更新时间: 8.30 AM</span>
+      <!-- <span style="font-size: 13px;color: #1fade5;font-weight: bold">注：部分第三方网站由于安全策略或终端不同（如微信公众号）无法直接跳转访问，请复制链接后查看；部分第三方网站由于网站本身问题可能存在过期或封停，请见谅。</span> -->
+      <span style="font-size: 13px;color: #1fade5;font-weight: bold">注：部分第三方网站由于网站本身问题可能存在过期或封停导致无法查看，请见谅。</span>
+	  <span style="float: right; font-size: 12px;">更新时间: 8.30 AM</span>
       <span style="float: right; font-size: 12px;margin-right: 30px;">数据来源：中诚信</span>
     </div>
-
+    <div v-if="loading"  style="width: 100px;height: 100px;margin-left: 700px;">
+          <i class="el-icon-loading" style="font-size: 40px;"></i>
+        </div>
+    		  <div
+    		  v-else
+    		  >
     <div style="margin: 10px 0;clear: both;">
       <el-table
           :data="tableData">
@@ -56,11 +62,20 @@
         <el-table-column
             prop="levelType"
             label="风险等级">
+			<template scope="scope">
+			        <span v-if="scope.row.levelType=='警示'" style="color:#FD97AC">警示</span>
+			        <span v-else-if="scope.row.levelType=='重大'" style="color:#F8B263">重大</span>
+					<span v-else style="color:#0060F3 ">一般</span>
+			    </template>
         </el-table-column>
         <el-table-column
             prop="description"
-            label="新闻情感"
-        >
+            label="新闻情感">
+			<template scope="scope">
+			        <span v-if="scope.row.description=='积极'" style="color:#339966">积极</span>
+			        <span v-else-if="scope.row.description=='消极'" style="color:#0060F3">消极</span>
+					<span v-else style="color:#FEC83A">中立</span>
+			    </template>
         </el-table-column>
         <el-table-column
             prop="newsType"
@@ -94,7 +109,7 @@
         </el-table-column>
       </el-table>
     </div>
-
+   </div>
     <div style="text-align: center;margin-top: 10px;">
       <el-pagination background layout="prev, pager, next,total,jumper" :total="page.total"
                      :current-page.sync="page.currentPage" :pageSize="page.pageSize" @current-change="handleCurrentChange">
@@ -107,6 +122,7 @@
 export default {
   data(){
     return{
+	  loading:false,
 	  isIndeterminate: false,
 	  isIndeterminate1: false,
 	  isIndeterminate2: false,
@@ -141,9 +157,18 @@ export default {
 	      let d = new Date
 	      let year1,month1,day1;
 	      [year1,month1,day1] = [d.getFullYear(),d.getMonth(),d.getDate()]
-	      let date1 = new Date(year1, month1, day1,7)
+        // let date1 = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+	      // let date1 = new Date(year1, month1, day1,7)
+    let date1 = this.formatDate(d, 'yyyy-MM-dd');
 	      this.search.startDate = date1
 		  this.search.endDate = date1
+    if(this.$route.query.careBy == 'zcxOnly' || this.$route.query.careBy == 'both'){
+      this.search.companyName = [this.$route.query.companyName]
+      this.searchData(1)
+    }
+    // if(this.$route.query.companyName != null){
+    //   this.search.companyName = [this.$route.query.companyName]
+    // }
   },
   mounted() {
   	
@@ -160,7 +185,32 @@ export default {
 		  }
       },
   methods:{
+    formatDate(date, fmt) {
+      if (/(y+)/.test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
+      }
+      let o = {
+        'M+': date.getMonth() + 1,
+        'd+': date.getDate(),
+        'h+': date.getHours(),
+        'm+': date.getMinutes(),
+        's+': date.getSeconds()
+      }
+      for (let k in o) {
+        if (new RegExp(`(${k})`).test(fmt)) {
+          let str = o[k] + ''
+          fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : this.padLeftZero(str))
+        }
+      }
+      return fmt
+    },
+
+    padLeftZero(str) {
+      return ('00' + str).substr(str.length)
+    },
     searchData(page){
+	  this.loading = true;
+	  this.page.currentPage = page
       this.changeRiskLeve(this.search.riskleve);
       let param = {
         pageIndex: page ? page : 1,
@@ -184,6 +234,7 @@ export default {
           this.$message.success(res.data.msg);
         }
       })
+	  this.loading =false;
     },
     handleCurrentChange(val){
       this.searchData(val);

@@ -82,6 +82,8 @@
                 </el-table-column>
                 <el-table-column prop="approveDate" :formatter="dateFormat" show-overflow-tooltip label="审核时间">
                 </el-table-column>
+              <el-table-column prop="speed" show-overflow-tooltip label="紧急度">
+              </el-table-column>
                 <el-table-column align="center" width="250px" label="操作">
                     <template slot-scope="scope">
                         <el-button size="mini" type="primary" :disabled="scope.row.approveby" @click="audit(scope.row,1)" plain>
@@ -104,7 +106,6 @@
 <script>
     import JsonView from "../components/jsonView";
     import moment from 'moment'
-
     export default {
         name: "zxbReportList",
         components: {
@@ -184,9 +185,16 @@
                     approve: parseInt(this.$Cookies.get('userId')),
                     approveCode: code
                 }
+              this.loading = true;
                 this.$ajax.manage.zhongxinbaoApprove(param).then(res => {
+                  this.loading = false;
                     if (res.status == 200) {
+                      if(res.data.returnCode == 0){
                         this.$message.success(res.data.returnMsg);
+                      }else{
+                        this.$message.error(res.data.returnMsg);
+                      }
+
                         this.dialogXBVisible = false
                     }
                     this.getData(this.page.currentPage)

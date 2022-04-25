@@ -14,7 +14,7 @@ function redirectAjax (url, param) {
  * 获取一个新的自定义的axios实例
  */
 let ajax = new axios.create({
-    timeout: 600000,
+   timeout: 600000,
     //设置Content-Type
     headers: {
         'content-type': 'application/json',
@@ -49,6 +49,7 @@ ajax.interceptors.response.use(
         }
         if(response && response.data && (response.data.code == 49998 || response.data.code == 49999 || response.data.code == 50000)){
             param.tokenIsOut = true;
+
             router.push({
                 path: '/',
                 query: param
@@ -68,6 +69,7 @@ ajax.interceptors.response.use(
         }
         // 在接收响应做些什么，例如跳转到登录页
         if (response && response.data && response.data.code == 401) {
+
             router.push({
                 path: '/',
                 query: param
@@ -117,6 +119,7 @@ fileAjax.interceptors.response.use(
     function (response) {
         // 在接收响应做些什么，例如跳转到登录页
         if (response && response.data && response.data.code == 401) {
+
             router.push({
                 path: '/'
             })
@@ -165,6 +168,7 @@ upLoadFile.interceptors.response.use(
     function (response) {
         // 在接收响应做些什么，例如跳转到登录页
         if (response && response.data && response.data.code == 401) {
+
             router.push({
                 path: '/'
             })
@@ -207,6 +211,7 @@ newAjax.interceptors.response.use(
     function (response) {
         // 在接收响应做些什么，例如跳转到登录页
         if (response && response.data && response.data.code == 401) {
+
             router.push({
                 path: '/'
             })
@@ -218,5 +223,4 @@ newAjax.interceptors.response.use(
         return Promise.reject(error)
     }
 )
-
-export { ajax, redirectAjax, fileAjax,upLoadFile ,newAjax,}
+export { ajax, redirectAjax, fileAjax,upLoadFile ,newAjax}

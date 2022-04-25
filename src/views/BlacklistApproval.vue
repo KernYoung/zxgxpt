@@ -1,5 +1,5 @@
 <!-- 黑名单审批 -->
-<template>
+ <template>
   <div class="blacklistApproval">
     <div style="margin-bottom: 15px;">
       <el-breadcrumb separator-class="el-icon-arrow-right">
@@ -275,6 +275,7 @@ export default {
     },
     closeDialog() {
       this.editBlackDialog = false
+	   /* this.$refs['blackInfo'].clearValidate(); */
     },
     closeRenewalCancellationDialog(){
       this.editRenewalCancellationDialog = false
@@ -400,6 +401,7 @@ export default {
       });
     },
     searchData(page){
+	  this.page.currentPage = page
       let param = {
         pageIndex: page ? page : 1,
         pageSize: this.page.pageSize,

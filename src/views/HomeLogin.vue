@@ -37,6 +37,31 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="账号设置" :visible.sync="userSettingDialog" width="450px" :rules="rules">
+      <el-form :model="userSettingForm" :rules="rules" ref="userSettingForm">
+        <el-form-item label="用户名：" label-width="100px">
+          <el-input v-model="userSettingForm.username" disabled style="width:250px"></el-input>
+        </el-form-item>
+        <el-form-item label="姓名：" label-width="100px">
+          <el-input v-model="userSettingForm.name" style="width:250px"></el-input>
+        </el-form-item>
+        <el-form-item label="密码：" label-width="100px" prop="password">
+          <el-input v-model="userSettingForm.password" style="width:250px" type="password">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="手机：" label-width="100px" prop="mobile">
+          <el-input v-model="userSettingForm.mobile" style="width:250px"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱：" label-width="100px">
+          <el-input v-model="userSettingForm.email" style="width:250px"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="userSettingDialog = false">取 消</el-button>
+        <el-button type="primary" @click="saveUserInfo('userSettingForm')">保 存</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -44,7 +69,50 @@
 export default {
   //inject: ['reload'],
   data () {
+    var validateMobile = (rule, value, callback) => {
+      let TEL_REGEXP = /^[1][3,4,5,7,8,9][0-9]{9}$/;
+      if (value === ""||typeof value=='undefined') {
+        callback();
+      } else if (value && !TEL_REGEXP.test(value)) {
+        callback(new Error("请输入正确的手机号!"));
+      } else {
+        callback();
+      }
+    };
+    var validatePassword = (rule, value, callback) => {
+      let modes = 0;
+      if (value.length < 8) callback(new Error("密码长度不小于8位,需由数字、字母、字符中的两种组成。"));
+      if (/\d/.test(value)) modes++; //数字
+      if ((/[a-z]/.test(value)) || (/[A-Z]/.test(value)) )modes++; //字母
+      // if (/[A-Z]/.test(value)) modes++; //大写
+      if (/\W/.test(value)) modes++; //特殊字符
+
+      if (value && modes < 2) {
+        callback(new Error("密码长度不小于8位,需由数字、字母、字符中的两种组成。"));
+      }else {
+        callback();
+      }
+    };
     return {
+      userSettingDialog: false,
+      userSettingForm: {
+        // username: this.$Cookies.get('username'),
+        username: this.$Cookies.get('userCode'),
+        name: '',
+        password: '',
+        email: '',
+        mobile: ''
+      },
+      rules: {
+        mobile: [
+          {  validator: validateMobile, trigger: 'blur' },
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'change' },
+          //新增密码复杂度校验(Kern on 20210615)
+          { validator: validatePassword, trigger: 'blur' }
+        ],
+      },
       searchVal: '',
       dialogVisible: false,
       form: {
@@ -101,12 +169,30 @@ export default {
           this.$Cookies.set('userId', res.data.userId, { expires: 30 });
           this.$Cookies.set('companyCode', res.data.companyCode, { expires: 30 })
           this.$Cookies.set('companyName', res.data.companyName, { expires: 30 })
+          this.$Cookies.set('permissionRoles', res.data.permissionRoles, { expires: 30 });
           sessionStorage.setItem('username', res.data.name);
           sessionStorage.setItem('userCode', res.data.username);
           sessionStorage.setItem('userId', res.data.userId);
           this.dialogVisible = false;
           this.loginUserName = res.data.name;
-          this.$router.push({ path: '/homePage' });
+
+
+
+
+          if(res.data.isOverdue == '1'){
+            this.$message.warning("密码过期！请及时修改。");
+            this.$router.push({
+              path: '/homePage',
+              //根据params：{参数} 来进行传值
+              query :{
+                row: 1
+              }
+            });
+            // this.$router.push({ path: '/homePage' , query: 1});
+          }else{
+            this.$router.push({ path: '/homePage'  });
+          }
+
         } else {
           this.$message.error(res.data.msg)
         }
@@ -126,6 +212,7 @@ export default {
           this.$Cookies.set('userId', res.data.userId, { expires: 30 });
           this.$Cookies.set('companyCode', res.data.companyCode, { expires: 30 })
           this.$Cookies.set('companyName', res.data.companyName, { expires: 30 })
+          this.$Cookies.set('permissionRoles', res.data.permissionRoles, { expires: 30 });
           sessionStorage.setItem('username', res.data.name);
           sessionStorage.setItem('userCode', res.data.username);
           sessionStorage.setItem('userId', res.data.userId);
@@ -133,8 +220,62 @@ export default {
           this.$router.push({ path: '/homePage' });
         } else {
           this.$message.error(res.data.msg)
+          this.$router.push({ path: '/' });
         }
       })
+    },
+    showUserInfo() {
+      //维护用户基本信息弹框
+      this.userSettingDialog = true;
+      this.getUserInfo()
+    },
+    getUserInfo() {
+      //获取用户信息
+      let param = {
+        userId: this.$Cookies.get("userId")
+      };
+      this.$ajax.manage.getUserInfo(param).then(res => {
+        console.log(res);
+        if (res.status == 200) {
+          this.userSettingForm.name = res.data.user.name;
+          this.userSettingForm.password = res.data.user.password;
+          this.userSettingForm.email = res.data.user.email;
+          this.userSettingForm.mobile = res.data.user.mobile;
+        }
+      })
+    },
+    saveUserInfo (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let param = {
+            userId: this.$Cookies.get("userId"),
+            username: this.$Cookies.get("userCode"),
+            name: this.userSettingForm.name,
+            password: this.userSettingForm.password,
+            email: this.userSettingForm.email,
+            mobile: this.userSettingForm.mobile
+          }
+          this.$ajax.manage.updateUser(param).then(res => {
+            console.log(res);
+            if (res.data.code == 0) {
+              this.$message.success(res.data.msg);
+              this.userSettingDialog = false
+            }
+          })
+        } else {
+          return false;
+        }
+      });
+    },
+    clearUserForm() {
+      this.userSettingForm = {
+        // username: this.$Cookies.get('username'),
+        username: this.$Cookies.get('userCode'),
+        name: '',
+        password: '',
+        email: '',
+        mobile: ''
+      }
     },
     blarSearch () {
       //未登录=>去登陆

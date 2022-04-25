@@ -159,6 +159,7 @@
 				htmlContent: '',
 				loading: false,
 				fileName: '',
+        existFlag: true
 			}
 		},
 		watch: {
@@ -177,6 +178,7 @@
 		},
 		created () {
 		  this.getIndustry();
+      this.reportExist();
 		},
 		methods:{
 			nextStep () {
@@ -194,6 +196,13 @@
 			      this.$message.warning('请选择是否是头部企业');
 			      return;
 			    }
+
+			    //提前判断是否有报告 Kern on 20220424
+          if(!this.existFlag){
+            this.$msgbox.alert("非常抱歉，第三方接口内无财报数据，无法生成对应报告！");
+            return;
+          }
+
 			  } else if (this.active == 1) {
 			    this.getRegionRatingHtml();
 			  }
@@ -255,6 +264,18 @@
 			  }
 			  this.professionDetail = this.professionDetailOptions[0];
 			},
+    reportExist() {
+      this.existFlag = true;
+        let param = {
+          creditCode: this.$route.query.creditCode,
+          reportType: this.$route.query.reportType
+        }
+        this.$ajax.manage.reportExist(param).then(res => {
+          if (res.status == 200) {
+            this.existFlag = res.data.existFlag;
+          }
+        })
+      },
 			getRegionRatingHtml () {
 			  let param = {
 			    ver: "1.0",

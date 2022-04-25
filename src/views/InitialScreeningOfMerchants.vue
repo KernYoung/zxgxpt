@@ -38,19 +38,21 @@
           <span>填 报 说 明：</span>
           <pre>
           1.若您的上传客商记录数较少，建议直接在本页面逐条填写客商信息，若客商记录数较多，建议EXCEL导入上传客商信息。
-          2.若您是首次使用本功能，请点击右侧下载按钮下载客商导入模板，EXCEL维护完成后点击工具栏中的"EXCEL"导入即可导入数据，提交后点击按钮查看结果。
-             导入模板下载
+          2.若您是首次使用本功能，请点击右侧下载按钮下载客商导入模板，EXCEL维护完成后点击工具栏中的"EXCEL"导入即可导入数据，提交后点击按钮查看结果。          
           3.学院等社会组织类型的非工商性质企业，暂不支持工商信息获取。
+          4.本页面导入上限为1000条，超过上限可能导致页面崩溃，若客商数量较多，请使用门户下发接口——工商信息。
           </pre>
         </div>
     </div>
+	 <div v-if="loading1"  style="width: 100px;height: 100px;margin-left: 700px;">
+	      <i class="el-icon-loading" style="font-size: 40px;"></i>
+	    </div>
+		<div v-else> 
+	<div v-if="loading"  style="width: 100px;height: 100px;margin-left: 700px;">
+	      <i class="el-icon-loading" style="font-size: 40px;"></i>
+	    </div>		
+	<div v-else>
     <el-form :model="initialScreeningOfMerchantsForm" ref="initialScreeningOfMerchantsForm" :rules="rules" >
-		<div v-if="loading"  style="width: 100px;height: 100px;margin-left: 700px;">
-		      <i class="el-icon-loading" style="font-size: 40px;"></i>
-		    </div>
-				  <div
-				  v-else
-				  >
       <el-table
           :data="initialScreeningOfMerchantsForm.tableData"
           style="width: 100%;text-align: center" border="true" :header-cell-style="headClass">
@@ -153,8 +155,9 @@
           </template>
         </el-table-column>
       </el-table>
-	  </div>
     </el-form>
+	  </div>
+	  </div>
 	</div>
   </div>
 </template>
@@ -166,7 +169,8 @@ export default {
 
   data(){
     return{	
-		loading:false,
+	  loading:false,
+	  loading1:false, 
       SerialNumber:'',
       limitUpload:1, // 限制只能上传1个文件
       fileTemp:null,
@@ -265,7 +269,7 @@ export default {
       }
     },
     saveInfo(formName){
-		this.loading = true
+		 this.loading1 = true;
       this.$refs[formName].validate((valid) => {
         if(valid){
           let param = {
@@ -289,13 +293,15 @@ export default {
                 companyType:'', // 公司类型
               }];
             }
-           
+            this.loading1 = false
+			 this.getSerialNumber();
           })
+
         }else{
+          this.loading1 = false;
           return false;
         }
       });
-	   this.loading = false
     },
     goToResultsView(){
       this.$router.push({
@@ -329,14 +335,14 @@ export default {
       })
     },
     handleChange(file, fileList){
-	 this.loading = true
+	  this.loading = true;
+	  this.loading1 = false;  
       this.$refs.uploadExcel.clearFiles();
       this.fileTemp = file.raw
       if(this.fileTemp){
         if(this.fileTemp.name.endsWith(".xlsx")){
 		  
           this.importKS(this.fileTemp)
-		  
         }else{
           this.$message({
             type:'warning',
@@ -349,8 +355,7 @@ export default {
           type:'warning',
           message:'请上传附件！'
         })
-      }
-	 this.loading = false   
+      }  
     },
     importKS(obj){
       let _this = this;
@@ -398,16 +403,18 @@ export default {
             arr.push(obj)
           })
           _this.initialScreeningOfMerchantsForm.tableData = arr;
+		  _this.loading = false;
+		 console.log("loading=========="+this.loading)
+		  this.loading1 = !this.loading1; 
         }
         reader.readAsArrayBuffer(f);
       }
-
+      
       if(rABS) {
         reader.readAsArrayBuffer(f);
       } else {
         reader.readAsBinaryString(f);
       }
-	
     }
   }
 }
