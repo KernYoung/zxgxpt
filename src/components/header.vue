@@ -458,6 +458,7 @@
         this.reload()
       },
       goLog() {
+        debugger;
         this.$router.push({
           path: '/iframePage',
           query: {
@@ -467,6 +468,7 @@
             )
           }
         })
+        debugger;
         this.reload()
       },
       goCreditCodeMaintenance (){

@@ -142,7 +142,7 @@
               <el-tooltip class="item" effect="light" placement="top">
                 <i class="el-icon-question smartTip"></i>
                 <div style="width: 200px;" slot="content">
-                  已处置完的历史风险资产对应的历史交易对手。
+                  存在历史交易且对手违约导致形成一定金额以下历史风险资产的交易对手。
                 </div>
               </el-tooltip>
               <span class="response" v-show="sortCriteria != 'amount' && currentShow == 'black'" style="color:#a54f4f;float: right; cursor:pointer" @click="setSortCriteria('amount')">金额排序</span>
@@ -487,6 +487,7 @@ export default {
       })
     },
     goLog (){
+	  debugger;
       this.$router.push({
         path: '/iframePage',
         query: {
@@ -494,6 +495,7 @@ export default {
           url: encodeURIComponent(`${process.env.VUE_APP_FR_URL}/webroot/decision/view/form?viewlet=/Homepage/LOG.frm&userCode=${sessionStorage.getItem('userCode')}`)
         }
       })
+      debugger;
     },
     goCreditCodeMaintenance (){
       this.$router.push({

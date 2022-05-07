@@ -326,14 +326,12 @@ export default {
     nextStep () {
 
       if (this.active == 0) {
-        debugger;
         //提前判断是否有报告 Kern on 20220424
         if(!this.existFlag){
           this.$msgbox.alert("非常抱歉，第三方接口内无财报数据，无法生成对应报告！");
           return;
         }
       }
-
 
       if (this.active == 1) {
         if (this.form.areaLevel == '1') {

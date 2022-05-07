@@ -294,6 +294,11 @@ export default {
       this.dialogVisible = true;
     },
     toReportPage (type, reportType) {
+      if(this.$route.query.creditCode == '' || this.$route.query.creditCode == null){
+        this.$msgbox.alert("非常抱歉，此公司无统一社会信用代码，无法生成对应报告！");
+        return;
+      }
+
       let param = {
         companyId: this.$route.query.companyId,
         companyName: this.$route.query.companyName,
