@@ -167,6 +167,12 @@ const routes = [
                 name: 'InterfaceUsedLimit',
                 component: ()=> import('../views/InterfaceUsedLimit')
             },
+            {
+                path: '/ClientNoMaintain',
+                name: 'ClientNoMaintain',
+                component: ()=> import('../views/ClientNoMaintain')
+            },
+
         ]
     },
 

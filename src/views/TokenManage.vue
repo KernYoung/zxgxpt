@@ -29,8 +29,6 @@
     </div>
     <div class="table-box">
       <el-table ref="multipleTable" :data="tableData"  tooltip-effect="dark" style="width: 100%;" stripe v-loading='loading'>
-        <el-table-column type="selection" width="55">
-        </el-table-column>
         <el-table-column prop="companyName" show-overflow-tooltip min-width="25%" label="公司名称">
         </el-table-column>
         <el-table-column prop="uri" show-overflow-tooltip min-width="20%" label="URI">

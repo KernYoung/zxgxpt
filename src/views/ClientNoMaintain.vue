@@ -1,10 +1,10 @@
-<!-- 下发接口次数限制 -->
+<!-- 信保代码维护 -->
 <template>
-  <div class="InterfaceUsedLimit ">
+  <div class="ClientNoMaintain ">
     <div style="margin-bottom: 15px;">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ path: '/homePage' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>下发接口次数限制</el-breadcrumb-item>
+        <el-breadcrumb-item>信保代码维护</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="searchbox">
@@ -23,24 +23,23 @@
 
     </div>
     <div class="table-box">
-      <el-table ref="multipleTable" :data="tableData"  tooltip-effect="dark" style="width: 100%;" stripe
-        v-loading='loading'>
-        <el-table-column min-width="25%" prop="companyName" show-overflow-tooltip label="公司名称">
+      <el-table ref="multipleTable" :data="tableData"  tooltip-effect="dark" style="width: 100%;" stripe v-loading='loading'>
+        <el-table-column min-width="25%" prop="companyName" show-overflow-tooltip label="公司HR编码">
         </el-table-column>
-        <el-table-column min-width="20%" prop="interfaceName" label="接口名称">
+        <el-table-column min-width="20%" prop="interfaceName" label="公司HR名称">
         </el-table-column>
-        <el-table-column min-width="10%" prop="jsonFlag" label="接口代码">
+        <el-table-column min-width="10%" prop="jsonFlag" label="所属成员公司HR名称">
         </el-table-column>
-        <el-table-column min-width="15%" prop="limitNumber" label="每日使用上限(次)">
+        <el-table-column min-width="15%" prop="limitNumber" label="数据来源">
         </el-table-column>
-        <el-table-column min-width="15%" prop="updateDate" label="更新时间">
+        <el-table-column min-width="15%" prop="updateDate" label="信保通买方代码">
         </el-table-column>
         <el-table-column min-width="15%" align="center" width="250px" label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="primary" @click="editInterfaceLimit(scope.row)">
               编辑</el-button>
-            <el-button size="mini" type="danger" @click="deleteInterfaceLimit(scope.row)">
-              删除</el-button>
+<!--            <el-button size="mini" type="danger" @click="deleteInterfaceLimit(scope.row)">-->
+<!--              删除</el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -99,20 +98,16 @@ export default {
     return {
       search: {
         companyName: '',
-        interfaceName:'',
-        jsonFlag: ''
+        dataSource: ''
       },
       page: {
         currentPage: 1,
         total: 0,
         pageSize: 10
       },
-      companyNameList:[],//二级公司
       tableData: [],
       loading: false,
       editDialog: false,
-      isNew: false, //是否是新增
-      editType: '',
       interfaceLimitInfo: {
         id:'',
         companyName: '',
@@ -121,7 +116,6 @@ export default {
         limitNumber:'',
         editType:'',
       },
-      newCompany: [],
       node:{id:this.$Cookies.get('companyCode'),isLevel:true},
 
       rules: {
@@ -244,11 +238,10 @@ export default {
         pageIndex: page ? page : 1,
         pageSize: this.page.pageSize,
         companyName: this.search.companyName,
-        interfaceName: this.search.interfaceName,
-        jsonFlag: this.search.jsonFlag
+        dataSource: this.search.dataSource
       }
       this.loading = true;
-      this.$ajax.manage.getInterfaceLimitList(param).then(res => {
+      this.$ajax.manage.getClientNoMaintainList(param).then(res => {
         if (res.data.code == 0) {
           this.loading = false;
           this.tableData = res.data.interfaceUsedLimit
@@ -268,7 +261,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.InterfaceUsedLimit {
+.ClientNoMaintain {
   width: 95%;
   height: 100%;
   margin: auto;

@@ -563,6 +563,12 @@ async function reportExist (param) {
     return reportExist
 }
 
+//查看信保代码维护
+async function getClientNoMaintainList (param) {
+    let getClientNoMaintainList = await ajax.post(`/api/common/getClientNoMaintainList`, param)
+    return getClientNoMaintainList
+}
+
 const manage = {
     login: login,
     latestWords: latestWords,
@@ -670,6 +676,7 @@ const manage = {
     tokenPrefixValidate:tokenPrefixValidate,
     deleteInterfaceLimit:deleteInterfaceLimit,
     reportExist:reportExist,
+    getClientNoMaintainList:getClientNoMaintainList,
 }
 
 export default manage

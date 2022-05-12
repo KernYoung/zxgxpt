@@ -704,7 +704,8 @@ export default {
       }else if(command == 13){
         this.$router.push({ path: '/zxbMessageList'})
       }else if (command == 14){
-        this.goCreditCodeMaintenance()
+        this.$router.push({ path: '/ClientNoMaintain'})
+        // this.goCreditCodeMaintenance()
       }else if(command == 15){
         this.$router.push({ path: '/tycPointsDistribute'})
       }else if(command == 16){
