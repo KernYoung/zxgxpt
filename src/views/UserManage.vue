@@ -65,7 +65,9 @@
                         </el-button> -->
             <el-button size="mini" type="primary" @click="editUser(scope.row)" plain v-if="scope.row.status==1">
               编辑</el-button>
-            <el-button size="mini" type="primary" @click="editUser(scope.row)" disabled=“submissionFlag” plain v-if="scope.row.status==0">
+            <el-button size="mini" type="primary" @click="editUser(scope.row)"  plain v-if="scope.row.status==0">
+
+            <!--            <el-button size="mini" type="primary" @click="editUser(scope.row)" disabled=“submissionFlag” plain v-if="scope.row.status==0">-->
               编辑</el-button>
             <el-button size="mini" type="danger" @click="updateStatus(scope.row,'0')" plain v-if="scope.row.status==1">
               点击停用</el-button>
