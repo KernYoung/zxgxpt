@@ -65,9 +65,9 @@
                         </el-button> -->
             <el-button size="mini" type="primary" @click="editUser(scope.row)" plain v-if="scope.row.status==1">
               编辑</el-button>
-            <el-button size="mini" type="primary" @click="editUser(scope.row)"  plain v-if="scope.row.status==0">
+<!--            <el-button size="mini" type="primary" @click="editUser(scope.row)"  plain v-if="scope.row.status==0">-->
 
-            <!--            <el-button size="mini" type="primary" @click="editUser(scope.row)" disabled=“submissionFlag” plain v-if="scope.row.status==0">-->
+            <el-button size="mini" type="primary" @click="editUser(scope.row)" disabled=“submissionFlag” plain v-if="scope.row.status==0">
               编辑</el-button>
             <el-button size="mini" type="danger" @click="updateStatus(scope.row,'0')" plain v-if="scope.row.status==1">
               点击停用</el-button>
@@ -162,7 +162,7 @@
 export default {
   data () {
     var validateMobile = (rule, value, callback) => {
-      let TEL_REGEXP = /^[1][3,4,5,7,8,9][0-9]{9}$/;
+      let TEL_REGEXP = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
       if (value === ""||typeof value=='undefined') {
         callback();
       } else if (value && !TEL_REGEXP.test(value)) {
