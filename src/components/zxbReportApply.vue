@@ -166,7 +166,7 @@
                     reportCorpaddress: '',
                     creditno: '',
                     istranslation: '0',
-                    speed: '1',
+                  speed: '1',
                     forcedApply: false
                 },
                 noCreditCode: {
@@ -179,10 +179,10 @@
                     reportCorpaddress: '',
                     creditno: '',
                     istranslation: '0',
+                  speed: '1',
                 },
                 nationTypeOptions:[],
                 istranslation: [{ name: '否', id: '0' }, { name: '是', id: '1' }],
-                noIstranslation: [{ name: '否', id: '0' }, { name: '是', id: '1' }],
                 speedSelected: [{ name: '普通', id: '1' }, { name: '加急', id: '2' }, { name: '特急', id: '3' }],
                 isClientNo:false,
                 isZxbreportAudit:false,
@@ -196,10 +196,10 @@
               endTimer: ''
             }
         },
-      created() {
-        this.haveCreditCode.speed = this.speedSelected[0].id
-        this.noCreditCode.speed = this.speedSelected[0].id
-      },
+      // created() {
+      //   this.haveCreditCode.speed = this.speedSelected[0].id
+      //   this.noCreditCode.speed = this.speedSelected[0].id
+      // },
         mounted() {
             this.getNationCode()
             this.getCodeInfo()
