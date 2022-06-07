@@ -167,6 +167,21 @@ const routes = [
                 name: 'InterfaceUsedLimit',
                 component: ()=> import('../views/InterfaceUsedLimit')
             },
+            {
+                path: '/orgManage',
+                name: 'OrgManage',
+                component: ()=> import('../views/OrgManage/index')
+            },
+            {
+                path: '/creditCodeMaintain',
+                name: 'CreditCodeMaintain',
+                component: ()=> import('../views/CreditCodeMaintain/index')
+            },
+            {
+                path: '/visitLog',
+                name: 'VisitLog',
+                component: ()=> import('../views/VisitLog/index')
+            },
         ]
     },
 

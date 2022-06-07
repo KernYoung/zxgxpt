@@ -16,6 +16,8 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 Vue.use(ElementUI)
 
+//公共style
+import '@/styles/base.less'
 //请求封装
 import ajax from '@/ajax/index.js'
 import md5 from 'js-md5';
