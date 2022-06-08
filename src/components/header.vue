@@ -400,9 +400,11 @@
         } else if (command == 7) {
           this.$router.push({path: '/zxbReportList'})
         } else if (command == 8) {
-          this.goLog()
+          this.$router.push({path: '/visitLog'})
+          // this.goLog()
         } else if (command == 9) {
-          this.goOrgEdit()
+          // this.goOrgEdit()
+          this.$router.push({path: '/orgManage'})
         } else if (command == 10) {
           this.$router.push({path: '/ZxbApplyList'})
         }else if(command == 11){
@@ -412,8 +414,8 @@
         }else if(command == 13){
           this.$router.push({ path: '/zxbMessageList'})
         }else if (command == 14){
-          // this.$router.push({ path: '/ClientNoMaintain'})
-          this.goCreditCodeMaintenance()
+          this.$router.push({ path: '/creditCodeMaintain'})
+          // this.goCreditCodeMaintenance()
         }else if(command == 15){
           this.$router.push({ path: '/tycPointsDistribute'})
         }else if(command == 16){

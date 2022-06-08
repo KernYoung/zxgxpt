@@ -29,7 +29,6 @@
       <span style="color:#409eff">{{ detail.active }}</span> 人， 访问次数共计
       <span style="color:#409eff">{{ detail.visitTotalNum }}</span> 次， 用户活跃度
       <span style="color:#409eff">{{ detail.activeRate }}</span> 次/人。
-      由于康恩贝制药还未纳入HR系统，目前开通账户需要手工添加，等HR系统打通会提供开户便捷性，提升用户访问率
     </div>
     <div style="margin:10px 0">
       截至5月份平台用户活跃情况如下（注：红色字体公司已对接API接口）
