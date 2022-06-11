@@ -23,7 +23,9 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      tableData: [],
+    };
   },
   mounted() {
     this.getData();

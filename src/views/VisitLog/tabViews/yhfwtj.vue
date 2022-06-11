@@ -15,44 +15,46 @@
     >
       <el-table-column type="index" label="序号" align="center">
       </el-table-column>
-      <el-table-column prop="partCompany" label="成员公司" align="center">
+      <el-table-column
+        prop="companyName"
+        label="成员公司"
+        align="center"
+        min-width="250px"
+      >
       </el-table-column>
-      <el-table-column prop="childCompany" label="子公司" align="center">
+      <el-table-column
+        prop="subCompanyName"
+        label="子公司"
+        align="center"
+        min-width="250px"
+      >
       </el-table-column>
-      <el-table-column prop="openUser" label="启用用户数" align="center">
+      <el-table-column prop="userNum" label="启用用户数" align="center">
       </el-table-column>
-      <el-table-column prop="visitUser" label="访问用户" align="center">
+      <el-table-column prop="userName" label="访问用户" align="center">
       </el-table-column>
-      <el-table-column prop="userId" label="用户工号" align="center">
+      <el-table-column prop="userCode" label="用户工号" align="center">
         <template slot-scope="scope">
           <el-link type="primary" @click="showDetail(scope.row)">{{
-            scope.row.userId
+            scope.row.userCode
           }}</el-link>
           <!-- <el-button type="text" size="small">{{ scope.row.userId }}</el-button> -->
         </template>
       </el-table-column>
-      <el-table-column prop="visitTimes" label="访问次数" align="center">
+      <el-table-column prop="visitPageNum" label="访问次数" align="center">
+      </el-table-column>
+      <el-table-column prop="visitPageNum" label="访问页面次数" align="center">
+      </el-table-column>
+      <el-table-column prop="visitTotalNum" label="访问次数合计" align="center">
       </el-table-column>
       <el-table-column
-        prop="visitPageTimes"
-        label="访问页面次数"
-        align="center"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="visitTotalTimes"
-        label="访问次数合计"
-        align="center"
-      >
-      </el-table-column>
-      <el-table-column
-        prop="visitPageTotalTimes"
+        prop="visitPageTotalNum"
         label="访问页面次数合计"
         align="center"
       >
       </el-table-column>
       <el-table-column
-        prop="visitTime"
+        prop="lastVisitTime"
         label="最新访问时间"
         width="150px"
         align="center"
@@ -64,13 +66,13 @@
       :visible.sync="dialog.visible"
       width="1100px"
     >
-      <components :is="activeComponent" :current="currentRow"></components>
-      <span slot="footer" class="dialog-footer">
+      <components :is="activeComponent" :options="options"></components>
+      <!-- <span slot="footer" class="dialog-footer">
         <el-button @click="dialog.visible = false">取 消</el-button>
         <el-button type="primary" @click="dialog.visible = false"
           >确 定</el-button
         >
-      </span>
+      </span> -->
     </el-dialog>
   </div>
 </template>
@@ -83,22 +85,66 @@ export default {
     UserVisitDetail,
     TheStatisticalMonthly,
   },
+  props: {
+    searchOptions: Object,
+  },
   data() {
     return {
       tableData: [],
+      xAxisData: [],
+      visitNumData: [],
+      visitPageNumData: [],
+      visitUserNumData: [],
       dialog: {
         title: "",
         visible: false,
       },
       activeComponent: "",
       currentRow: {},
+      options: {
+        startDate: "",
+        endDate: "",
+        userCode: "",
+        userName: "",
+        companyName: "",
+      },
     };
   },
-  mounted() {
-    this.initChart();
-    this.getTableData();
+  watch: {
+    searchOptions: {
+      handler(val) {
+        this.getChartData();
+        this.getTableData();
+      },
+      deep: true,
+      immediate: true,
+    },
   },
+  mounted() {},
   methods: {
+    getChartData() {
+      let param = {
+        startDate: this.searchOptions.handleTime[0],
+        endDate: this.searchOptions.handleTime[1],
+        companyName: this.searchOptions.company.join(","),
+      };
+      console.log(param);
+      this.xAxisData = [];
+      this.visitNumData = [];
+      this.visitPageNumData = [];
+      this.visitUserNumData = [];
+      this.$ajax.visitLog.getUserVisitn(param).then((res) => {
+        if (res.data.code == "0") {
+          res.data.data.map((item) => {
+            this.xAxisData.push(item.billDate);
+            this.visitNumData.push(item.visitNum);
+            this.visitPageNumData.push(item.visitPageNum);
+            this.visitUserNumData.push(item.visitUserNum);
+            this.initChart();
+          });
+        }
+      });
+    },
     initChart() {
       var chartDom = document.getElementById("chart");
       var myChart = echarts.init(chartDom);
@@ -138,18 +184,7 @@ export default {
         xAxis: {
           type: "category",
           boundaryGap: false,
-          data: [
-            "05-01",
-            "05-02",
-            "05-03",
-            "05-04",
-            "05-05",
-            "05-06",
-            "05-07",
-            "05-08",
-            "05-09",
-            "05-10",
-          ],
+          data: this.xAxisData,
         },
         yAxis: {
           type: "value",
@@ -163,21 +198,21 @@ export default {
             type: "line",
             smooth: true,
             stack: "Total",
-            data: [120, 132, 101, 134, 90, 230, 210, 600, 400, 200, 190],
+            data: this.visitNumData,
           },
           {
             name: "访问用户个数",
             type: "line",
             smooth: true,
             stack: "Total",
-            data: [220, 182, 191, 234, 290, 330, 310, 220, 182, 191],
+            data: this.visitUserNumData,
           },
           {
             name: "访问页面个数",
             type: "line",
             smooth: true,
             stack: "Total",
-            data: [150, 232, 201, 154, 190, 330, 410, 232, 201, 154],
+            data: this.visitPageNumData,
           },
         ],
       };
@@ -185,92 +220,16 @@ export default {
       option && myChart.setOption(option);
     },
     getTableData() {
-      this.tableData = [
-        {
-          partCompany: "大地期货有限公司",
-          childCompany: "浙江济海贸易发展有限公司",
-          openUser: 157,
-          visitUser: "陈汉唐",
-          userId: "80039866",
-          visitTimes: 13,
-          visitPageTimes: 3,
-          visitTotalTimes: 51,
-          visitPageTotalTimes: 26,
-          visitTime: "2022-05-30 12:35:30",
-        },
-        {
-          partCompany: "大地期货有限公司",
-          childCompany: "浙江济海贸易发展有限公司",
-          openUser: 157,
-          visitUser: "张慷凯",
-          userId: "80029255",
-          visitTimes: 3,
-          visitPageTimes: 3,
-          visitTotalTimes: 51,
-          visitPageTotalTimes: 26,
-          visitTime: "2022-05-30 16:39:30",
-        },
-        {
-          partCompany: "大地期货有限公司",
-          childCompany: "浙江济海贸易发展有限公司",
-          openUser: 157,
-          visitUser: "徐秀芝",
-          userId: "80033346",
-          visitTimes: 3,
-          visitPageTimes: 3,
-          visitTotalTimes: 51,
-          visitPageTotalTimes: 26,
-          visitTime: "2022-05-30 16:07:05",
-        },
-        {
-          partCompany: "大地期货有限公司",
-          childCompany: "大地期货有限公司",
-          openUser: 157,
-          visitUser: "李腾",
-          userId: "68001560",
-          visitTimes: 9,
-          visitPageTimes: 3,
-          visitTotalTimes: 51,
-          visitPageTotalTimes: 26,
-          visitTime: "2022-05-30 14:40:09",
-        },
-        {
-          partCompany: "大地期货有限公司",
-          childCompany: "大地期货有限公司",
-          openUser: 157,
-          visitUser: "高清秋",
-          userId: "68000038",
-          visitTimes: 3,
-          visitPageTimes: 3,
-          visitTotalTimes: 51,
-          visitPageTotalTimes: 26,
-          visitTime: "2022-05-30 11:40:09",
-        },
-        {
-          partCompany: "大地期货有限公司",
-          childCompany: "大地期货有限公司",
-          openUser: 157,
-          visitUser: "张玉",
-          userId: "68008784",
-          visitTimes: 3,
-          visitPageTimes: 3,
-          visitTotalTimes: 51,
-          visitPageTotalTimes: 26,
-          visitTime: "2022-05-30 15:32:09",
-        },
-        {
-          partCompany: "大地期货有限公司",
-          childCompany: "大地期货有限公司",
-          openUser: 157,
-          visitUser: "管方西",
-          userId: "68006545",
-          visitTimes: 2,
-          visitPageTimes: 2,
-          visitTotalTimes: 51,
-          visitPageTotalTimes: 26,
-          visitTime: "2022-05-30 13:32:09",
-        },
-      ];
+      let param = {
+        startDate: this.searchOptions.handleTime[0],
+        endDate: this.searchOptions.handleTime[1],
+        companyName: this.searchOptions.company.join(","),
+      };
+      this.$ajax.visitLog.getUserVisitList(param).then((res) => {
+        if (res.data.code == "0") {
+          this.tableData = res.data.data;
+        }
+      });
     },
     objectSpanMethod({ row, column, rowIndex, columnIndobjectSpanMethodex }) {
       const dataProvider = this.tableData;
@@ -303,12 +262,25 @@ export default {
       }
     },
     showDetail(row) {
+      console.log(this.searchOptions);
+      this.options = {
+        startDate: this.searchOptions.handleTime[0],
+        endDate: this.searchOptions.handleTime[1],
+        userCode: row.userCode,
+        userName: row.userName,
+        companyName: this.searchOptions.company.join(","),
+      };
       this.currentRow = row;
       this.activeComponent = UserVisitDetail;
       this.dialog.title = "页面访问明细";
       this.dialog.visible = true;
     },
     showStatisticalReport() {
+      this.options = {
+        startDate: this.searchOptions.handleTime[0],
+        endDate: this.searchOptions.handleTime[1],
+        companyName: this.searchOptions.company.join(","),
+      };
       this.activeComponent = TheStatisticalMonthly;
       this.dialog.title = "统计月报";
       this.dialog.visible = true;

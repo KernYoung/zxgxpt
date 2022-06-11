@@ -1,29 +1,36 @@
 <template>
   <!-- 主页布局 -->
   <div class="home">
-    <div class="header" v-if="$route.path!='/'&&$route.path!='/homePage'&&$route.path!='/zxbReportSummary'">
+    <div
+      class="header"
+      v-if="
+        $route.path != '/' &&
+          $route.path != '/homePage' &&
+          $route.path != '/zxbReportSummary'
+      "
+    >
       <Header></Header>
     </div>
     <div class="content">
       <router-view />
       <span class="button-wrapper" v-if="$Cookies.get(this.$getCookieKey())">
-<!--        <el-badge :is-dot="newMsg" class="item">-->
-<!--          <el-popover placement="left-end" width="300" trigger="click" title="消息提醒">-->
-<!--            <div class="message-wrapper">-->
-<!--              <div class="message-box" v-for="(item,index) in messageData" :key="index">-->
-<!--                <div class="message-content">-->
-<!--                  <i class="el-icon-s-promotion" style="margin-right: 5px;color:#617be3"></i>-->
-<!--                  <div class="content-right">{{item.content}}</div>-->
-<!--                </div>-->
-<!--                &lt;!&ndash; <div class="message-bottom">-->
-<!--								<span>{{item.name}}</span>-->
-<!--								<span>{{item.date}}</span>-->
-<!--							</div> &ndash;&gt;-->
-<!--              </div>-->
-<!--            </div>-->
-<!--            <el-button type="success" icon="el-icon-message" circle slot="reference" @click="checkMsg"></el-button>-->
-<!--          </el-popover>-->
-<!--        </el-badge>-->
+        <!--        <el-badge :is-dot="newMsg" class="item">-->
+        <!--          <el-popover placement="left-end" width="300" trigger="click" title="消息提醒">-->
+        <!--            <div class="message-wrapper">-->
+        <!--              <div class="message-box" v-for="(item,index) in messageData" :key="index">-->
+        <!--                <div class="message-content">-->
+        <!--                  <i class="el-icon-s-promotion" style="margin-right: 5px;color:#617be3"></i>-->
+        <!--                  <div class="content-right">{{item.content}}</div>-->
+        <!--                </div>-->
+        <!--                &lt;!&ndash; <div class="message-bottom">-->
+        <!--								<span>{{item.name}}</span>-->
+        <!--								<span>{{item.date}}</span>-->
+        <!--							</div> &ndash;&gt;-->
+        <!--              </div>-->
+        <!--            </div>-->
+        <!--            <el-button type="success" icon="el-icon-message" circle slot="reference" @click="checkMsg"></el-button>-->
+        <!--          </el-popover>-->
+        <!--        </el-badge>-->
       </span>
     </div>
     <!-- <div class="footer-box" v-if="this.$route.path!='/essInfo'">
@@ -34,21 +41,21 @@
 </template>
 
 <script>
-import Header from '../components/header.vue'
+import Header from "../components/header.vue";
 export default {
-  name: 'Home',
+  name: "Home",
   components: {
-    Header
+    Header,
   },
-  data () {
+  data() {
     return {
       messageData: [],
       websock: null,
-      newMsg: false
-    }
+      newMsg: false,
+    };
   },
-  created () {
-    console.log(this.$route)
+  created() {
+    console.log(this.$route);
     //this.messageData = JSON.parse(sessionStorage.getItem('msgData'))
     if (this.$Cookies.get(this.$getCookieKey())) {
       this.initWebSocket();
@@ -56,48 +63,56 @@ export default {
       //this.websock.close()
     }
   },
-  destroyed () {
+  destroyed() {
     //this.websock.close() //离开路由之后断开websocket连接
   },
   methods: {
-    initWebSocket () { //初始化weosocket
-      const wsuri = `${process.env.VUE_APP_WS_URL}/webSocket/${this.$Cookies.get('userId')}`;
+    initWebSocket() {
+      //初始化weosocket
+      const wsuri = `${
+        process.env.VUE_APP_WS_URL
+      }/webSocket/${this.$Cookies.get("userId")}`;
       this.websock = new WebSocket(wsuri);
       this.websock.onmessage = this.websocketonmessage;
       this.websock.onopen = this.websocketonopen;
       this.websock.onerror = this.websocketonerror;
       this.websock.onclose = this.websocketclose;
-      console.log(wsuri)
+      // console.log(wsuri)
     },
-    websocketonopen () { //连接建立之后执行send方法发送数据
+    websocketonopen() {
+      //连接建立之后执行send方法发送数据
       // let actions = {"test":"12345"};
       // this.websocketsend(JSON.stringify(actions));
     },
-    websocketonerror () {//连接建立失败重连
+    websocketonerror() {
+      //连接建立失败重连
       this.initWebSocket();
     },
-    websocketonmessage (e) { //数据接收
+    websocketonmessage(e) {
+      //数据接收
       //console.log(e);
       let obj = {
-        content: e.data
-      }
+        content: e.data,
+      };
       this.messageData.push(obj);
       //sessionStorage.setItem('msgData', JSON.stringify(this.messageData))
       this.newMsg = true;
       //const redata = JSON.parse(e.data);
       //console.log(sessionStorage.getItem('msgData'))
     },
-    websocketsend (Data) {//数据发送
+    websocketsend(Data) {
+      //数据发送
       this.websock.send(Data);
     },
-    websocketclose (e) {  //关闭
-      console.log('断开连接', e);
+    websocketclose(e) {
+      //关闭
+      // console.log('断开连接', e);
     },
-    checkMsg () {
+    checkMsg() {
       this.newMsg = false;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style lang="less" scoped>
 .home {

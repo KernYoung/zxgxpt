@@ -11,26 +11,30 @@
       :header-cell-style="{ background: '#ECF1FE' }"
     >
       <el-table-column type="index" label="序号"></el-table-column>
-      <el-table-column prop="area" label="模块" align="center">
+      <el-table-column prop="module" label="模块" align="center">
       </el-table-column>
-      <el-table-column prop="subArea" label="细分模块" align="center">
-        <template slot-scope="scope">{{ scope.row.subArea || "/" }}</template>
+      <el-table-column prop="segmentModule" label="细分模块" align="center">
+        <template slot-scope="scope">{{
+          scope.row.segmentModule || "/"
+        }}</template>
       </el-table-column>
-      <el-table-column prop="total" label="总次数" align="center">
+      <el-table-column prop="num" label="总次数" align="center">
       </el-table-column>
-      <el-table-column prop="useNum" label="使用次数" align="center">
+      <el-table-column prop="userNum" label="使用次数" align="center">
         <template slot-scope="scope">
           <el-link
             type="primary"
             @click="showDetail(scope.row)"
-            v-if="scope.row.area == '添加监控（不与时间联动）'"
-            >{{ scope.row.useNum }}</el-link
+            v-if="scope.row.module == '添加监控（不与时间联动）'"
+            >{{ scope.row.userNum }}</el-link
           >
           <span v-else>{{ scope.row.useNum || "/" }}</span></template
         >
       </el-table-column>
-      <el-table-column prop="restNum" label="剩余次数" align="center">
-        <template slot-scope="scope">{{ scope.row.restNum || "/" }}</template>
+      <el-table-column prop="surplusNum" label="剩余次数" align="center">
+        <template slot-scope="scope">{{
+          scope.row.surplusNum || "/"
+        }}</template>
       </el-table-column>
     </el-table>
     <div class="title" style="margin-top:20px">客商初筛调用次数</div>
@@ -59,60 +63,40 @@
 import MonitorSituation from "../components/monitorSituation";
 export default {
   components: { MonitorSituation },
+  props: {
+    searchOptions: Object,
+  },
   data() {
     return {
-      useStatusData: [
-        {
-          area: "添加监控（不与时间联动）",
-          subArea: null,
-          total: "12000家",
-          useNum: 4940,
-          restNum: 6726,
-        },
-        {
-          area: "API接口",
-          subArea: "模糊查询",
-          total: "100万次",
-          useNum: 97,
-          restNum: null,
-        },
-        {
-          area: "API接口",
-          subArea: "详情页-工商信息",
-          total: "100万次",
-          useNum: 0,
-          restNum: null,
-        },
-        {
-          area: "API接口",
-          subArea: "客商初筛-工商信息",
-          total: "100万次",
-          useNum: 0,
-          restNum: null,
-        },
-        {
-          area: "API接口",
-          subArea: "下发接口-工商信息",
-          total: "100万次",
-          useNum: 0,
-          restNum: null,
-        },
-        {
-          area: "专业版嵌入",
-          subArea: null,
-          total: "200并发",
-          useNum: 84,
-          restNum: "不限次数，按年计费",
-        },
-      ],
+      useStatusData: [],
       applyData: [],
       dialog: {
         visible: false,
       },
     };
   },
+  watch: {
+    searchOptions: {
+      handler(val) {
+        this.getData();
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
   methods: {
-    getData() {},
+    getData() {
+      let param = {
+        startDate: this.searchOptions.handleTime[0],
+        endDate: this.searchOptions.handleTime[1],
+        companyName: this.searchOptions.company.join(","),
+      };
+      this.$ajax.visitLog.getTycUse(param).then((res) => {
+        if (res.data.code == "0") {
+          this.useStatusData = res.data.data;
+        }
+      });
+    },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       const dataProvider = this.useStatusData;
       const cellValue = row[column.property];

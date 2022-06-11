@@ -15,24 +15,28 @@
         </template>
       </el-table-column> -->
       <el-table-column type="index" label="序号"></el-table-column>
-      <el-table-column prop="area" label="模块" align="center">
+      <el-table-column prop="module" label="模块" align="center">
       </el-table-column>
-      <el-table-column prop="num" label="点数" align="center">
-        <template slot-scope="scope">{{ scope.row.num || "/" }}</template>
+      <el-table-column prop="numberOfHits" label="点数" align="center">
+        <template slot-scope="scope">{{
+          scope.row.numberOfHits || "/"
+        }}</template>
       </el-table-column>
-      <el-table-column prop="useNum" label="使用次数" align="center">
+      <el-table-column prop="userNumber" label="使用次数" align="center">
         <template slot-scope="scope">
           <el-link
             type="primary"
             @click="showDetail(scope.row)"
-            v-if="scope.row.area == '风险预警（关注不与时间联动）'"
-            >{{ scope.row.useNum }}</el-link
+            v-if="scope.row.module == '风险预警（关注不与时间联动）'"
+            >{{ scope.row.userNumber }}</el-link
           >
-          <span v-else>{{ scope.row.useNum || "/" }}</span></template
+          <span v-else>{{ scope.row.userNumber || "/" }}</span></template
         >
       </el-table-column>
-      <el-table-column prop="shareNum" label="共享次数" align="center">
-        <template slot-scope="scope">{{ scope.row.shareNum || "/" }}</template>
+      <el-table-column prop="shareNumber" label="共享次数" align="center">
+        <template slot-scope="scope">{{
+          scope.row.shareNumber || "/"
+        }}</template>
       </el-table-column>
     </el-table>
     <div style="color:orange;font-weight:bold;font-size:14px">
@@ -47,13 +51,13 @@
       size="small"
       :header-cell-style="{ background: '#ECF1FE' }"
     >
-      <el-table-column prop="type" label="申请类型" align="center">
+      <el-table-column prop="applyType" label="申请类型" align="center">
       </el-table-column>
-      <el-table-column prop="enterprise" label="申请企业" align="center">
+      <el-table-column prop="applyCompanyName" label="申请企业" align="center">
       </el-table-column>
-      <el-table-column prop="applyPerson" label="申请人" align="center">
+      <el-table-column prop="userName" label="申请人" align="center">
       </el-table-column>
-      <el-table-column prop="company" label="申请人所在公司" align="center">
+      <el-table-column prop="companyName" label="申请人所在公司" align="center">
       </el-table-column>
       <el-table-column prop="applyTime" label="申请时间" align="center">
       </el-table-column>
@@ -63,7 +67,7 @@
       :visible.sync="dialog.visible"
       width="1100px"
     >
-      <MonitorSituation></MonitorSituation>
+      <MonitorSituation :searchOptions="searchOptions"></MonitorSituation>
     </el-dialog>
   </div>
 </template>
@@ -71,63 +75,75 @@
 import MonitorSituation from "../components/monitorSituation";
 export default {
   components: { MonitorSituation },
+  props: {
+    searchOptions: Object,
+  },
   data() {
     return {
-      zcxUserStatusData: [
-        { area: "风险初筛", num: "10点/次", useNum: 13, shareNum: null },
-        { area: "财务排雷", num: "2点/次", useNum: null, shareNum: null },
-        { area: "产业企业评价", num: "2点/次", useNum: null, shareNum: null },
-        { area: "区域信用评价", num: "2点/次", useNum: null, shareNum: null },
-        { area: "城投企业评价", num: "2点/次", useNum: null, shareNum: null },
-        {
-          area: "风险预警（关注不与时间联动）",
-          num: "100点/企业/年",
-          useNum: 248,
-          shareNum: null,
-        },
-        { area: "总计", num: "24930", useNum: 13, shareNum: 13 },
-      ],
+      zcxUserStatusData: [],
       applyData: [],
       dialog: {
         visible: false,
       },
     };
   },
-  mounted() {
-    this.getData();
+  watch: {
+    searchOptions: {
+      handler(val) {
+        this.getData();
+      },
+      deep: true,
+      immediate: true,
+    },
   },
+  mounted() {},
   methods: {
     getData() {
-      this.applyData = [
-        {
-          type: "风险初筛",
-          enterprise: "上海靖凯模塑科技有限公司",
-          applyPerson: "75105714（廖建克）",
-          company: "浙江国贸云商控股有限公司",
-          applyTime: "2022-05-30 16:30:19",
-        },
-        {
-          type: "风险初筛",
-          enterprise: "杭州益友医疗科技有限公司",
-          applyPerson: "80008083（黄心恺）",
-          company: "浙江英特集团股份有限公司",
-          applyTime: "2022-05-30 16:57:19",
-        },
-        {
-          type: "风险初筛",
-          enterprise: "上海靖凯模塑科技有限公司",
-          applyPerson: "75105714（廖建克）",
-          company: "浙江国贸云商控股有限公司",
-          applyTime: "2022-05-30 16:30:19",
-        },
-        {
-          type: "风险初筛",
-          enterprise: "杭州益友医疗科技有限公司",
-          applyPerson: "80008083（黄心恺）",
-          company: "浙江英特集团股份有限公司",
-          applyTime: "2022-05-30 16:57:19",
-        },
-      ];
+      let param = {
+        startDate: this.searchOptions.handleTime[0],
+        endDate: this.searchOptions.handleTime[1],
+        companyName: this.searchOptions.company.join(","),
+      };
+      this.$ajax.visitLog.getZcxReportUse(param).then((res) => {
+        if (res.data.code == "0") {
+          this.zcxUserStatusData = res.data.data;
+        }
+      });
+      this.$ajax.visitLog.getZcxReportUseList(param).then((res) => {
+        if (res.data.code == "0") {
+          this.applyData = res.data.data;
+        }
+      });
+      // this.applyData = [
+      //   {
+      //     type: "风险初筛",
+      //     enterprise: "上海靖凯模塑科技有限公司",
+      //     applyPerson: "75105714（廖建克）",
+      //     company: "浙江国贸云商控股有限公司",
+      //     applyTime: "2022-05-30 16:30:19",
+      //   },
+      //   {
+      //     type: "风险初筛",
+      //     enterprise: "杭州益友医疗科技有限公司",
+      //     applyPerson: "80008083（黄心恺）",
+      //     company: "浙江英特集团股份有限公司",
+      //     applyTime: "2022-05-30 16:57:19",
+      //   },
+      //   {
+      //     type: "风险初筛",
+      //     enterprise: "上海靖凯模塑科技有限公司",
+      //     applyPerson: "75105714（廖建克）",
+      //     company: "浙江国贸云商控股有限公司",
+      //     applyTime: "2022-05-30 16:30:19",
+      //   },
+      //   {
+      //     type: "风险初筛",
+      //     enterprise: "杭州益友医疗科技有限公司",
+      //     applyPerson: "80008083（黄心恺）",
+      //     company: "浙江英特集团股份有限公司",
+      //     applyTime: "2022-05-30 16:57:19",
+      //   },
+      // ];
     },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       const dataProvider = this.applyData;
