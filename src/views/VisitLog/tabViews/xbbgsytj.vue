@@ -96,6 +96,11 @@ export default {
           this.reportUseLogData = res.data.xbReportUseList;
         }
       });
+      // this.$ajax.visitLog.getXbReportUseByCompany(param).then((res) => {
+      //   if (res.data.code == "0") {
+      //     this.getXbReportUseByCompany = res.data.xbReportUse;
+      //   }
+      // });
     },
     showDetail() {
       this.dialog.visible = true;

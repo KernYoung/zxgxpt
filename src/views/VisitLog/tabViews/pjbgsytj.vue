@@ -67,7 +67,9 @@
       :visible.sync="dialog.visible"
       width="1100px"
     >
-      <MonitorSituation :searchOptions="searchOptions"></MonitorSituation>
+      <MonitorSituation
+        :searchOptions="{ ...searchOptions, flag: '0' }"
+      ></MonitorSituation>
     </el-dialog>
   </div>
 </template>

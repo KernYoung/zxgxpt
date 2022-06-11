@@ -14,51 +14,45 @@
       </el-table-column>
       <el-table-column prop="pagePath" label="页面路径" align="center">
       </el-table-column>
-      <el-table-column prop="checkNum" label="查看次数" align="center">
+      <el-table-column prop="num" label="查看次数" align="center">
       </el-table-column>
-      <el-table-column prop="visitNum" label="访问用户个数" align="center">
+      <el-table-column prop="visitUserNum" label="访问用户个数" align="center">
       </el-table-column>
     </el-table>
   </div>
 </template>
 <script>
 export default {
+  props: {
+    searchOptions: Object,
+  },
   data() {
     return {
       tableData: [],
     };
   },
-  mounted() {
-    this.getData();
+  watch: {
+    searchOptions: {
+      handler(val) {
+        this.getData();
+      },
+      deep: true,
+      immediate: true,
+    },
   },
+  mounted() {},
   methods: {
     getData() {
-      this.tableData = [
-        {
-          pageName: "详情页",
-          pagePath: "/essInfo",
-          checkNum: 153,
-          visitNum: 52,
-        },
-        {
-          pageName: "搜索",
-          pagePath: "/searchResult",
-          checkNum: 123,
-          visitNum: 15,
-        },
-        {
-          pageName: "登录页",
-          pagePath: "/",
-          checkNum: 119,
-          visitNum: 56,
-        },
-        {
-          pageName: "首页",
-          pagePath: "/homePage",
-          checkNum: 118,
-          visitNum: 65,
-        },
-      ];
+      let param = {
+        startDate: this.searchOptions.handleTime[0],
+        endDate: this.searchOptions.handleTime[1],
+        companyName: this.searchOptions.company.join(","),
+      };
+      this.$ajax.visitLog.getPageActive(param).then((res) => {
+        if (res.data.code == "0") {
+          this.tableData = res.data.data;
+        }
+      });
     },
   },
 };

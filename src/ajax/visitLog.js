@@ -30,6 +30,11 @@ async function getXbReportUse (param) {
     let getXbReportUse = await ajax.post(`/api/report/getXbReportUse`, param)
     return getXbReportUse
 }
+//信保报告使用情况-在库报告使用情况
+async function getXbReportUseByCompany (param) {
+    let getXbReportUseByCompany = await ajax.post(`/api/report/getXbReportUseByCompany`, param)
+    return getXbReportUseByCompany
+}
 
 //评级报告使用情况-中诚信使用情况
 async function getZcxReportUse (param) {
@@ -55,6 +60,24 @@ async function getTycUse (param) {
     return getTycUse
 }
 
+//评级报告使用情况-客商初筛调用次数
+async function getCustomFilter (param) {
+    let getCustomFilter = await ajax.post(`/api/report/getCustomFilter`, param)
+    return getCustomFilter
+}
+
+//评级报告使用情况-页面热度统计
+async function getPageActive (param) {
+    let getPageActive = await ajax.post(`/api/report/getPageActive`, param)
+    return getPageActive
+}
+
+//评级报告使用情况-模糊查询记录
+async function getLikeQuery (param) {
+    let getLikeQuery = await ajax.post(`/api/report/getLikeQuery`, param)
+    return getLikeQuery
+}
+
 const visitLog={
     getUserVisitn,
     getUserVisitList,
@@ -64,7 +87,11 @@ const visitLog={
     getZcxReportUse,
     getZcxReportUseList,
     getMonitoring,
-    getTycUse
+    getTycUse,
+    getCustomFilter,
+    getPageActive,
+    getLikeQuery,
+    getXbReportUseByCompany
 }
 
 export default visitLog

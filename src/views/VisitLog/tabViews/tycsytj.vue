@@ -45,9 +45,9 @@
       size="small"
       :header-cell-style="{ background: '#ECF1FE' }"
     >
-      <el-table-column prop="enterprise" label="申请企业" align="center">
+      <el-table-column prop="COMPANYNAME" label="申请企业" align="center">
       </el-table-column>
-      <el-table-column prop="applyNum" label="申请次数" align="center">
+      <el-table-column prop="NUM" label="申请次数" align="center">
       </el-table-column>
     </el-table>
     <el-dialog
@@ -55,7 +55,9 @@
       :visible.sync="dialog.visible"
       width="1100px"
     >
-      <MonitorSituation></MonitorSituation>
+      <MonitorSituation
+        :searchOptions="{ ...searchOptions, flag: '1' }"
+      ></MonitorSituation>
     </el-dialog>
   </div>
 </template>
@@ -94,6 +96,11 @@ export default {
       this.$ajax.visitLog.getTycUse(param).then((res) => {
         if (res.data.code == "0") {
           this.useStatusData = res.data.data;
+        }
+      });
+      this.$ajax.visitLog.getCustomFilter(param).then((res) => {
+        if (res.data.code == "0") {
+          this.applyData = res.data.data;
         }
       });
     },

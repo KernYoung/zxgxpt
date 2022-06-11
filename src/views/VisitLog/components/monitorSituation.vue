@@ -46,7 +46,7 @@ export default {
         startDate: this.searchOptions.handleTime[0],
         endDate: this.searchOptions.handleTime[1],
         companyName: this.searchOptions.company.join(","),
-        flag: "0",
+        flag: this.searchOptions.flag,
       };
       this.$ajax.visitLog.getMonitoring(param).then((res) => {
         if (res.data.code == "0") {

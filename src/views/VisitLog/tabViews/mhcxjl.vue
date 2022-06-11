@@ -11,59 +11,47 @@
       :header-cell-style="{ background: '#ECF1FE' }"
     >
       <el-table-column type="index" label="序号"></el-table-column>
-      <el-table-column prop="user" label="操作用户" align="center">
+      <el-table-column prop="userName" label="操作用户" align="center">
       </el-table-column>
-      <el-table-column prop="keyword" label="模糊查询关键词" align="center">
+      <el-table-column prop="keyWord" label="模糊查询关键词" align="center">
       </el-table-column>
-      <el-table-column prop="time" label="操作时间" align="center">
+      <el-table-column prop="operateTime" label="操作时间" align="center">
       </el-table-column>
     </el-table>
   </div>
 </template>
 <script>
 export default {
+  props: {
+    searchOptions: Object,
+  },
   data() {
     return {
       tableData: [],
     };
   },
-  mounted() {
-    this.getData();
+  watch: {
+    searchOptions: {
+      handler(val) {
+        this.getData();
+      },
+      deep: true,
+      immediate: true,
+    },
   },
+  mounted() {},
   methods: {
     getData() {
-      this.tableData = [
-        {
-          user: "王泽能",
-          keyword: "厦门建发",
-          time: "2022-05-30 16:39:25",
-        },
-        {
-          user: "王泽能",
-          keyword: "厦门建发",
-          time: "2022-05-30 16:39:24",
-        },
-        {
-          user: "王泽能",
-          keyword: "厦门建发",
-          time: "2022-05-30 16:39:22",
-        },
-        {
-          user: "王泽能",
-          keyword: "厦门建发",
-          time: "2022-05-30 16:39:15",
-        },
-        {
-          user: "卢亮",
-          keyword: "顶点",
-          time: "2022-05-30 16:35:13",
-        },
-        {
-          user: "卢亮",
-          keyword: "北京华欣远达",
-          time: "2022-05-30 16:33:55",
-        },
-      ];
+      let param = {
+        startDate: this.searchOptions.handleTime[0],
+        endDate: this.searchOptions.handleTime[1],
+        companyName: this.searchOptions.company.join(","),
+      };
+      this.$ajax.visitLog.getLikeQuery(param).then((res) => {
+        if (res.data.code == "0") {
+          this.tableData = res.data.data;
+        }
+      });
     },
     objectSpanMethod({ row, column, rowIndex, columnIndobjectSpanMethodex }) {
       const dataProvider = this.tableData;
