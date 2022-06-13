@@ -113,6 +113,7 @@ export default {
   watch: {
     searchOptions: {
       handler(val) {
+        console.log(val);
         this.getChartData();
         this.getTableData();
       },

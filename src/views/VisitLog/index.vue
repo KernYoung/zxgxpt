@@ -21,7 +21,7 @@
           style="margin-right:10px"
         >
         </el-date-picker>
-        <el-select
+        <!-- <el-select
           v-model="search.company"
           filterable
           clearable
@@ -36,16 +36,18 @@
             :value="item.name"
             :label="item.name"
           ></el-option>
-        </el-select>
-        <!-- <el-cascader
+        </el-select> -->
+        <el-cascader
           v-model="search.company"
           placeholder="公司名称"
-          style="margin-right:10px"
+          filterable
+          style="min-width:320px;"
           :options="companyOptions"
+          :show-all-levels="false"
           :props="props"
           collapse-tags
           clearable
-        ></el-cascader> -->
+        ></el-cascader>
         <!-- <el-button type="primary" size="medium">查询</el-button> -->
       </div>
       <el-tabs
@@ -96,9 +98,9 @@ export default {
             .format("YYYY-MM-DD"),
           moment().format("YYYY-MM-DD"),
         ],
-        company: "",
+        company: [],
       },
-      props: { multiple: true, value: "code", label: "name" },
+      props: { multiple: true, emitPath: false, value: "name", label: "name" },
       companyOptions: [],
       activeName: "yhfwtj",
       tabOptions: [
@@ -143,26 +145,33 @@ export default {
       };
       this.$ajax.manage.getAllCompanyLevel(param).then((res) => {
         if (res.data.code == 0) {
-          this.companyOptions = res.data.treeData;
-          // let codeList = [];
-          // this.backData = res.data.treeData.map((item) => {
-          //   codeList.push(item.code);
-          //   return item;
-          // });
-          // res.data.treeData.map((item) => {
-          //   if (codeList.indexOf(item.scode) == -1) this.topValue = item.scode;
-          // });
-          // let arr = Utils.formatTreeData(
-          //   res.data.treeData,
-          //   "code",
-          //   "scode",
-          //   this.topValue,
-          //   false
-          // );
-          // console.log(arr);
-          // this.companyOptions = arr;
+          // this.companyOptions = res.data.treeData;
+          let codeList = [];
+          this.backData = res.data.treeData.map((item) => {
+            codeList.push(item.code);
+            return item;
+          });
+          res.data.treeData.map((item) => {
+            if (codeList.indexOf(item.scode) == -1) this.topValue = item.scode;
+          });
+          let arr = Utils.formatTreeData(
+            res.data.treeData,
+            "code",
+            "scode",
+            this.topValue,
+            true
+          );
+          console.log(arr);
+          this.companyOptions = arr;
         }
       });
+    },
+    changeCompany(val) {
+      let temp = [];
+      for (let i in val) {
+        temp.push(val[i][val[i].length - 1]);
+      }
+      this.search.company = temp;
     },
   },
 };

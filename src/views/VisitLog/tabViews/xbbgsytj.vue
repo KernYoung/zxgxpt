@@ -49,7 +49,7 @@
       :visible.sync="dialog.visible"
       width="1100px"
     >
-      <ReportUserStatus></ReportUserStatus>
+      <ReportUserStatus :options="searchOptions"></ReportUserStatus>
       <!-- <span slot="footer" class="dialog-footer">
         <el-button @click="dialog.visible = false">取 消</el-button>
         <el-button type="primary" @click="dialog.visible = false">确 定</el-button>
@@ -96,11 +96,6 @@ export default {
           this.reportUseLogData = res.data.xbReportUseList;
         }
       });
-      // this.$ajax.visitLog.getXbReportUseByCompany(param).then((res) => {
-      //   if (res.data.code == "0") {
-      //     this.getXbReportUseByCompany = res.data.xbReportUse;
-      //   }
-      // });
     },
     showDetail() {
       this.dialog.visible = true;

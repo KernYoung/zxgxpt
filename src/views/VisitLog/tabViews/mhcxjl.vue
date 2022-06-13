@@ -56,7 +56,7 @@ export default {
     objectSpanMethod({ row, column, rowIndex, columnIndobjectSpanMethodex }) {
       const dataProvider = this.tableData;
       const cellValue = row[column.property];
-
+      if (column.property == "keyWord") return;
       if (cellValue) {
         // 上一条数据
         const prevRow = dataProvider[rowIndex - 1];
