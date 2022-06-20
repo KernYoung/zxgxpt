@@ -77,6 +77,11 @@ async function getLikeQuery (param) {
     let getLikeQuery = await ajax.post(`/api/report/getLikeQuery`, param)
     return getLikeQuery
 }
+//公司名称
+async function getCompanyList (param) {
+    let getCompanyList = await ajax.post(`/api/visitLog/getCompanyList`, param)
+    return getCompanyList
+}
 
 const visitLog={
     getUserVisitn,
@@ -91,7 +96,8 @@ const visitLog={
     getCustomFilter,
     getPageActive,
     getLikeQuery,
-    getXbReportUseByCompany
+    getXbReportUseByCompany,
+    getCompanyList
 }
 
 export default visitLog

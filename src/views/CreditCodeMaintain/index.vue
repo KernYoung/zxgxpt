@@ -12,6 +12,19 @@
       <div style="color:#409eff;font-weight:bold;">
         成员公司中信保买方代码填报
       </div>
+      <div style="margin-top:10px">
+        <el-input
+          v-model="form.code"
+          placeholder="公司HR编码"
+          style="width:220px"
+        ></el-input>
+        <el-input
+          v-model="form.name"
+          placeholder="公司HR名称"
+          style="width:220px;margin:0 10px"
+        ></el-input>
+        <el-button type="primary" @click="search">查询</el-button>
+      </div>
       <el-table
         :data="tableData"
         style="margin-top:15px"
@@ -23,17 +36,16 @@
         <el-table-column prop="code" label="公司HR编码" width="100px">
         </el-table-column>
         <el-table-column prop="name" label="公司HR名称"> </el-table-column>
-        <el-table-column prop="rule" label="用户前缀规则"> </el-table-column>
-        <el-table-column prop="parentName" label="所属成员公司HR名称">
+        <el-table-column prop="companyName" label="所属成员公司HR名称">
         </el-table-column>
-        <el-table-column prop="sourceFrom" label="数据来源"> </el-table-column>
-        <el-table-column prop="creditCode" label="信保通买方代码">
+        <el-table-column prop="companyType" label="数据来源"> </el-table-column>
+        <el-table-column prop="clientNo" label="信保通买方代码">
           <template slot-scope="scope">
             <el-link
-              :type="scope.row.creditCode !== '' ? 'info' : 'primary'"
+              :type="scope.row.clientNo ? 'info' : 'primary'"
               @click="open(scope.row)"
               >{{
-                scope.row.creditCode !== "" ? scope.row.creditCode : "点击填写"
+                scope.row.clientNo ? scope.row.clientNo : "点击填写"
               }}</el-link
             >
           </template>
@@ -59,8 +71,12 @@ export default {
       tableData: [],
       page: {
         currentPage: 1,
-        pageSize: 10,
+        pageSize: 15,
         total: 0,
+      },
+      form: {
+        code: "",
+        name: "",
       },
     };
   },
@@ -69,32 +85,46 @@ export default {
   },
   methods: {
     getTableData() {
-      this.tableData = [
-        {
-          id: "1",
-          code: "010",
-          name: "浙江省国际贸易集团有限公司",
-          parentName: "浙江省国际贸易集团有限公司",
-          sourceFrom: "HR系统",
-          creditCode: "20000340",
-        },
-        {
-          id: "2",
-          code: "01201",
-          name: "浙江东方金融控股集团股份有限公司",
-          parentName: "浙江东方金融控股集团股份有限公司",
-          sourceFrom: "HR系统",
-          creditCode: "",
-        },
-      ];
+      let param = {
+        code: this.form.code,
+        name: this.form.name,
+        pageIndex: this.page.currentPage,
+        pageSize: this.page.pageSize,
+      };
+      this.$ajax.manage.getXbMapping(param).then((res) => {
+        if (res.data.code == "0") {
+          this.tableData = res.data.data;
+          this.page.total = res.data.totalRecords;
+        }
+      });
+    },
+    search() {
+      this.page.currentPage = 1;
+      this.getTableData();
     },
     open(row) {
       this.$prompt("", "请输入信保通买方代码", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        inputValue: row.creditCode !== "" ? row.creditCode : "",
+        inputValue: row.clientNo !== "" ? row.clientNo : null,
+        inputValidator: (val) => {
+          if (!val || val == "") {
+            return "请填写";
+          }
+        },
       })
-        .then(({ value }) => {})
+        .then(({ value }) => {
+          let param = {
+            code: row.code,
+            clientNo: value,
+          };
+          this.$ajax.manage.saveXbMapping(param).then((res) => {
+            if (res.data.code == "0") {
+              this.$message.success("保存成功");
+              this.getTableData();
+            }
+          });
+        })
         .catch(() => {});
     },
   },

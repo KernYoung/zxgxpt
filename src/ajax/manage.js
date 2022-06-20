@@ -568,6 +568,17 @@ async function getClientNoMaintainList (param) {
     let getClientNoMaintainList = await ajax.post(`/api/common/getClientNoMaintainList`, param)
     return getClientNoMaintainList
 }
+//信保代码维护列表查询
+async function getXbMapping (param) {
+    let getXbMapping = await ajax.post(`/api/common/ZXB/getXbMapping`, param)
+    return getXbMapping
+}
+
+//信保代码修改
+async function saveXbMapping (param) {
+    let saveXbMapping = await ajax.post(`/api/common/ZXB/SaveXbMapping`, param)
+    return saveXbMapping
+}
 
 const manage = {
     login: login,
@@ -677,6 +688,8 @@ const manage = {
     deleteInterfaceLimit:deleteInterfaceLimit,
     reportExist:reportExist,
     getClientNoMaintainList:getClientNoMaintainList,
+    saveXbMapping:saveXbMapping,
+    getXbMapping:getXbMapping
 }
 
 export default manage

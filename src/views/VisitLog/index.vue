@@ -21,7 +21,7 @@
           style="margin-right:10px"
         >
         </el-date-picker>
-        <!-- <el-select
+        <el-select
           v-model="search.company"
           filterable
           clearable
@@ -32,12 +32,12 @@
         >
           <el-option
             v-for="(item, index) in companyOptions"
-            :key="item.code"
-            :value="item.name"
-            :label="item.name"
+            :key="item"
+            :value="item"
+            :label="item"
           ></el-option>
-        </el-select> -->
-        <el-cascader
+        </el-select>
+        <!-- <el-cascader
           v-model="search.company"
           placeholder="公司名称"
           filterable
@@ -47,7 +47,7 @@
           :props="props"
           collapse-tags
           clearable
-        ></el-cascader>
+        ></el-cascader> -->
         <!-- <el-button type="primary" size="medium">查询</el-button> -->
       </div>
       <el-tabs
@@ -140,31 +140,38 @@ export default {
       this.activeName = tab.name;
     },
     getAllCompany() {
-      let param = {
-        userId: this.$Cookies.get("userId"),
-      };
-      this.$ajax.manage.getAllCompanyLevel(param).then((res) => {
-        if (res.data.code == 0) {
-          // this.companyOptions = res.data.treeData;
-          let codeList = [];
-          this.backData = res.data.treeData.map((item) => {
-            codeList.push(item.code);
-            return item;
-          });
-          res.data.treeData.map((item) => {
-            if (codeList.indexOf(item.scode) == -1) this.topValue = item.scode;
-          });
-          let arr = Utils.formatTreeData(
-            res.data.treeData,
-            "code",
-            "scode",
-            this.topValue,
-            true
-          );
-          console.log(arr);
-          this.companyOptions = arr;
-        }
-      });
+      this.$ajax.visitLog
+        .getCompanyList({ userName: this.$Cookies.get("userCode") })
+        .then((res) => {
+          if (res.data.code == 0) {
+            this.companyOptions = res.data.data;
+          }
+        });
+      // let param = {
+      //   userId: this.$Cookies.get("userId"),
+      // };
+      // this.$ajax.manage.getAllCompanyLevel(param).then((res) => {
+      //   if (res.data.code == 0) {
+      //     // this.companyOptions = res.data.treeData;
+      //     let codeList = [];
+      //     this.backData = res.data.treeData.map((item) => {
+      //       codeList.push(item.code);
+      //       return item;
+      //     });
+      //     res.data.treeData.map((item) => {
+      //       if (codeList.indexOf(item.scode) == -1) this.topValue = item.scode;
+      //     });
+      //     let arr = Utils.formatTreeData(
+      //       res.data.treeData,
+      //       "code",
+      //       "scode",
+      //       this.topValue,
+      //       true
+      //     );
+      //     console.log(arr);
+      //     this.companyOptions = arr;
+      //   }
+      // });
     },
     changeCompany(val) {
       let temp = [];
