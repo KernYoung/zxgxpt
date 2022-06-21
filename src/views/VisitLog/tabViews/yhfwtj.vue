@@ -45,7 +45,7 @@
           <!-- <el-button type="text" size="small">{{ scope.row.userId }}</el-button> -->
         </template>
       </el-table-column>
-      <el-table-column prop="visitPageNum" label="访问次数" align="center">
+      <el-table-column prop="visitNum" label="访问次数" align="center">
       </el-table-column>
       <el-table-column prop="visitPageNum" label="访问页面次数" align="center">
       </el-table-column>

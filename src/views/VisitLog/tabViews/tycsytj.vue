@@ -28,7 +28,7 @@
             v-if="scope.row.module == '添加监控（不与时间联动）'"
             >{{ scope.row.userNum }}</el-link
           >
-          <span v-else>{{ scope.row.useNum || "/" }}</span></template
+          <span v-else>{{ scope.row.userNum || "/" }}</span></template
         >
       </el-table-column>
       <el-table-column prop="surplusNum" label="剩余次数" align="center">
