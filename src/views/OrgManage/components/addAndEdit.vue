@@ -1,33 +1,48 @@
 <template>
-  <el-form :model="form" ref="form" label-width="150px" class="demo-ruleForm">
-    <el-form-item label="编码：" prop="code">
-      <el-input v-model="form.code" style="width:300px"></el-input>
-    </el-form-item>
-    <el-form-item label="名称：" prop="name">
-      <el-input v-model="form.name" style="width:300px"></el-input>
-    </el-form-item>
-    <el-form-item label="用户前缀规则：" prop="rule">
-      <el-input v-model="form.rule" style="width:300px"></el-input>
-    </el-form-item>
-    <el-form-item label="上级组织名称：" prop="parentName">
-      <el-input v-model="form.parentName" style="width:300px"></el-input>
-    </el-form-item>
-    <el-form-item label="上级组织编码：" prop="parentCode">
-      <el-input v-model="form.parentCode" style="width:300px"></el-input>
-    </el-form-item>
-    <el-form-item label="单位简称：" prop="abbr">
-      <el-input v-model="form.abbr" style="width:300px"></el-input>
-    </el-form-item>
-    <el-form-item label="是否启用：" prop="ifOpen">
-      <el-switch v-model="form.ifOpen" :active-value="0" :inactive-value="1">
-      </el-switch>
-    </el-form-item>
-  </el-form>
+  <div>
+    <el-form
+      :model="form"
+      ref="form"
+      label-width="150px"
+      class="demo-ruleForm"
+      :rules="rules"
+    >
+      <el-form-item label="编码：" prop="code">
+        <el-input v-model="form.code" style="width:300px"></el-input>
+      </el-form-item>
+      <el-form-item label="名称：" prop="name">
+        <el-input v-model="form.name" style="width:300px"></el-input>
+      </el-form-item>
+      <el-form-item label="用户前缀规则：" prop="rule">
+        <el-input v-model="form.rule" style="width:300px"></el-input>
+      </el-form-item>
+      <el-form-item label="上级组织名称：" prop="sname">
+        <el-input v-model="form.sname" style="width:300px"></el-input>
+      </el-form-item>
+      <el-form-item label="上级组织编码：" prop="scode">
+        <el-input v-model="form.scode" style="width:300px"></el-input>
+      </el-form-item>
+      <el-form-item label="单位简称：" prop="shortName">
+        <el-input v-model="form.shortName" style="width:300px"></el-input>
+      </el-form-item>
+      <el-form-item label="是否启用：" prop="enableState">
+        <el-switch
+          v-model="form.enableState"
+          :active-value="1"
+          :inactive-value="0"
+        >
+        </el-switch>
+      </el-form-item>
+    </el-form>
+    <div style="text-align:right">
+      <el-button type="primary" @click="submitForm('form')">保 存</el-button>
+    </div>
+  </div>
 </template>
 <script>
 export default {
   props: {
-    id: String,
+    currentRow: Object,
   },
   data() {
     return {
@@ -35,32 +50,44 @@ export default {
         code: "",
         name: "",
         rule: "",
-        parentName: "",
-        parentCode: "",
-        abbr: "",
-        ifOpen: 0,
+        scode: "",
+        sname: "",
+        shortName: "",
+        enableState: 0,
+      },
+      rules: {
+        code: [{ required: true, message: "请输入编码", trigger: "blur" }],
+        name: [{ required: true, message: "请输入名称", trigger: "blur" }],
       },
     };
   },
   watch: {
-    id: {
+    currentRow: {
       handler(val) {
-        if (val) this.getDetail();
+        console.log(val);
+        this.form = val;
       },
       immediate: true,
+      deep: true,
     },
   },
   methods: {
-    getDetail() {
-      this.form = {
-        code: "ZHR001",
-        name: "中国人寿保险有限公司",
-        rule: "zhrs",
-        parentName: "浙江省国际贸易集团有限公司",
-        parentCode: "010",
-        abbr: "中韩人寿",
-        ifOpen: 0,
-      };
+    submitForm(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          console.log(this.form);
+          let param = Object.assign({ orgType: "手工" }, this.form);
+          console.log(param);
+          this.$ajax.manage.SaveHrOrg(param).then((res) => {
+            if (res.data.code == "0") {
+              this.$emit("savesuccess");
+            }
+          });
+        } else {
+          // console.log("error submit!!");
+          return false;
+        }
+      });
     },
   },
 };

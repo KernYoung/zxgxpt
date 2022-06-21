@@ -83,6 +83,12 @@ async function getCompanyList (param) {
     return getCompanyList
 }
 
+//天眼查客商初筛使用情况
+async function getTycFilterCustomerList (param) {
+    let getTycFilterCustomerList = await ajax.post(`/api/report/getTycFilterCustomerList`, param)
+    return getTycFilterCustomerList
+}
+
 const visitLog={
     getUserVisitn,
     getUserVisitList,
@@ -97,7 +103,8 @@ const visitLog={
     getPageActive,
     getLikeQuery,
     getXbReportUseByCompany,
-    getCompanyList
+    getCompanyList,
+    getTycFilterCustomerList
 }
 
 export default visitLog

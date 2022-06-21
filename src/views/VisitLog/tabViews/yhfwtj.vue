@@ -129,7 +129,6 @@ export default {
         endDate: this.searchOptions.handleTime[1],
         companyName: this.searchOptions.company.join(","),
       };
-      console.log(param);
       this.xAxisData = [];
       this.visitNumData = [];
       this.visitPageNumData = [];
@@ -141,8 +140,12 @@ export default {
             this.visitNumData.push(item.visitNum);
             this.visitPageNumData.push(item.visitPageNum);
             this.visitUserNumData.push(item.visitUserNum);
-            this.initChart();
           });
+          this.initChart();
+          console.log(this.xAxisData);
+          console.log(this.visitNumData);
+          console.log(this.visitPageNumData);
+          console.log(this.visitUserNumData);
         }
       });
     },
@@ -198,21 +201,18 @@ export default {
             name: "访问次数",
             type: "line",
             smooth: true,
-            stack: "Total",
             data: this.visitNumData,
           },
           {
             name: "访问用户个数",
             type: "line",
             smooth: true,
-            stack: "Total",
             data: this.visitUserNumData,
           },
           {
             name: "访问页面个数",
             type: "line",
             smooth: true,
-            stack: "Total",
             data: this.visitPageNumData,
           },
         ],

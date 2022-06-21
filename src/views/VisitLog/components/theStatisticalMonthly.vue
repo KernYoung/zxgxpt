@@ -265,9 +265,9 @@ export default {
   data() {
     return {
       form: {
-        tStart: "",
-        zStart: "",
-        bStart: "",
+        tStart: "2021-09-19",
+        zStart: "2020-07-10",
+        bStart: "2021-01-01",
         startDate: moment()
           .startOf("month")
           .format("YYYY-MM-DD"),

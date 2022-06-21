@@ -48,23 +48,33 @@
       <el-table-column prop="COMPANYNAME" label="申请企业" align="center">
       </el-table-column>
       <el-table-column prop="NUM" label="申请次数" align="center">
+        <template slot-scope="scope">
+          <el-link type="primary" @click="showKscsDetail(scope.row)">{{
+            scope.row.NUM
+          }}</el-link></template
+        >
       </el-table-column>
     </el-table>
     <el-dialog
-      title="天眼查添加监控情况"
+      :title="dialog.title"
       :visible.sync="dialog.visible"
       width="1100px"
     >
-      <MonitorSituation
+      <!-- <MonitorSituation
         :searchOptions="{ ...searchOptions, flag: '1' }"
-      ></MonitorSituation>
+      ></MonitorSituation> -->
+      <components
+        :is="activeComponent"
+        :searchOptions="{ ...searchOptions, flag: '1' }"
+      ></components>
     </el-dialog>
   </div>
 </template>
 <script>
 import MonitorSituation from "../components/monitorSituation";
+import KscsSituation from "../components/kscsSituation";
 export default {
-  components: { MonitorSituation },
+  components: { MonitorSituation, KscsSituation },
   props: {
     searchOptions: Object,
   },
@@ -74,7 +84,9 @@ export default {
       applyData: [],
       dialog: {
         visible: false,
+        title: "",
       },
+      activeComponent: "",
     };
   },
   watch: {
@@ -128,6 +140,13 @@ export default {
       }
     },
     showDetail(row) {
+      this.dialog.title = "天眼查添加监控情况";
+      this.activeComponent = MonitorSituation;
+      this.dialog.visible = true;
+    },
+    showKscsDetail(row) {
+      this.dialog.title = "天眼查客商初筛使用情况";
+      this.activeComponent = KscsSituation;
       this.dialog.visible = true;
     },
   },

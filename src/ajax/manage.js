@@ -579,6 +579,16 @@ async function saveXbMapping (param) {
     let saveXbMapping = await ajax.post(`/api/common/ZXB/SaveXbMapping`, param)
     return saveXbMapping
 }
+//组织架构维护-树查询
+async function getHrOrg (param) {
+    let getHrOrg = await ajax.post(`/api/common/ZXB/getHrOrg`, param)
+    return getHrOrg
+}
+//组织架构维护-新增、编辑
+async function SaveHrOrg (param) {
+    let SaveHrOrg = await ajax.post(`/api/common/ZXB/SaveHrOrg`, param)
+    return SaveHrOrg
+}
 
 const manage = {
     login: login,
@@ -689,7 +699,10 @@ const manage = {
     reportExist:reportExist,
     getClientNoMaintainList:getClientNoMaintainList,
     saveXbMapping:saveXbMapping,
-    getXbMapping:getXbMapping
+    getXbMapping:getXbMapping,
+    getHrOrg,
+    SaveHrOrg
+
 }
 
 export default manage

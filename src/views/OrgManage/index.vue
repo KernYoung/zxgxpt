@@ -20,9 +20,11 @@
             class="filter-tree"
             :data="data"
             :props="defaultProps"
-            default-expand-all
             :filter-node-method="filterNode"
             ref="tree"
+            highlight-current
+            @node-click="nodeClick"
+            v-loading="treeLoading"
           >
           </el-tree>
         </div>
@@ -32,7 +34,7 @@
           <div
             style="display:flex;justify-content:space-between;align-items:center"
           >
-            <el-button type="primary" plain size="medium" @click="openDialog"
+            <el-button type="primary" plain size="medium" @click="add"
               >新增</el-button
             >
             <span class="note"
@@ -43,7 +45,7 @@
             :data="tableData"
             style="margin-top:15px"
             size="small"
-            max-height="calc(100% - 90px)"
+            height="calc(100% - 90px)"
             border
             :header-cell-style="{ background: '#ECF1FE' }"
           >
@@ -52,38 +54,58 @@
             <el-table-column prop="name" label="名称"> </el-table-column>
             <el-table-column prop="rule" label="用户前缀规则">
             </el-table-column>
-            <el-table-column prop="parentName" label="上级组织名称">
+            <el-table-column prop="sname" label="上级组织名称">
             </el-table-column>
-            <el-table-column prop="parentCode" label="上级组织编码">
+            <el-table-column prop="scode" label="上级组织编码">
             </el-table-column>
-            <el-table-column prop="abbr" label="单位简称"> </el-table-column>
-            <el-table-column prop="open" label="启用状态" width="100px">
+            <el-table-column prop="shortName" label="单位简称">
+            </el-table-column>
+            <el-table-column prop="enableState" label="启用状态" width="100px">
+              <template slot-scope="scope">
+                <el-tag
+                  type="primary"
+                  size="small"
+                  v-if="
+                    scope.row.enableState == 1 || scope.row.enableState == 2
+                  "
+                  >是</el-tag
+                >
+                <el-tag
+                  type="danger"
+                  size="small"
+                  v-if="scope.row.enableState == 0"
+                  >否</el-tag
+                >
+              </template>
             </el-table-column>
             <el-table-column label="操作" width="100px">
               <template slot-scope="scope">
                 <el-button
                   type="text"
                   size="small"
-                  v-if="!!scope.row.selfAdd"
+                  v-if="scope.row.orgType !== 'NC'"
                   @click="openDialog(scope.row)"
                   >编辑</el-button
                 >
-                <el-button type="text" size="small" v-if="!!scope.row.selfAdd"
+                <el-button
+                  type="text"
+                  size="small"
+                  v-if="scope.row.orgType !== 'NC'"
                   >删除</el-button
                 >
               </template>
             </el-table-column>
           </el-table>
-          <div class="page">
+          <!-- <div class="page">
             <el-pagination
-              @current-change="getTableData"
+              @current-change="handleCurrentChange"
               :current-page.sync="page.currentPage"
               :page-size="page.pageSize"
               layout="total, prev, pager, next"
               :total="page.total"
             >
             </el-pagination>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -92,11 +114,11 @@
       :visible.sync="dialog.visible"
       width="550px"
     >
-      <AddAndEdit :key="keys" :id="id"></AddAndEdit>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialog.visible = false">取 消</el-button>
-        <el-button type="primary">确 定</el-button>
-      </span>
+      <AddAndEdit
+        :key="keys"
+        :currentRow="currentRow"
+        @savesuccess="savesuccess"
+      ></AddAndEdit>
     </el-dialog>
   </div>
 </template>
@@ -109,45 +131,10 @@ export default {
   data() {
     return {
       filterText: "",
-      data: [
-        {
-          id: 1,
-          label: "浙江省国际贸易集团有限公司",
-          children: [
-            {
-              id: 4,
-              label: "浙江东方金融控股集团有限公司",
-              children: [
-                {
-                  id: 9,
-                  label: "浙江东方金融控股集团有限公司2",
-                },
-                {
-                  id: 10,
-                  label: "浙江东方金融控股集团有限公司3",
-                },
-              ],
-            },
-            {
-              id: 5,
-              label: "浙江东方金融控股集团有限公司",
-              children: [
-                {
-                  id: 59,
-                  label: "浙江东方金融控股集团有限公司2",
-                },
-                {
-                  id: 50,
-                  label: "浙江东方金融控股集团有限公司3",
-                },
-              ],
-            },
-          ],
-        },
-      ],
+      data: [],
       defaultProps: {
-        children: "children",
-        label: "label",
+        children: "childHrOrg",
+        label: "name",
       },
       tableData: [],
       page: {
@@ -161,7 +148,9 @@ export default {
         type: "",
       },
       keys: +new Date(),
-      id: "",
+      currentRow: {},
+      currentNode: null,
+      treeLoading: true,
     };
   },
   watch: {
@@ -170,83 +159,60 @@ export default {
     },
   },
   mounted() {
-    this.getTableData();
+    this.getTableData("");
+    this.getOrg();
   },
   methods: {
-    getTableData() {
-      this.tableData = [
-        {
-          id: "1",
-          code: "ZHR001",
-          name: "中国人寿保险有限公司",
-          rule: "zhrs",
-          parentName: "浙江省国际贸易集团有限公司",
-          parentCode: "010",
-          abbr: "中韩人寿",
-          open: "是",
-          selfAdd: true,
-        },
-        {
-          id: "2",
-          code: "01201",
-          name: "浙江东方金融控股集团股份有限公司",
-          rule: "",
-          parentName: "浙江省国际贸易集团有限公司",
-          parentCode: "010",
-          abbr: "浙江东方",
-          open: "是",
-        },
-        {
-          id: "2",
-          code: "01201",
-          name: "浙江东方金融控股集团股份有限公司",
-          rule: "",
-          parentName: "浙江省国际贸易集团有限公司",
-          parentCode: "010",
-          abbr: "浙江东方",
-          open: "是",
-        },
-        {
-          code: "01201",
-          name: "浙江东方金融控股集团股份有限公司",
-          rule: "",
-          parentName: "浙江省国际贸易集团有限公司",
-          parentCode: "010",
-          abbr: "浙江东方",
-          open: "是",
-        },
-        {
-          id: "2",
-          code: "01201",
-          name: "浙江东方金融控股集团股份有限公司",
-          rule: "",
-          parentName: "浙江省国际贸易集团有限公司",
-          parentCode: "010",
-          abbr: "浙江东方",
-          open: "是",
-        },
-        {
-          id: "2",
-          code: "01201",
-          name: "浙江东方金融控股集团股份有限公司",
-          rule: "",
-          parentName: "浙江省国际贸易集团有限公司",
-          parentCode: "010",
-          abbr: "浙江东方",
-          open: "是",
-        },
-      ];
+    getOrg() {
+      this.$ajax.manage.getHrOrg({ code: "" }).then((res) => {
+        this.treeLoading = false;
+        if (res.data.code == "0") {
+          this.data = res.data.data;
+        }
+      });
+    },
+    getTableData(code) {
+      this.$ajax.manage.getHrOrg({ code }).then((res) => {
+        if (res.data.code == "0") {
+          this.tableData = res.data.data;
+          this.page.total = res.data.data.length;
+        }
+      });
     },
     filterNode(value, data) {
       if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      return data.name.indexOf(value) !== -1;
     },
     openDialog(row) {
-      console.log(row);
-      this.id = row.id;
+      this.currentRow = row;
       this.keys = +new Date();
-      this.dialog.title = row.id ? "编辑" : "新增";
+      this.dialog.title = "编辑";
       this.dialog.visible = true;
+    },
+    add() {
+      if (!this.currentNode) {
+        this.$message.warning("请选择组织架构");
+        return;
+      }
+      this.currentRow = {
+        scode: this.currentNode.code,
+        sname: this.currentNode.name,
+      };
+      this.keys = +new Date();
+      this.dialog.title = "新增";
+      this.dialog.visible = true;
+    },
+    savesuccess() {
+      this.dialog.visible = false;
+      this.getTableData(this.currentNode.code);
+    },
+    nodeClick(data) {
+      console.log(data);
+      this.currentNode = data;
+      this.getTableData(data.code);
+    },
+    handleCurrentChange(val) {
+      this.table;
     },
   },
 };
@@ -258,7 +224,7 @@ export default {
     height: calc(100% - 50px);
     box-sizing: border-box;
     .left {
-      width: 350px;
+      width: 450px;
       background: #fff;
       margin-right: 10px;
       overflow: auto;
