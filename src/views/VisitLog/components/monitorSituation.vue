@@ -1,6 +1,11 @@
 <template>
   <div class="tab-container">
-    <div class="title">页面热度</div>
+    <div class="title" style="display:flex;justify-content:space-between">
+      <span>页面热度</span>
+      <el-link type="primary" @click="exportExcel" style="margin-right:10px"
+        >导出</el-link
+      >
+    </div>
     <el-table
       :data="tableData"
       border
@@ -8,6 +13,7 @@
       size="small"
       :header-cell-style="{ background: '#ECF1FE' }"
       :span-method="objectSpanMethod"
+      ref="table"
     >
       <el-table-column type="index" label="序号"></el-table-column>
       <el-table-column prop="gzCompanyName" label="已关注企业" align="center">
@@ -22,6 +28,8 @@
   </div>
 </template>
 <script>
+import XLSX from "xlsx";
+import FileSaver from "file-saver";
 export default {
   props: {
     searchOptions: Object,
@@ -99,7 +107,43 @@ export default {
         }
       }
     },
+    exportExcel() {
+      const tableComp = this.$refs.table.$el;
+      var wb;
+      var fix = tableComp.querySelector(".el-table__fixed");
+      // 1.从el-table中生成Excel工作簿
+      if (fix) {
+        // 解决固定列时导出两份的bug
+        wb = XLSX.utils.table_to_book(tableComp.removeChild(fix), {
+          raw: true,
+        });
+        tableComp.appendChild(fix);
+      } else {
+        wb = XLSX.utils.table_to_book(tableComp, { raw: true });
+      }
+      // 2.输出二进制字符串
+      let wbout = XLSX.write(wb, {
+        bookType: "xlsx",
+        bookSST: true,
+        type: "array",
+      });
+      try {
+        FileSaver.saveAs(
+          new Blob([wbout], { type: "application/octet-stream" }),
+          `天眼查添加监控情况(${this.searchOptions.handleTime[0]}-${this.searchOptions.handleTime[1]}).xlsx`
+        );
+      } catch (e) {
+        if (typeof console !== "undefined") {
+          console.log(e, wbout);
+        }
+      }
+      return wbout;
+    },
   },
 };
 </script>
-<style scoped lang="less"></style>
+<style scoped lang="less">
+.title {
+  margin-bottom: 10px;
+}
+</style>

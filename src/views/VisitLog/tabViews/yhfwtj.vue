@@ -3,6 +3,9 @@
     <!-- 用户访问统计 -->
     <div id="chart"></div>
     <div style="text-align:right; margin: 20px 0 10px 0">
+      <el-link type="primary" @click="exportExcel" style="margin-right:10px"
+        >导出</el-link
+      >
       <el-link type="primary" @click="showStatisticalReport">统计月报</el-link>
     </div>
     <el-table
@@ -12,6 +15,7 @@
       style="width: 100%;"
       size="small"
       :header-cell-style="{ background: '#ECF1FE' }"
+      ref="table"
     >
       <el-table-column type="index" label="序号" align="center">
       </el-table-column>
@@ -80,6 +84,8 @@
 import echarts from "echarts";
 import UserVisitDetail from "../components/userVisitDetail";
 import TheStatisticalMonthly from "../components/theStatisticalMonthly";
+import XLSX from "xlsx";
+import FileSaver from "file-saver";
 export default {
   components: {
     UserVisitDetail,
@@ -173,6 +179,16 @@ export default {
         ],
         tooltip: {
           trigger: "axis",
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            saveAsImage: {
+              show: true,
+              excludeComponents: ["toolbox"],
+              pixelRatio: 2,
+            },
+          },
         },
         legend: {
           icon: "circle",
@@ -285,6 +301,38 @@ export default {
       this.activeComponent = TheStatisticalMonthly;
       this.dialog.title = "统计月报";
       this.dialog.visible = true;
+    },
+    exportExcel() {
+      const tableComp = this.$refs.table.$el;
+      var wb;
+      var fix = tableComp.querySelector(".el-table__fixed");
+      // 1.从el-table中生成Excel工作簿
+      if (fix) {
+        // 解决固定列时导出两份的bug
+        wb = XLSX.utils.table_to_book(tableComp.removeChild(fix), {
+          raw: true,
+        });
+        tableComp.appendChild(fix);
+      } else {
+        wb = XLSX.utils.table_to_book(tableComp, { raw: true });
+      }
+      // 2.输出二进制字符串
+      let wbout = XLSX.write(wb, {
+        bookType: "xlsx",
+        bookSST: true,
+        type: "array",
+      });
+      try {
+        FileSaver.saveAs(
+          new Blob([wbout], { type: "application/octet-stream" }),
+          `用户访问统计(${this.searchOptions.handleTime[0]}-${this.searchOptions.handleTime[1]}).xlsx`
+        );
+      } catch (e) {
+        if (typeof console !== "undefined") {
+          console.log(e, wbout);
+        }
+      }
+      return wbout;
     },
   },
 };
