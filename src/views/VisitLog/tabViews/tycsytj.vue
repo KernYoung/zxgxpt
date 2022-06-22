@@ -39,7 +39,7 @@
           <el-link type="primary" @click="showKscsDetail(scope.row)">{{ scope.row.NUM }}</el-link></template
         >
       </el-table-column>
-      <el-table-column prop="SOURCEFROM" label="数据来源" align="center"> </el-table-column>
+      <el-table-column prop="SOURCE" label="数据来源" align="center"> </el-table-column>
     </el-table>
     <el-dialog :title="dialog.title" :visible.sync="dialog.visible" width="1100px">
       <!-- <MonitorSituation
