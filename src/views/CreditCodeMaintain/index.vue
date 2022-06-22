@@ -24,14 +24,19 @@
           style="width:220px;margin:0 10px"
         ></el-input>
         <el-button type="primary" @click="search">查询</el-button>
+        <el-button type="primary" @click="download">导出</el-button>
+      </div>
+      <div style="margin-top:10px;font-size:14px">
+        共 {{ page.total }} 条数据
       </div>
       <el-table
         :data="tableData"
         style="margin-top:15px"
         size="small"
-        max-height="calc(100% - 90px)"
+        height="calc(100% - 120px)"
         border
         :header-cell-style="{ background: '#ECF1FE' }"
+        ref="table"
       >
         <el-table-column prop="code" label="公司HR编码" width="100px">
         </el-table-column>
@@ -41,37 +46,40 @@
         <el-table-column prop="companyType" label="数据来源"> </el-table-column>
         <el-table-column prop="clientNo" label="信保通买方代码">
           <template slot-scope="scope">
-            <el-link
-              :type="scope.row.clientNo ? 'info' : 'primary'"
+            <div
+              style="width:100%;height:30px;line-height:30px;cursor:pointer"
               @click="open(scope.row)"
-              >{{
-                scope.row.clientNo ? scope.row.clientNo : "点击填写"
-              }}</el-link
             >
+              <el-link :type="scope.row.clientNo ? 'info' : 'primary'">{{
+                scope.row.clientNo ? scope.row.clientNo : ""
+              }}</el-link>
+            </div>
           </template>
         </el-table-column>
       </el-table>
-      <div class="page">
+      <!-- <div class="page">
         <el-pagination
           @current-change="getTableData"
           :current-page.sync="page.currentPage"
-          :page-size="page.pageSize"
+          :page-size="15"
           layout="total, prev, pager, next"
           :total="page.total"
         >
         </el-pagination>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 <script>
+import XLSX from "xlsx";
+import FileSaver from "file-saver";
 export default {
   data() {
     return {
       tableData: [],
       page: {
         currentPage: 1,
-        pageSize: 15,
+        pageSize: 500,
         total: 0,
       },
       form: {
@@ -126,6 +134,41 @@ export default {
           });
         })
         .catch(() => {});
+    },
+    download() {
+      console.log(this.exportExcel());
+    },
+    exportExcel() {
+      const tableComp = this.$refs.table.$el;
+      var wb;
+      var fix = tableComp.querySelector(".el-table__fixed");
+      // 1.从el-table中生成Excel工作簿
+      if (fix) {
+        // 解决固定列时导出两份的bug
+        wb = XLSX.utils.table_to_book(tableComp.removeChild(fix), {
+          raw: true,
+        });
+        tableComp.appendChild(fix);
+      } else {
+        wb = XLSX.utils.table_to_book(tableComp, { raw: true });
+      }
+      // 2.输出二进制字符串
+      let wbout = XLSX.write(wb, {
+        bookType: "xlsx",
+        bookSST: true,
+        type: "array",
+      });
+      try {
+        FileSaver.saveAs(
+          new Blob([wbout], { type: "application/octet-stream" }),
+          `信保代码维护.xlsx`
+        );
+      } catch (e) {
+        if (typeof console !== "undefined") {
+          console.log(e, wbout);
+        }
+      }
+      return wbout;
     },
   },
 };

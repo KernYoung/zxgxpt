@@ -19,6 +19,9 @@
           <el-tree
             class="filter-tree"
             :data="data"
+            node-key="code"
+            :default-expanded-keys="[defaultNode]"
+            :current-node-key="defaultNode"
             :props="defaultProps"
             :filter-node-method="filterNode"
             ref="tree"
@@ -34,9 +37,14 @@
           <div
             style="display:flex;justify-content:space-between;align-items:center"
           >
-            <el-button type="primary" plain size="medium" @click="add"
-              >新增</el-button
-            >
+            <div>
+              <el-button type="primary" plain size="medium" @click="add"
+                >新增</el-button
+              >
+              <el-button type="primary" plain size="medium" @click="exportExcel"
+                >导出</el-button
+              >
+            </div>
             <span class="note"
               >说明：手动添加的公司公司编码请附带公司简称英文缩写，便于维护，如中韩人寿，则维护ZHRS001</span
             >
@@ -48,6 +56,7 @@
             height="calc(100% - 90px)"
             border
             :header-cell-style="{ background: '#ECF1FE' }"
+            ref="table"
           >
             <el-table-column prop="code" label="编码" width="100px">
             </el-table-column>
@@ -91,6 +100,7 @@
                   type="text"
                   size="small"
                   v-if="scope.row.orgType !== 'NC'"
+                  @click="deleteRow(scope.row)"
                   >删除</el-button
                 >
               </template>
@@ -124,6 +134,8 @@
 </template>
 <script>
 import AddAndEdit from "./components/addAndEdit.vue";
+import XLSX from "xlsx";
+import FileSaver from "file-saver";
 export default {
   components: {
     AddAndEdit,
@@ -151,6 +163,7 @@ export default {
       currentRow: {},
       currentNode: null,
       treeLoading: true,
+      defaultNode: "010",
     };
   },
   watch: {
@@ -159,7 +172,7 @@ export default {
     },
   },
   mounted() {
-    this.getTableData("");
+    // this.getTableData("");
     this.getOrg();
   },
   methods: {
@@ -167,7 +180,10 @@ export default {
       this.$ajax.manage.getHrOrg({ code: "" }).then((res) => {
         this.treeLoading = false;
         if (res.data.code == "0") {
-          this.data = res.data.data;
+          this.data = [res.data.data[0]];
+          this.defaultNode = res.data.data[0].code;
+          this.getTableData(this.defaultNode);
+          this.currentNode = res.data.data[0];
         }
       });
     },
@@ -213,6 +229,63 @@ export default {
     },
     handleCurrentChange(val) {
       this.table;
+    },
+    deleteRow(row) {
+      this.$confirm("确定删除吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          let param = {
+            dr: 1,
+            pkOrg: row.pkOrg,
+            orgType: row.orgType,
+          };
+          this.$ajax.manage.SaveHrOrg(param).then((res) => {
+            if (res.data.code == "0") {
+              this.$message({
+                type: "success",
+                message: res.data.msg,
+              });
+              this.getTableData(this.currentNode.code);
+            }
+          });
+        })
+        .catch(() => {});
+    },
+    exportExcel() {
+      const tableComp = this.$refs.table.$el;
+      var wb;
+      var fix = tableComp.querySelector(".el-table__fixed");
+      // 1.从el-table中生成Excel工作簿
+      if (fix) {
+        // 解决固定列时导出两份的bug
+        wb = XLSX.utils.table_to_book(tableComp.removeChild(fix), {
+          raw: true,
+        });
+        tableComp.appendChild(fix);
+      } else {
+        wb = XLSX.utils.table_to_book(tableComp, { raw: true });
+      }
+      // 2.输出二进制字符串
+      let wbout = XLSX.write(wb, {
+        bookType: "xlsx",
+        bookSST: true,
+        type: "array",
+      });
+      try {
+        FileSaver.saveAs(
+          new Blob([wbout], { type: "application/octet-stream" }),
+          `组织架构维护(${this.currentNode.name}).xlsx`
+        );
+      } catch (e) {
+        if (typeof console !== "undefined") {
+          console.log(e, wbout);
+        }
+      }
+      console.log("222");
+      return wbout;
     },
   },
 };
