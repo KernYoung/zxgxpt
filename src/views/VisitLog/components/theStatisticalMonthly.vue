@@ -93,7 +93,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="visitNum" label="访问次数" align="center"> </el-table-column>
-        <el-table-column prop="activePie" label="用户活跃度 访问/活跃用户" align="center"> </el-table-column>
+        <el-table-column prop="acticeVisitRatio" label="用户活跃度 访问/活跃用户" align="center"> </el-table-column>
       </el-table>
       <div style="margin:10px 0">
         截至{{ new Date().getMonth() + 1 }}月份各数据使用情况如下（注：红色字体公司已对接API接口）
