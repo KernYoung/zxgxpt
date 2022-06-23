@@ -49,7 +49,9 @@
       :visible.sync="dialog.visible"
       width="1100px"
     >
-      <ReportUserStatus :options="searchOptions"></ReportUserStatus>
+      <ReportUserStatus
+        :options="{ ...searchOptions, activeCompany }"
+      ></ReportUserStatus>
       <!-- <span slot="footer" class="dialog-footer">
         <el-button @click="dialog.visible = false">取 消</el-button>
         <el-button type="primary" @click="dialog.visible = false">确 定</el-button>
@@ -71,6 +73,7 @@ export default {
       dialog: {
         visible: false,
       },
+      activeCompany: "",
     };
   },
   watch: {
@@ -97,7 +100,9 @@ export default {
         }
       });
     },
-    showDetail() {
+    showDetail(row) {
+      console.log(row);
+      this.activeCompany = row.companyName;
       this.dialog.visible = true;
     },
   },

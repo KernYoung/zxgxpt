@@ -8,8 +8,14 @@
       style="width: 100%;"
       size="small"
       :header-cell-style="{ background: '#ECF1FE' }"
+      :span-method="objectSpanMethod"
     >
-      <el-table-column type="index" label="序号"></el-table-column>
+      <el-table-column
+        prop="no"
+        label="序号"
+        width="100px"
+        align="center"
+      ></el-table-column>
       <el-table-column prop="pageName" label="页面名称" align="center">
       </el-table-column>
       <el-table-column prop="pagePath" label="页面路径" align="center">
@@ -53,6 +59,36 @@ export default {
           this.tableData = res.data.data;
         }
       });
+    },
+    objectSpanMethod({ row, column, rowIndex, columnIndobjectSpanMethodex }) {
+      const dataProvider = this.tableData;
+      const cellValue = row[column.property];
+      // if (
+      //   column.property == "visitUser" ||
+      //   column.property == "visitId" ||
+      //   column.property == "visitTimes" ||
+      //   column.property == "visitPageTimes"
+      // )
+      //   return;
+      if (cellValue) {
+        // 上一条数据
+        const prevRow = dataProvider[rowIndex - 1];
+        // 下一条数据
+        let nextRow = dataProvider[rowIndex + 1];
+        // 当上一条数据等于下一条数据
+        if (prevRow && prevRow[column.property] === cellValue) {
+          return { rowspan: 0, colspan: 0 };
+        } else {
+          let rowspan = 1;
+          while (nextRow && nextRow[column.property] === cellValue) {
+            rowspan++;
+            nextRow = dataProvider[rowspan + rowIndex];
+          }
+          if (rowspan > 1) {
+            return { rowspan, colspan: 1 };
+          }
+        }
+      }
     },
   },
 };

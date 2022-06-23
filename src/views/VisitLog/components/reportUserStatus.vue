@@ -26,14 +26,14 @@
       <el-table-column prop="approveTime" label="审核时间" align="center">
       </el-table-column>
       <el-table-column
-        prop="previewTimes"
+        prop="previewNum"
         label="预览次数"
         align="center"
         width="75px"
       >
       </el-table-column>
       <el-table-column
-        prop="downloadTimes"
+        prop="downLoadNum"
         label="下载次数"
         align="center"
         width="75px"
@@ -58,6 +58,7 @@ export default {
   created() {},
   mounted() {
     this.getData();
+    console.log(this.options);
   },
   watch: {},
   methods: {
@@ -65,7 +66,7 @@ export default {
       let param = {
         startDate: this.options.handleTime[0],
         endDate: this.options.handleTime[1],
-        companyName: this.options.company.join(","),
+        companyName: this.options.activeCompany,
       };
       this.$ajax.visitLog.getXbReportUseByCompany(param).then((res) => {
         if (res.data.code == "0") {
