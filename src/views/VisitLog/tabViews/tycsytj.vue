@@ -45,7 +45,10 @@
       <!-- <MonitorSituation
         :searchOptions="{ ...searchOptions, flag: '1' }"
       ></MonitorSituation> -->
-      <components :is="activeComponent" :searchOptions="{ ...searchOptions, flag: '1' }"></components>
+      <components
+        :is="activeComponent"
+        :searchOptions="{ ...searchOptions, flag: '1', SOURCE, COMPANYNAME }"
+      ></components>
     </el-dialog>
   </div>
 </template>
@@ -66,6 +69,8 @@ export default {
         title: '',
       },
       activeComponent: '',
+      COMPANYNAME: '',
+      SOURCE: '',
     }
   },
   watch: {
@@ -125,6 +130,8 @@ export default {
     },
     showKscsDetail(row) {
       this.dialog.title = '天眼查客商初筛使用情况'
+      this.COMPANYNAME = row.COMPANYNAME
+      this.SOURCE = row.SOURCE
       this.activeComponent = KscsSituation
       this.dialog.visible = true
     },

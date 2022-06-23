@@ -318,6 +318,7 @@ export default {
       sums[3] = this[name].activeUserNum
       sums[4] = this[name].activeUserRatio
       sums[5] = this[name].visitNum
+      sums[6] = this[name].acticeVisitRatio
       console.log(sums)
       return sums
     },
