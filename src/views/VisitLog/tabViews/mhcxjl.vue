@@ -4,7 +4,6 @@
     <div class="title ">模糊查询记录</div>
     <el-table
       :data="tableData"
-      :span-method="objectSpanMethod"
       border
       style="width: 100%;"
       size="small"

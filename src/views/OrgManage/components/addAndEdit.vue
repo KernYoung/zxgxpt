@@ -17,10 +17,10 @@
         <el-input v-model="form.rule" style="width:300px"></el-input>
       </el-form-item>
       <el-form-item label="上级组织名称：" prop="sname">
-        <el-input v-model="form.sname" style="width:300px"></el-input>
+        <el-input v-model="form.sname" style="width:300px" disabled></el-input>
       </el-form-item>
       <el-form-item label="上级组织编码：" prop="scode">
-        <el-input v-model="form.scode" style="width:300px"></el-input>
+        <el-input v-model="form.scode" style="width:300px" disabled></el-input>
       </el-form-item>
       <el-form-item label="单位简称：" prop="shortName">
         <el-input v-model="form.shortName" style="width:300px"></el-input>
@@ -58,6 +58,9 @@ export default {
       rules: {
         code: [{ required: true, message: "请输入编码", trigger: "blur" }],
         name: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        rule: [
+          { required: true, message: "请输入用户前缀规则", trigger: "blur" },
+        ],
       },
     };
   },
@@ -71,6 +74,9 @@ export default {
       deep: true,
     },
   },
+  mounted() {
+    // console.log(this.$store.state.codeList);
+  },
   methods: {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
@@ -80,6 +86,7 @@ export default {
           console.log(param);
           this.$ajax.manage.SaveHrOrg(param).then((res) => {
             if (res.data.code == "0") {
+              this.$message.success(res.data.msg || "保存成功");
               this.$emit("savesuccess");
             }
           });

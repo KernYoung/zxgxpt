@@ -37,7 +37,12 @@
       </el-table-column>
       <el-table-column prop="userName" label="访问用户" align="center">
       </el-table-column>
-      <el-table-column prop="userCode" label="用户工号" align="center">
+      <el-table-column
+        prop="userCode"
+        label="用户工号"
+        align="center"
+        width="140px"
+      >
         <template slot-scope="scope">
           <el-link type="primary" @click="showDetail(scope.row)">{{
             scope.row.userCode
