@@ -68,7 +68,7 @@ export default {
     currentRow: {
       handler(val) {
         console.log(val);
-        this.form = val;
+        this.form = Object.assign({}, val);
       },
       immediate: true,
       deep: true,
