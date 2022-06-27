@@ -73,7 +73,7 @@
         涉及各级成员单位
         <span style="color:#409eff">{{ detail.subAdminCount }}</span> 家，
         平台
-        <span style="color:#409eff">{{ detail.date }}</span>
+        <span style="color:#409eff">{{ detail.date2 }}</span>
         月活跃用户个数共计
         <span style="color:#409eff">{{ detail.active }}</span> 人， 访问次数共计
         <span style="color:#409eff">{{ detail.visitTotalNum }}</span> 次，
@@ -362,6 +362,7 @@ export default {
             visitTotalNum: res.data.totalCurrentActive.visitNum,
             activeRate: res.data.totalCurrentActive.acticeVisitRatio,
             date: moment(this.form.endDate).format("YYYY年MM月"),
+            date2: moment(this.form.endDate).format("MM"),
           };
           this.totalSumActive = res.data.totalSumActive;
           this.totalCurrentActive = res.data.totalCurrentActive;
