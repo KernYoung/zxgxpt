@@ -355,12 +355,12 @@ export default {
           this.activeData = res.data.currentMonthActive;
           this.useData = res.data.currentMonthUse;
           this.detail = {
-            totalCount: res.data.totalSumActive.userNum,
-            subAdminCount: "",
-            companyCount: "",
+            totalCount: res.data.totalCurrentActive.usernum,
+            subAdminCount:  res.data.totalCurrentActive.subadmin ,
+            companyCount:  res.data.totalCurrentActive.companynum,
             active: res.data.totalCurrentActive.activeUserNum,
             visitTotalNum: res.data.totalCurrentActive.visitNum,
-            activeRate: res.data.totalCurrentActive.activeUserRatio,
+            activeRate: res.data.totalCurrentActive.acticeVisitRatio,
             date: moment(this.form.endDate).format("YYYY年MM月"),
           };
           this.totalSumActive = res.data.totalSumActive;
