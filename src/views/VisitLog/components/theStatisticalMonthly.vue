@@ -356,8 +356,8 @@ export default {
           this.useData = res.data.currentMonthUse;
           this.detail = {
             totalCount: res.data.totalCurrentActive.usernum,
-            subAdminCount:  res.data.totalCurrentActive.subadmin ,
-            companyCount:  res.data.totalCurrentActive.companynum,
+            subAdminCount:  res.data.totalCurrentActive.companynum ,
+            companyCount:  res.data.totalCurrentActive.subadmin,
             active: res.data.totalCurrentActive.activeUserNum,
             visitTotalNum: res.data.totalCurrentActive.visitNum,
             activeRate: res.data.totalCurrentActive.acticeVisitRatio,
