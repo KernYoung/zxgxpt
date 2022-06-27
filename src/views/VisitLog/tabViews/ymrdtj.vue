@@ -56,20 +56,17 @@ export default {
       };
       this.$ajax.visitLog.getPageActive(param).then((res) => {
         if (res.data.code == "0") {
-          this.tableData = res.data.data;
+          this.tableData = res.data.data.map((item) => {
+            item.pageName = item.pageName ? item.pageName : " ";
+            return item;
+          });
         }
       });
     },
     objectSpanMethod({ row, column, rowIndex, columnIndobjectSpanMethodex }) {
       const dataProvider = this.tableData;
       const cellValue = row[column.property];
-      // if (
-      //   column.property == "visitUser" ||
-      //   column.property == "visitId" ||
-      //   column.property == "visitTimes" ||
-      //   column.property == "visitPageTimes"
-      // )
-      //   return;
+      if (column.property == "num" || column.property == "visitUserNum") return;
       if (cellValue) {
         // 上一条数据
         const prevRow = dataProvider[rowIndex - 1];

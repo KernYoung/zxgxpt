@@ -71,8 +71,7 @@
         其中子管理员
         <span style="color:#409eff">{{ detail.companyCount }}</span> 位，
         涉及各级成员单位
-        <span style="color:#409eff">{{ detail.subAdminCount }}</span> 家，
-        平台
+        <span style="color:#409eff">{{ detail.subAdminCount }}</span> 家， 平台
         <span style="color:#409eff">{{ detail.date2 }}</span>
         月活跃用户个数共计
         <span style="color:#409eff">{{ detail.active }}</span> 人， 访问次数共计
@@ -356,8 +355,8 @@ export default {
           this.useData = res.data.currentMonthUse;
           this.detail = {
             totalCount: res.data.totalCurrentActive.usernum,
-            subAdminCount:  res.data.totalCurrentActive.companynum ,
-            companyCount:  res.data.totalCurrentActive.subadmin,
+            subAdminCount: res.data.totalCurrentActive.companynum,
+            companyCount: res.data.totalCurrentActive.subadmin,
             active: res.data.totalCurrentActive.activeUserNum,
             visitTotalNum: res.data.totalCurrentActive.visitNum,
             activeRate: res.data.totalCurrentActive.acticeVisitRatio,
@@ -372,7 +371,6 @@ export default {
     objectSpanMethod({ row, column, rowIndex, columnIndex }, tableName) {
       const dataProvider = this[tableName];
       const cellValue = row[column.property];
-      if (column.property !== "area") return;
       if (cellValue) {
         // 上一条数据
         const prevRow = dataProvider[rowIndex - 1];

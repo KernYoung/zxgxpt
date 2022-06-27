@@ -51,6 +51,7 @@
     >
       <ReportUserStatus
         :options="{ ...searchOptions, activeCompany }"
+        :key="keys"
       ></ReportUserStatus>
       <!-- <span slot="footer" class="dialog-footer">
         <el-button @click="dialog.visible = false">取 消</el-button>
@@ -74,6 +75,7 @@ export default {
         visible: false,
       },
       activeCompany: "",
+      keys: +new Date(),
     };
   },
   watch: {
@@ -102,6 +104,7 @@ export default {
     },
     showDetail(row) {
       console.log(row);
+      this.keys = +new Date();
       this.activeCompany = row.companyName;
       this.dialog.visible = true;
     },

@@ -260,7 +260,8 @@ export default {
         column.property == "visitUser" ||
         column.property == "visitId" ||
         column.property == "visitTimes" ||
-        column.property == "visitPageTimes"
+        column.property == "visitPageTimes" ||
+        column.property == "visitPageNum"
       )
         return;
       if (cellValue) {
