@@ -72,7 +72,9 @@
         <span style="color:#409eff">{{ detail.companyCount }}</span> 位，
         涉及各级成员单位
         <span style="color:#409eff">{{ detail.subAdminCount }}</span> 家，
-        平台5月活跃用户个数共计
+        平台
+        <span style="color:#409eff">{{ detail.date }}</span>
+        月活跃用户个数共计
         <span style="color:#409eff">{{ detail.active }}</span> 人， 访问次数共计
         <span style="color:#409eff">{{ detail.visitTotalNum }}</span> 次，
         用户活跃度
