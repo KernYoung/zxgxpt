@@ -145,6 +145,9 @@ export default {
         .then((res) => {
           if (res.data.code == 0) {
             this.companyOptions = res.data.data;
+            if (res.data.data.length == 1) {
+              this.search.company = [res.data.data[0]];
+            }
           }
         });
       // let param = {

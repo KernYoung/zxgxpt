@@ -45,6 +45,40 @@ export default {
     currentRow: Object,
   },
   data() {
+    var validateCode = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入编码"));
+      } else {
+        if (this.orginData.code == value) {
+          callback();
+          return;
+        }
+        this.$ajax.manage.checkCompany({ code: value }).then((res) => {
+          if (res.data.data.flag) {
+            callback();
+          } else {
+            callback(new Error("该编码已存在!"));
+          }
+        });
+      }
+    };
+    var validateName = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入名称"));
+      } else {
+        if (this.orginData.name == value) {
+          callback();
+          return;
+        }
+        this.$ajax.manage.checkCompany({ name: value }).then((res) => {
+          if (res.data.data.flag) {
+            callback();
+          } else {
+            callback(new Error("该名称已存在!"));
+          }
+        });
+      }
+    };
     return {
       form: {
         code: "",
@@ -55,9 +89,16 @@ export default {
         shortName: "",
         enableState: 0,
       },
+      orginData: {},
       rules: {
-        code: [{ required: true, message: "请输入编码", trigger: "blur" }],
-        name: [{ required: true, message: "请输入名称", trigger: "blur" }],
+        code: [
+          { required: true, message: "请输入编码", trigger: "blur" },
+          { validator: validateCode, trigger: "blur" },
+        ],
+        name: [
+          { required: true, message: "请输入名称", trigger: "blur" },
+          { validator: validateName, trigger: "blur" },
+        ],
         rule: [
           { required: true, message: "请输入用户前缀规则", trigger: "blur" },
         ],
@@ -68,6 +109,7 @@ export default {
     currentRow: {
       handler(val) {
         console.log(val);
+        this.orginData = val;
         this.form = Object.assign({}, val);
       },
       immediate: true,

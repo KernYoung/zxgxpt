@@ -595,6 +595,11 @@ async function SaveHrOrg(param) {
   let SaveHrOrg = await ajax.post(`/api/common/ZXB/SaveHrOrg`, param)
   return SaveHrOrg
 }
+//组织架构维护-编码、名称校验
+async function checkCompany(param) {
+  let checkCompany = await ajax.post(`/api/visitLog/checkCompany`, param)
+  return checkCompany
+}
 
 const manage = {
   login: login,
@@ -709,6 +714,7 @@ const manage = {
   getHrOrg,
   SaveHrOrg,
   getHrOrgEnable,
+  checkCompany
 }
 
 export default manage
