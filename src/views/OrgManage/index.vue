@@ -175,6 +175,7 @@ export default {
       this.currentRow = {
         scode: this.currentNode.code,
         sname: this.currentNode.name,
+        rule:this.currentNode.rule,
       }
       this.keys = +new Date()
       this.dialog.title = '新增'

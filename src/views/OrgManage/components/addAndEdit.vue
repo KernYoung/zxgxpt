@@ -79,6 +79,27 @@ export default {
         });
       }
     };
+    var validatePre = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入用户前缀规则"));
+      } else {
+        if (this.orginData.name == value) {
+          callback();
+          return;
+        }
+        this.$ajax.manage.checkCompany({
+          pre: value,
+          scode:this.form.scode,
+          zcode:this.form.code,
+        }).then((res) => {
+          if (res.data.data.flag) {
+            callback();
+          } else {
+            callback(new Error("该前缀已存在!"));
+          }
+        });
+      }
+    };
     return {
       form: {
         code: "",
@@ -101,6 +122,7 @@ export default {
         ],
         rule: [
           { required: true, message: "请输入用户前缀规则", trigger: "blur" },
+          { validator: validatePre, trigger: "blur" },
         ],
       },
     };
