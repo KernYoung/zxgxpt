@@ -125,6 +125,9 @@ export default {
           let param = {
             code: row.code,
             clientNo: value,
+            name: row.name,
+            companyType:row.companyType,
+            updateBy:this.$Cookies.get('userCode')
           };
           this.$ajax.manage.saveXbMapping(param).then((res) => {
             if (res.data.code == "0") {
