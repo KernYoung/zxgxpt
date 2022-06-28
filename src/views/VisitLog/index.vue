@@ -2,9 +2,7 @@
   <div class="container-wrapper">
     <div style="margin-bottom: 15px;">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/homePage' }"
-          >首页</el-breadcrumb-item
-        >
+        <el-breadcrumb-item :to="{ path: '/homePage' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>访问日志</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -24,18 +22,14 @@
         <el-select
           v-model="search.company"
           filterable
+          :disabled="companyOptions.length == 1"
           clearable
           multiple
           collapse-tags
           placeholder="公司名称"
           style="margin-right:10px;width:320px"
         >
-          <el-option
-            v-for="(item, index) in companyOptions"
-            :key="item"
-            :value="item"
-            :label="item"
-          ></el-option>
+          <el-option v-for="(item, index) in companyOptions" :key="item" :value="item" :label="item"></el-option>
         </el-select>
         <!-- <el-cascader
           v-model="search.company"
@@ -50,36 +44,23 @@
         ></el-cascader> -->
         <!-- <el-button type="primary" size="medium">查询</el-button> -->
       </div>
-      <el-tabs
-        v-model="activeName"
-        @tab-click="handleClick"
-        style="margin-top:10px;height:calc(100% - 70px);"
-      >
-        <el-tab-pane
-          v-for="item in tabOptions"
-          :key="item.code"
-          :label="item.title"
-          :name="item.code"
-        >
-          <component
-            :is="item.code"
-            :searchOptions="search"
-            v-if="activeName == item.code"
-          ></component>
+      <el-tabs v-model="activeName" @tab-click="handleClick" style="margin-top:10px;height:calc(100% - 70px);">
+        <el-tab-pane v-for="item in tabOptions" :key="item.code" :label="item.title" :name="item.code">
+          <component :is="item.code" :searchOptions="search" v-if="activeName == item.code"></component>
         </el-tab-pane>
       </el-tabs>
     </div>
   </div>
 </template>
 <script>
-import yhfwtj from "./tabViews/yhfwtj";
-import xbbgsytj from "./tabViews/xbbgsytj";
-import pjbgsytj from "./tabViews/pjbgsytj";
-import tycsytj from "./tabViews/tycsytj";
-import ymrdtj from "./tabViews/ymrdtj";
-import mhcxjl from "./tabViews/mhcxjl";
-import Utils from "@/utils/tool.js";
-import moment from "moment";
+import yhfwtj from './tabViews/yhfwtj'
+import xbbgsytj from './tabViews/xbbgsytj'
+import pjbgsytj from './tabViews/pjbgsytj'
+import tycsytj from './tabViews/tycsytj'
+import ymrdtj from './tabViews/ymrdtj'
+import mhcxjl from './tabViews/mhcxjl'
+import Utils from '@/utils/tool.js'
+import moment from 'moment'
 export default {
   components: {
     yhfwtj,
@@ -94,62 +75,60 @@ export default {
       search: {
         handleTime: [
           moment()
-            .subtract(10, "days")
-            .format("YYYY-MM-DD"),
-          moment().format("YYYY-MM-DD"),
+            .subtract(10, 'days')
+            .format('YYYY-MM-DD'),
+          moment().format('YYYY-MM-DD'),
         ],
         company: [],
       },
-      props: { multiple: true, emitPath: false, value: "name", label: "name" },
+      props: { multiple: true, emitPath: false, value: 'name', label: 'name' },
       companyOptions: [],
-      activeName: "yhfwtj",
+      activeName: 'yhfwtj',
       tabOptions: [
         {
-          title: "用户访问统计",
-          code: "yhfwtj",
+          title: '用户访问统计',
+          code: 'yhfwtj',
         },
         {
-          title: "信保报告使用统计",
-          code: "xbbgsytj",
+          title: '信保报告使用统计',
+          code: 'xbbgsytj',
         },
         {
-          title: "评级报告使用统计",
-          code: "pjbgsytj",
+          title: '评级报告使用统计',
+          code: 'pjbgsytj',
         },
         {
-          title: "天眼查使用统计",
-          code: "tycsytj",
+          title: '天眼查使用统计',
+          code: 'tycsytj',
         },
         {
-          title: "页面热度统计",
-          code: "ymrdtj",
+          title: '页面热度统计',
+          code: 'ymrdtj',
         },
         {
-          title: "模糊查询记录",
-          code: "mhcxjl",
+          title: '模糊查询记录',
+          code: 'mhcxjl',
         },
       ],
-    };
+    }
   },
   mounted() {
-    this.getAllCompany();
+    this.getAllCompany()
   },
   methods: {
     handleClick(tab, event) {
-      console.log(tab);
-      this.activeName = tab.name;
+      console.log(tab)
+      this.activeName = tab.name
     },
     getAllCompany() {
-      this.$ajax.visitLog
-        .getCompanyList({ userName: this.$Cookies.get("userCode") })
-        .then((res) => {
-          if (res.data.code == 0) {
-            this.companyOptions = res.data.data;
-            if (res.data.data.length == 1) {
-              this.search.company = [res.data.data[0]];
-            }
+      this.$ajax.visitLog.getCompanyList({ userName: this.$Cookies.get('userCode') }).then((res) => {
+        if (res.data.code == 0) {
+          this.companyOptions = res.data.data
+          if (res.data.data.length == 1) {
+            this.search.company = [res.data.data[0]]
           }
-        });
+        }
+      })
       // let param = {
       //   userId: this.$Cookies.get("userId"),
       // };
@@ -177,14 +156,14 @@ export default {
       // });
     },
     changeCompany(val) {
-      let temp = [];
+      let temp = []
       for (let i in val) {
-        temp.push(val[i][val[i].length - 1]);
+        temp.push(val[i][val[i].length - 1])
       }
-      this.search.company = temp;
+      this.search.company = temp
     },
   },
-};
+}
 </script>
 <style scoped lang="less">
 // ::v-deep .el-tabs__content {
