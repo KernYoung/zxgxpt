@@ -133,17 +133,19 @@ export default {
   },
   mounted() {
     // this.getTableData("");
-    this.getOrg()
+    this.getOrg(true);
   },
   methods: {
-    getOrg() {
+    getOrg(flag) {
       this.$ajax.manage.getHrOrgEnable({ code: '' }).then((res) => {
-        this.treeLoading = false
+        this.treeLoading = false;
         if (res.data.code == '0') {
-          this.data = [res.data.data[0]]
-          this.defaultNode = res.data.data[0].code
-          this.getTableData(this.defaultNode)
-          this.currentNode = res.data.data[0]
+          this.data = [res.data.data[0]];
+          this.defaultNode = res.data.data[0].code;
+          if(flag){
+            this.getTableData(this.defaultNode);
+          }
+          this.currentNode = res.data.data[0];
         }
       })
     },
@@ -181,6 +183,7 @@ export default {
     savesuccess() {
       this.dialog.visible = false
       this.getTableData(this.currentNode.code)
+      this.getOrg(false);
     },
     nodeClick(data) {
       console.log(data)
