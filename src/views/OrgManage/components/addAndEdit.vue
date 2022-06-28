@@ -147,6 +147,7 @@ export default {
         if (valid) {
           console.log(this.form);
           let param = Object.assign({ orgType: "手工" }, this.form);
+          param.updateTimeBy =this.$Cookies.get("userCode")
           console.log(param);
           this.$ajax.manage.SaveHrOrg(param).then((res) => {
             if (res.data.code == "0") {

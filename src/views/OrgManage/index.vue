@@ -245,6 +245,7 @@ export default {
             dr: 1,
             pkOrg: row.pkOrg,
             orgType: row.orgType,
+            updateTimeBy: this.$Cookies.get("userCode")
           };
           this.$ajax.manage.SaveHrOrg(param).then((res) => {
             if (res.data.code == "0") {
