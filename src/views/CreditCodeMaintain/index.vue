@@ -24,17 +24,35 @@
           style="width:220px;margin:0 10px"
         ></el-input>
         <el-button type="primary" @click="search">查询</el-button>
-        <el-button type="primary" @click="download">导出</el-button>
+        <el-button type="primary" @click="download" :disabled="isEdit"
+          >导出</el-button
+        >
+        <el-button
+          :type="isEdit ? 'warning' : 'primary'"
+          @click="isEdit = !isEdit"
+          :plain="!isEdit"
+          >{{ isEdit ? "取消编辑" : "编辑" }}</el-button
+        >
       </div>
       <div style="margin-top:10px;font-size:14px">
         共 {{ page.total }} 条数据
       </div>
+      <el-alert
+        show-icon
+        title="当前模式为编辑模式，导出数据请取消编辑..."
+        type="warning"
+        v-if="isEdit"
+        :closable="false"
+        style="margin-top:5px"
+      >
+      </el-alert>
       <el-table
         :data="tableData"
         style="margin-top:15px"
         size="small"
-        height="calc(100% - 120px)"
+        :height="isEdit ? 'calc(100% - 170px)' : 'calc(100% - 120px)'"
         border
+        highlight-current-row
         :header-cell-style="{ background: '#ECF1FE' }"
         ref="table"
       >
@@ -49,10 +67,14 @@
             <div
               style="width:100%;height:30px;line-height:30px;cursor:pointer"
               @click="open(scope.row)"
+              v-if="isEdit"
             >
               <el-link :type="scope.row.clientNo ? 'info' : 'primary'">{{
-                scope.row.clientNo ? scope.row.clientNo : ""
+                scope.row.clientNo ? scope.row.clientNo : "点击填写"
               }}</el-link>
+            </div>
+            <div v-else style="height:30px;line-height:30px;font-size:14px">
+              {{ scope.row.clientNo }}
             </div>
           </template>
         </el-table-column>
@@ -86,6 +108,7 @@ export default {
         code: "",
         name: "",
       },
+      isEdit: false,
     };
   },
   mounted() {
@@ -111,23 +134,28 @@ export default {
       this.getTableData();
     },
     open(row) {
-      this.$prompt("", "请输入信保通买方代码", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        inputValue: row.clientNo !== "" ? row.clientNo : null,
-        inputValidator: (val) => {
-          if (!val || val == "") {
-            return "请填写";
-          }
-        },
-      })
+      this.$prompt(
+        `<div>公司HR编码：${row.companyCode}</div><div>公司HR名称：${row.companyName}</div><div>数据来源：${row.companyType}</div>`,
+        "请输入信保通买方代码",
+        {
+          dangerouslyUseHTMLString: true,
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          inputValue: row.clientNo !== "" ? row.clientNo : null,
+          inputValidator: (val) => {
+            if (!val || val == "") {
+              return "请填写";
+            }
+          },
+        }
+      )
         .then(({ value }) => {
           let param = {
             code: row.code,
             clientNo: value,
             name: row.name,
-            companyType:row.companyType,
-            updateBy:this.$Cookies.get('userCode')
+            companyType: row.companyType,
+            updateBy: this.$Cookies.get("userCode"),
           };
           this.$ajax.manage.saveXbMapping(param).then((res) => {
             if (res.data.code == "0") {
