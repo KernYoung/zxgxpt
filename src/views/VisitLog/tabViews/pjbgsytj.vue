@@ -159,6 +159,8 @@ export default {
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       const dataProvider = this.applyData;
       const cellValue = row[column.property];
+      if(column.property!=="applyType")return ;
+      //if(column.property!=="申请人所在公司")return ;
       // if (column.property !== 'type') return
       if (cellValue) {
         // 上一条数据
