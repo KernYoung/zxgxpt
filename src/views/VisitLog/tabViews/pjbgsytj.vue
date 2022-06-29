@@ -202,7 +202,7 @@ export default {
                 } else {
                   self.rowRoom3Column.push(1)
                   self.posT3 = i
-             `` }
+               }
 
 
               }else {

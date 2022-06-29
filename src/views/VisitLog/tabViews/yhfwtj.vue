@@ -246,6 +246,100 @@ export default {
 
       option && myChart.setOption(option);
     },
+    getListDataForRowAndColumn(data){
+      debugger;
+      let self = this;
+      self.rowAndColumn = [];
+      self.rowRoomColumn = [];
+      self.rowRoomColumn1 = [];
+      self.rowRoomColumn2 = [];
+      self.rowRoomColumn3 = [];
+
+      for (var i = 0; i < data.length; i++) {
+        if (i === 0) {
+          // 如果是第一条记录（即索引是0的时候），向数组中加入１
+          self.rowAndColumn.push(1);
+          self.pos = 0;
+          self.rowRoomColumn.push(1);
+          self.posT = 0;
+          self.rowRoomColumn1.push(1);
+          self.posT1 = 0;
+          self.rowRoomColumn2.push(1);
+          self.posT2 = 0;
+          self.rowRoomColumn3.push(1);
+          self.posT3 = 0;
+        } else {
+          debugger;
+
+          //data[i].typeDesc就是你从接口读取的字段信息，下同
+          if (data[i].companyName === data[i - 1].companyName) {
+            // 如果typeDesc相等就累加，并且push 0
+            self.rowAndColumn[self.pos] += 1
+            self.rowAndColumn.push(0)
+            if (data[i].subCompanyName === data[i - 1].subCompanyName || data[i].userNum === data[i - 1].userNum || data[i].visitTotalNum === data[i - 1].visitTotalNum || data[i].visitPageTotalNum === data[i - 1].visitPageTotalNum) {
+              // 如果areaDesc相等就累加，并且push 0
+
+
+
+              if (data[i].subCompanyName === data[i - 1].subCompanyName) {
+                self.rowRoomColumn[self.posT] += 1
+                self.rowRoomColumn.push(0)
+              } else {
+                self.rowRoomColumn.push(1)
+                self.posT = i
+              }
+
+              if (data[i].userNum === data[i - 1].userNum) {
+                self.rowRoomColumn1[self.posT1] += 1
+                self.rowRoomColumn1.push(0)
+              } else {
+                self.rowRoomColumn1.push(1)
+                self.posT1 = i
+              }
+
+              if (data[i].visitTotalNum === data[i - 1].visitTotalNum) {
+                self.rowRoomColumn2[self.posT2] += 1
+                self.rowRoomColumn2.push(0)
+              } else {
+                self.rowRoomColumn2.push(1)
+                self.posT2 = i
+              }
+
+              if (data[i].visitPageTotalNum === data[i - 1].visitPageTotalNum) {
+                self.rowRoomColumn3[self.posT3] += 1
+                self.rowRoomColumn3.push(0)
+              } else {
+                self.rowRoomColumn3.push(1)
+                self.posT3 = i
+              }
+
+            } else {
+              // 不相等push 1
+
+              self.rowRoomColumn.push(1)
+              self.posT = i
+              self.rowRoomColumn1.push(1);
+              self.posT1 = i;
+              self.rowRoomColumn2.push(1);
+              self.posT2 = i;
+              self.rowRoomColumn3.push(1);
+              self.posT3 = i;
+            }
+          }else{
+            self.rowAndColumn.push(1)
+            self.pos = i;
+            self.rowRoomColumn.push(1)
+            self.posT = i
+            self.rowRoomColumn1.push(1);
+            self.posT1 = i;
+            self.rowRoomColumn2.push(1);
+            self.posT2 = i;
+            self.rowRoomColumn3.push(1);
+            self.posT3 = i;
+          }
+        }
+      }
+    },
     getTableData() {
       let param = {
         startDate: this.searchOptions.handleTime[0],
@@ -255,10 +349,11 @@ export default {
       this.$ajax.visitLog.getUserVisitList(param).then((res) => {
         if (res.data.code == "0") {
           this.tableData = res.data.data;
+          this.getListDataForRowAndColumn(this.tableData);
         }
       });
     },
-    objectSpanMethod({ row, column, rowIndex, columnIndobjectSpanMethodex }) {
+    /*objectSpanMethod({ row, column, rowIndex, columnIndobjectSpanMethodex }) {
       const dataProvider = this.tableData;
       const cellValue = row[column.property];
       if (
@@ -287,6 +382,76 @@ export default {
           if (rowspan > 1) {
             return { rowspan, colspan: 1 };
           }
+        }
+      }
+    },*/
+    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      let self = this
+
+
+      if (columnIndex === 1||columnIndex === 0) {
+        if (self.rowAndColumn[rowIndex]) {
+          let rowNum = self.rowAndColumn[rowIndex];
+          return {
+            rowspan: rowNum,
+            colspan: rowNum > 0 ? 1 : 0
+          }
+        }
+        return {
+          rowspan: 0,
+          colspan: 0
+        }
+      }
+      if (columnIndex === 2) {
+        if (self.rowRoomColumn[rowIndex]) {
+          let roomNum = self.rowRoomColumn[rowIndex];
+          return {
+            rowspan: roomNum,
+            colspan: roomNum > 0 ? 1 : 0
+          }
+        }
+        return {
+          rowspan: 0,
+          colspan: 0
+        }
+      }
+      if (columnIndex === 3) {
+        if (self.rowRoomColumn1[rowIndex]) {
+          let roomNum = self.rowRoomColumn1[rowIndex];
+          return {
+            rowspan: roomNum,
+            colspan: roomNum > 0 ? 1 : 0
+          }
+        }
+        return {
+          rowspan: 0,
+          colspan: 0
+        }
+      }
+      if (columnIndex === 8) {
+        if (self.rowRoomColumn2[rowIndex]) {
+          let roomNum = self.rowRoomColumn2[rowIndex];
+          return {
+            rowspan: roomNum,
+            colspan: roomNum > 0 ? 1 : 0
+          }
+        }
+        return {
+          rowspan: 0,
+          colspan: 0
+        }
+      }
+      if (columnIndex === 9) {
+        if (self.rowRoomColumn3[rowIndex]) {
+          let roomNum = self.rowRoomColumn3[rowIndex];
+          return {
+            rowspan: roomNum,
+            colspan: roomNum > 0 ? 1 : 0
+          }
+        }
+        return {
+          rowspan: 0,
+          colspan: 0
         }
       }
     },
