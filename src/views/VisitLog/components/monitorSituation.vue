@@ -1,7 +1,7 @@
 <template>
   <div class="tab-container">
     <div class="title" style="display:flex;justify-content:space-between">
-      <span>页面热度</span>
+      <span>中诚信添加监控情况</span>
       <el-link type="primary" @click="exportExcel" style="margin-right:10px"
         >导出</el-link
       >
