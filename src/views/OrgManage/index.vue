@@ -69,7 +69,12 @@
             </el-table-column>
             <el-table-column prop="shortName" label="单位简称">
             </el-table-column>
-            <el-table-column prop="enableState" align="center" label="启用状态" width="80px">
+            <el-table-column
+              prop="enableState"
+              align="center"
+              label="启用状态"
+              width="80px"
+            >
               <template slot-scope="scope">
                 <el-tag
                   type="primary"
@@ -87,7 +92,7 @@
                 >
               </template>
             </el-table-column>
-            <el-table-column align="center"  label="操作" width="100px">
+            <el-table-column align="center" label="操作" width="100px">
               <template slot-scope="scope">
                 <el-button
                   type="text"
@@ -136,6 +141,7 @@
 import AddAndEdit from "./components/addAndEdit.vue";
 import XLSX from "xlsx";
 import FileSaver from "file-saver";
+import { export_json_to_excel } from "@/assets/Export2Excel";
 export default {
   components: {
     AddAndEdit,
@@ -192,7 +198,11 @@ export default {
     getTableData(code) {
       this.$ajax.manage.getHrOrg({ code }).then((res) => {
         if (res.data.code == "0") {
-          this.tableData = res.data.data;
+          this.tableData = res.data.data.map((item) => {
+            item.enableStateText =
+              item.enableState == 1 || item.enableState == 2 ? "是" : "否";
+            return item;
+          });
           this.page.total = res.data.data.length;
         }
       });
@@ -245,7 +255,7 @@ export default {
             dr: 1,
             pkOrg: row.pkOrg,
             orgType: row.orgType,
-            updateTimeBy: this.$Cookies.get("userCode")
+            updateTimeBy: this.$Cookies.get("userCode"),
           };
           this.$ajax.manage.SaveHrOrg(param).then((res) => {
             if (res.data.code == "0") {
@@ -260,38 +270,73 @@ export default {
         .catch(() => {});
     },
     exportExcel() {
-      const tableComp = this.$refs.table.$el;
-      var wb;
-      var fix = tableComp.querySelector(".el-table__fixed");
-      // 1.从el-table中生成Excel工作簿
-      if (fix) {
-        // 解决固定列时导出两份的bug
-        wb = XLSX.utils.table_to_book(tableComp.removeChild(fix), {
-          raw: true,
-        });
-        tableComp.appendChild(fix);
-      } else {
-        wb = XLSX.utils.table_to_book(tableComp, { raw: true });
-      }
-      // 2.输出二进制字符串
-      let wbout = XLSX.write(wb, {
-        bookType: "xlsx",
-        bookSST: true,
-        type: "array",
-      });
-      try {
-        FileSaver.saveAs(
-          new Blob([wbout], { type: "application/octet-stream" }),
-          `组织架构维护(${this.currentNode.name}).xlsx`
-        );
-      } catch (e) {
-        if (typeof console !== "undefined") {
-          console.log(e, wbout);
-        }
-      }
-      console.log("222");
-      return wbout;
+      var tHeader = [
+        "编码",
+        "名称",
+        "用户前缀规则",
+        "上级组织名称",
+        "上级组织编码",
+        "单位简称",
+        "启用状态",
+      ];
+      var filterVal = [
+        "code",
+        "name",
+        "rule",
+        "sname",
+        "scode",
+        "shortName",
+        "enableStateText",
+      ];
+      var filename = `组织架构维护(${this.currentNode.name})`;
+      var data = this.formatJson(filterVal, this.tableData);
+      export_json_to_excel(tHeader, data, filename);
     },
+    /**
+     *  格式数据
+     *  @filterVal  格式头
+     *  @tableData  用来格式的表格数据
+     */
+    formatJson(filterVal, tableData) {
+      return tableData.map((v) => {
+        return filterVal.map((j) => {
+          return v[j];
+        });
+      });
+    },
+    // exportExcel() {
+    //   const tableComp = this.$refs.table.$el;
+    //   var wb;
+    //   var fix = tableComp.querySelector(".el-table__fixed");
+    //   // 1.从el-table中生成Excel工作簿
+    //   if (fix) {
+    //     // 解决固定列时导出两份的bug
+    //     wb = XLSX.utils.table_to_book(tableComp.removeChild(fix), {
+    //       raw: true,
+    //     });
+    //     tableComp.appendChild(fix);
+    //   } else {
+    //     wb = XLSX.utils.table_to_book(tableComp, { raw: true });
+    //   }
+    //   // 2.输出二进制字符串
+    //   let wbout = XLSX.write(wb, {
+    //     bookType: "xlsx",
+    //     bookSST: true,
+    //     type: "array",
+    //   });
+    //   try {
+    //     FileSaver.saveAs(
+    //       new Blob([wbout], { type: "application/octet-stream" }),
+    //       `组织架构维护(${this.currentNode.name}).xlsx`
+    //     );
+    //   } catch (e) {
+    //     if (typeof console !== "undefined") {
+    //       console.log(e, wbout);
+    //     }
+    //   }
+    //   console.log("222");
+    //   return wbout;
+    // },
   },
 };
 </script>
