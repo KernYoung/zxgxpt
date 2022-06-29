@@ -369,6 +369,7 @@ export default {
     objectSpanMethod({ row, column, rowIndex, columnIndex }, tableName) {
       const dataProvider = this[tableName];
       const cellValue = row[column.property];
+      if(column.property!=="活跃用户数")return ;
       if (cellValue) {
         // 上一条数据
         const prevRow = dataProvider[rowIndex - 1];
