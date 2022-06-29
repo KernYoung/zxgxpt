@@ -1,7 +1,7 @@
 <template>
   <div class="tab-container">
     <div class="title" style="display:flex;justify-content:space-between">
-      <span>中诚信添加监控情况</span>
+      <span></span>
       <el-link type="primary" @click="exportExcel" style="margin-right:10px"
         >导出</el-link
       >
@@ -15,7 +15,7 @@
       :span-method="objectSpanMethod"
       ref="table"
     >
-      <el-table-column type="index" label="序号"></el-table-column>
+      <el-table-column prop="no" label="序号" width="50px" align="center"></el-table-column>
       <el-table-column prop="gzCompanyName" label="已关注企业" align="center">
       </el-table-column>
       <el-table-column prop="userName" label="关注人" align="center">
@@ -86,7 +86,7 @@ export default {
     objectSpanMethod({ row, column, rowIndex, columnIndobjectSpanMethodex }) {
       const dataProvider = this.tableData;
       const cellValue = row[column.property];
-      if (column.property !== "gzCompanyName") return;
+      if (column.property !== "gzCompanyName" && column.property !== "no") return;
       if (cellValue) {
         // 上一条数据
         const prevRow = dataProvider[rowIndex - 1];

@@ -2,7 +2,7 @@
   <div>
     <div class="top">
       <span>{{ options.userName }}</span>
-      <span>{{ options.startDate }}-{{ options.endDate }}</span>
+      <span>{{ options.startDate }}~{{ options.endDate }}</span>
     </div>
     <el-table
       :data="tableData"
