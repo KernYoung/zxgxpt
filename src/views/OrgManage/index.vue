@@ -61,15 +61,15 @@
             <el-table-column prop="code" label="编码" width="100px">
             </el-table-column>
             <el-table-column prop="name" label="名称"> </el-table-column>
-            <el-table-column prop="rule" label="用户前缀规则">
+            <el-table-column prop="rule" label="用户前缀规则" width="100px">
             </el-table-column>
             <el-table-column prop="sname" label="上级组织名称">
             </el-table-column>
-            <el-table-column prop="scode" label="上级组织编码">
+            <el-table-column prop="scode" label="上级组织编码" width="100px">
             </el-table-column>
             <el-table-column prop="shortName" label="单位简称">
             </el-table-column>
-            <el-table-column prop="enableState" label="启用状态" width="100px">
+            <el-table-column prop="enableState" align="center" label="启用状态" width="80px">
               <template slot-scope="scope">
                 <el-tag
                   type="primary"
@@ -87,7 +87,7 @@
                 >
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="100px">
+            <el-table-column align="center"  label="操作" width="100px">
               <template slot-scope="scope">
                 <el-button
                   type="text"
