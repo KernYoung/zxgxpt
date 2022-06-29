@@ -302,7 +302,7 @@ export default {
     height: calc(100% - 50px);
     box-sizing: border-box;
     .left {
-      width: 450px;
+      width: 30%;
       background: #fff;
       margin-right: 10px;
       overflow: auto;

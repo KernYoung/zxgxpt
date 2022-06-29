@@ -96,6 +96,13 @@ export default {
       dialog: {
         visible: false,
       },
+      firstClsfIndexArr: [], // 存放firstClsf列每一行记录的合并数  控制firstClsf的合并
+      firstClsfIndexRecode: 0, // firstClsfIndexArr的索引
+      secondClsfIndexArr: [], // 存放secondClsf列每一行记录的合并数  控制secondClsf列的合并
+      secondClsfIndexRecode: 0, // secondClsfIndexArr的索引
+      bizNameIndexArr: [], // 存放bizName列每一行记录的合并数   控制第三列的合并  以此类推  每多控制一列，多创建两个变量
+      bizNameIndexRecode: 0,
+
     };
   },
   watch: {
@@ -123,6 +130,8 @@ export default {
       this.$ajax.visitLog.getZcxReportUseList(param).then((res) => {
         if (res.data.code == "0") {
           this.applyData = res.data.data;
+          this.getListDataForRowAndColumn(this.applyData);
+          console.log(this.applyData);
         }
       });
       // this.applyData = [
@@ -156,29 +165,127 @@ export default {
       //   },
       // ];
     },
-    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
-      const dataProvider = this.applyData;
-      const cellValue = row[column.property];
-      if(column.property!=="applyType")return ;
-      //if(column.property!=="申请人所在公司")return ;
-      // if (column.property !== 'type') return
-      if (cellValue) {
-        // 上一条数据
-        const prevRow = dataProvider[rowIndex - 1];
-        // 下一条数据
-        let nextRow = dataProvider[rowIndex + 1];
-        // 当上一条数据等于下一条数据
-        if (prevRow && prevRow[column.property] === cellValue) {
-          return { rowspan: 0, colspan: 0 };
+    getListDataForRowAndColumn(data){
+      let self = this;
+      self.rowAndColumn = [];
+      self.rowRoomColumn = [];
+      self.rowRoom2Column = [];
+      self.rowRoom3Column = [];
+      for (var i = 0; i < data.length; i++) {
+        if (i === 0) {
+          // 如果是第一条记录（即索引是0的时候），向数组中加入１
+          self.rowAndColumn.push(1);
+          self.pos = 0;
+          self.rowRoomColumn.push(1);
+          self.posT = 0;
+          self.rowRoom2Column.push(1)
+          self.posT2 = 0;
+          self.rowRoom3Column.push(1)
+          self.posT3 = 0;
         } else {
-          let rowspan = 1;
-          while (nextRow && nextRow[column.property] === cellValue) {
-            rowspan++;
-            nextRow = dataProvider[rowspan + rowIndex];
+          //data[i].typeDesc就是你从接口读取的字段信息，下同
+          if (data[i].applyType === data[i - 1].applyType) {
+            // 如果typeDesc相等就累加，并且push 0
+            self.rowAndColumn[self.pos] += 1
+            self.rowAndColumn.push(0)
+            if (data[i].applyCompanyName === data[i - 1].applyCompanyName) {
+              // 如果areaDesc相等就累加，并且push 0
+              self.rowRoomColumn[self.posT] += 1
+              self.rowRoomColumn.push(0)
+
+              if (data[i].userName === data[i - 1].userName) {
+                self.rowRoom2Column[self.posT2] += 1
+                self.rowRoom2Column.push(0)
+                if (data[i].companyName === data[i - 1].companyName) {
+                  self.rowRoom3Column[self.posT3] += 1
+                  self.rowRoom3Column.push(0)
+                } else {
+                  self.rowRoom3Column.push(1)
+                  self.posT3 = i
+             `` }
+
+
+              }else {
+                self.rowRoom2Column.push(1)
+                self.posT2 = i
+                self.rowRoom3Column.push(1)
+                self.posT3 = i;
+              }
+
+            } else {
+              self.rowRoomColumn.push(1)
+              self.posT = i
+              self.rowRoom2Column.push(1)
+              self.posT2 = i;
+              self.rowRoom3Column.push(1)
+              self.posT3 = i;
+            }
+          } else {
+            // 不相等push 1
+            self.rowAndColumn.push(1)
+            self.pos = i;
+            self.rowRoomColumn.push(1)
+            self.posT = i
+            self.rowRoom2Column.push(1)
+            self.posT2 = i;
+            self.rowRoom3Column.push(1)
+            self.posT3 = i;
           }
-          if (rowspan > 1) {
-            return { rowspan, colspan: 1 };
+        }
+      }
+    },
+    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      let self = this
+      if (columnIndex === 0) {
+        if (self.rowAndColumn[rowIndex]) {
+          let rowNum = self.rowAndColumn[rowIndex];
+          return {
+            rowspan: rowNum,
+            colspan: rowNum > 0 ? 1 : 0
           }
+        }
+        return {
+          rowspan: 0,
+          colspan: 0
+        }
+      }
+      if (columnIndex === 1) {
+        if (self.rowRoomColumn[rowIndex]) {
+          let roomNum = self.rowRoomColumn[rowIndex];
+          return {
+            rowspan: roomNum,
+            colspan: roomNum > 0 ? 1 : 0
+          }
+        }
+        return {
+          rowspan: 0,
+          colspan: 0
+        }
+      }
+      if (columnIndex === 2) {
+        if (self.rowRoom2Column[rowIndex]) {
+          let roomNum = self.rowRoom2Column[rowIndex];
+          return {
+            rowspan: roomNum,
+            colspan: roomNum > 0 ? 1 : 0
+          }
+        }
+        return {
+          rowspan: 0,
+          colspan: 0
+        }
+      }
+      if (columnIndex === 3) {
+        if (self.rowRoom3Column[rowIndex]) {
+          let roomNum = self.rowRoom3Column[rowIndex];
+          return {
+            rowspan: roomNum,
+            colspan: roomNum > 0 ? 1 : 0
+          }
+        }
+        return {
+          rowspan: 0,
+          colspan: 0
         }
       }
     },

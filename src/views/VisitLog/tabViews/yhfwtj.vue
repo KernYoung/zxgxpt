@@ -140,13 +140,18 @@ export default {
         endDate: this.searchOptions.handleTime[1],
         companyName: this.searchOptions.company.join(","),
       };
-      this.xAxisData = [];
-      this.visitNumData = [];
-      this.visitPageNumData = [];
-      this.visitUserNumData = [];
+
+
+
       this.$ajax.visitLog.getUserVisitn(param).then((res) => {
         if (res.data.code == "0") {
+
+          this.xAxisData = [];
+          this.visitNumData = [];
+          this.visitPageNumData = [];
+          this.visitUserNumData = [];
           res.data.data.map((item) => {
+
             this.xAxisData.push(item.billDate);
             this.visitNumData.push(item.visitNum);
             this.visitPageNumData.push(item.visitPageNum);
