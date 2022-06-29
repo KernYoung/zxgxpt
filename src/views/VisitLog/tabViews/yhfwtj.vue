@@ -247,7 +247,7 @@ export default {
       option && myChart.setOption(option);
     },
     getListDataForRowAndColumn(data){
-      debugger;
+
       let self = this;
       self.rowAndColumn = [];
       self.rowRoomColumn = [];
@@ -269,7 +269,7 @@ export default {
           self.rowRoomColumn3.push(1);
           self.posT3 = 0;
         } else {
-          debugger;
+
 
           //data[i].typeDesc就是你从接口读取的字段信息，下同
           if (data[i].companyName === data[i - 1].companyName) {
@@ -387,7 +387,6 @@ export default {
     },*/
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       let self = this
-
 
       if (columnIndex === 1||columnIndex === 0) {
         if (self.rowAndColumn[rowIndex]) {
