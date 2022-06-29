@@ -135,7 +135,7 @@ export default {
     },
     open(row) {
       this.$prompt(
-        `<div>公司HR编码：${row.companyCode}</div><div>公司HR名称：${row.companyName}</div><div>数据来源：${row.companyType}</div>`,
+        `<div>公司HR编码：${row.code}</div><div>公司HR名称：${row.name}</div><div>数据来源：${row.companyType}</div>`,
         "请输入信保通买方代码",
         {
           dangerouslyUseHTMLString: true,
