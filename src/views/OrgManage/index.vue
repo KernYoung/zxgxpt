@@ -264,6 +264,7 @@ export default {
                 message: res.data.msg,
               });
               this.getTableData(this.currentNode.code);
+              this.getOrg(false);
             }
           });
         })
