@@ -46,9 +46,12 @@ export default {
   },
   data() {
     var validateCode = (rule, value, callback) => {
+      var judgeFn = new RegExp(/\s+/g);
       if (value === "") {
         callback(new Error("请输入编码"));
-      } else {
+      }else if(judgeFn.test(value)){
+        callback(new Error("编码不能有空格"));
+      }else {
         if (this.orginData.code == value) {
           callback();
           return;
