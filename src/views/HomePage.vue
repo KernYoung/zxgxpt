@@ -22,7 +22,7 @@
               <el-dropdown-item command="8">企业画像</el-dropdown-item>
               <el-dropdown-item command="9">数据导出</el-dropdown-item>
               <el-dropdown-item command="10">高级搜索</el-dropdown-item>
-<!--              <el-dropdown-item command="11">监控管理</el-dropdown-item>-->
+              <!--              <el-dropdown-item command="11">监控管理</el-dropdown-item>-->
             </el-dropdown-menu>
           </el-dropdown>
           <el-dropdown style="margin-right:20px" @command="handleCommand">
@@ -36,18 +36,22 @@
               <el-dropdown-item command="4" v-if="zxbReportApply">信保报告申请</el-dropdown-item>
               <el-dropdown-item command="7" v-if="zxbReportlist">信保报告列表</el-dropdown-item>
               <el-dropdown-item command="10" v-if="zxbreportAudit">信保报告审核</el-dropdown-item>
-<!--              <el-dropdown-item command="13" v-if="true">信保信息</el-dropdown-item>-->
-			  <!-- jina-->
+              <!--              <el-dropdown-item command="13" v-if="true">信保信息</el-dropdown-item>-->
+              <!-- jina-->
 			  <el-dropdown-item command="12" v-if="zxbReportlist">我的信保报告</el-dropdown-item>
-              <el-dropdown-item command="14" v-if="$Cookies.get('username')=='admin'">信保代码维护</el-dropdown-item>
+              <el-dropdown-item command="14" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">信保代码维护</el-dropdown-item>
+              <el-dropdown-item command="18" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">信保代码维护(旧)</el-dropdown-item>
               <el-dropdown-item command="5" v-if="userManage||sub_manage">用户管理</el-dropdown-item>
               <el-dropdown-item command="11" v-if="$Cookies.get('username')=='admin'">角色管理</el-dropdown-item>
               <el-dropdown-item command="6" v-if="newsAll">消息中心</el-dropdown-item>
               <el-dropdown-item command="8" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">访问日志</el-dropdown-item>
-              <el-dropdown-item command="9" v-if="$Cookies.get('username')=='admin'">组织架构维护</el-dropdown-item>
+              <el-dropdown-item command="19" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">访问日志(旧)</el-dropdown-item>
+              <el-dropdown-item command="9" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">组织架构维护</el-dropdown-item>
+              <el-dropdown-item command="20" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">组织架构维护(旧)</el-dropdown-item>
               <el-dropdown-item command="15" v-if="$Cookies.get('username')=='admin'">点数填报</el-dropdown-item>
               <el-dropdown-item command="16" v-if="$Cookies.get('username')=='admin'">下发Token管理</el-dropdown-item>
               <el-dropdown-item command="17" v-if="$Cookies.get('username')=='admin'">下发接口次数限制</el-dropdown-item>
+
             </el-dropdown-menu>
           </el-dropdown>
           <span style="margin-right: 15px;cursor:pointer" @click="showUserInfo">
@@ -62,12 +66,12 @@
         <div><img src="../../public/img/subtitle.png" alt=""></div>
       </div>
       <div class="content" style="position: relative">
-		  <el-input placeholder="请输入内容" v-model="searchVal" class="search-input" style="width: 800px;height:60px;"
-		    clearable="" @keyup.enter.native="seachContent">
-		  </el-input>
-		  <el-button @click="seachContent" style="background-color: rgb(73, 136, 191);margin-left: 10px;">站内搜索
-		  </el-button>
-		  <el-button @click="blarSearch" >全网搜索</el-button>
+        <el-input placeholder="请输入内容" v-model="searchVal" class="search-input" style="width: 800px;height:60px;"
+                  clearable="" @keyup.enter.native="seachContent">
+        </el-input>
+        <el-button @click="seachContent" style="background-color: rgb(73, 136, 191);margin-left: 10px;">站内搜索
+        </el-button>
+        <el-button @click="blarSearch" >全网搜索</el-button>
         <!-- <el-input @keyup.enter="seachContent" placeholder="请输入内容" v-model="searchVal" class="search-input" style="width: 800px;height: 60px;"
                    clearable="" @keyup.enter.native="seachContent">
          </el-input>
@@ -88,19 +92,19 @@
           <div class="tab-content-wrapper">
             <div v-for="(item,index) in careList" :key="index" class="care-list">
 
-<!--              <span v-if="item.messageNumber >= 1" style="border-radius: 50%; height: 25px; width: 25px; display: inline-block; background: #ff9900; float:right">-->
-<!--                <span-->
-<!--                    @click="go2MessageCenter(item.tianyancha,item.companyName)"-->
-<!--                    style="display: block; font-size:1px; color: #FFFFFF; height: 25px; line-height: 25px; text-align: center">{{getMessageShow(item.messageNumber)}}</span>-->
-<!--              </span>-->
+              <!--              <span v-if="item.messageNumber >= 1" style="border-radius: 50%; height: 25px; width: 25px; display: inline-block; background: #ff9900; float:right">-->
+              <!--                <span-->
+              <!--                    @click="go2MessageCenter(item.tianyancha,item.companyName)"-->
+              <!--                    style="display: block; font-size:1px; color: #FFFFFF; height: 25px; line-height: 25px; text-align: center">{{getMessageShow(item.messageNumber)}}</span>-->
+              <!--              </span>-->
 
               <img src="../../public/img/focus.png" alt="" @click="cancleFocus(item)">
-<!--              <span @click="moreNews(item,'0') ">{{item.companyName}}</span>-->
+              <!--              <span @click="moreNews(item,'0') ">{{item.companyName}}</span>-->
 
               <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,null)}}</span>
               <span v-show="!isOverLength(item.companyName)" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,null)}}</span>
 
-<!--              <span :title="item.companyName" style="width:100%;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;text-align: left;">item.companyNameitem.companyNameitem.companyName</span>-->
+              <!--              <span :title="item.companyName" style="width:100%;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;text-align: left;">item.companyNameitem.companyNameitem.companyName</span>-->
 
               <img src="../../public/img/images/index_icon01.png" alt="" v-if="item.zhongchengxin===1" class="care">
               <img src="../../public/img/images/index_icon02.png" alt="" v-if="item.tianyancha===1" class="care">
@@ -117,58 +121,58 @@
 
             </div>
           </div>
-		<div style="text-align: center;margin-top: 10px;">
-		      <el-pagination background layout="prev, pager, next,total,jumper" :total="page1.total"
-		                     :current-page.sync="page1.currentPage" :pageSize="page1.pageSize" @current-change="handleCurrentChange1">
-		      </el-pagination>
-		  </div>
+          <div style="text-align: center;margin-top: 10px;">
+            <el-pagination background layout="prev, pager, next,total,jumper" :total="page1.total"
+                           :current-page.sync="page1.currentPage" :pageSize="page1.pageSize" @current-change="handleCurrentChange1">
+            </el-pagination>
+          </div>
         </div>
         <div class="content-item rightBox">
 
-<!--            <div class="title">-->
-<!--              <span class="response" style="color:#a54f4f;float: right; cursor:pointer" @click="toBlackListDetail()">详情》</span>-->
-<!--            </div>-->
+          <!--            <div class="title">-->
+          <!--              <span class="response" style="color:#a54f4f;float: right; cursor:pointer" @click="toBlackListDetail()">详情》</span>-->
+          <!--            </div>-->
 
-            <div class="title">
+          <div class="title">
 
-              <span style="padding-right: 1%;cursor:pointer" @click="setCurrentShow('black')">黑名单</span>
-              <el-tooltip class="item" effect="light" placement="top">
-                <i class="el-icon-question smartTip"></i>
-                <div style="width: 200px;" slot="content">
-                  存在历史交易且对手违约导致形成一定金额以上历史风险资产的交易对手。
-                </div>
-              </el-tooltip>
-              <span style="padding-right: 1%;padding-left: 4%;cursor:pointer" @click="setCurrentShow('grey')">灰名单</span>
-              <el-tooltip class="item" effect="light" placement="top">
-                <i class="el-icon-question smartTip"></i>
-                <div style="width: 200px;" slot="content">
-                  存在历史交易且对手违约导致形成一定金额以下历史风险资产的交易对手。
-                </div>
-              </el-tooltip>
-              <span class="response" v-show="sortCriteria != 'amount' && currentShow == 'black'" style="color:#a54f4f;float: right; cursor:pointer" @click="setSortCriteria('amount')">金额排序</span>
-              <span class="response" v-show="sortCriteria == 'amount' && currentShow == 'black'" style="color:#274ed9;float: right; cursor:pointer" @click="setSortCriteria('amount')">金额排序</span>
-              <span class="response" v-show="sortCriteria != 'startDate' && currentShow == 'black'" style="color:#a54f4f;padding-right: 10px;float: right; cursor:pointer" @click="setSortCriteria('startDate')">时间排序</span>
-              <span class="response" v-show="sortCriteria == 'startDate' && currentShow == 'black'" style="color:#274ed9;padding-right: 10px;float: right; cursor:pointer" @click="setSortCriteria('startDate')">时间排序</span>
+            <span style="padding-right: 1%;cursor:pointer" @click="setCurrentShow('black')">黑名单</span>
+            <el-tooltip class="item" effect="light" placement="top">
+              <i class="el-icon-question smartTip"></i>
+              <div style="width: 200px;" slot="content">
+                存在历史交易且对手违约导致形成一定金额以上历史风险资产的交易对手。
+              </div>
+            </el-tooltip>
+            <span style="padding-right: 1%;padding-left: 4%;cursor:pointer" @click="setCurrentShow('grey')">灰名单</span>
+            <el-tooltip class="item" effect="light" placement="top">
+              <i class="el-icon-question smartTip"></i>
+              <div style="width: 200px;" slot="content">
+                存在历史交易且对手违约导致形成一定金额以下历史风险资产的交易对手。
+              </div>
+            </el-tooltip>
+            <span class="response" v-show="sortCriteria != 'amount' && currentShow == 'black'" style="color:#a54f4f;float: right; cursor:pointer" @click="setSortCriteria('amount')">金额排序</span>
+            <span class="response" v-show="sortCriteria == 'amount' && currentShow == 'black'" style="color:#274ed9;float: right; cursor:pointer" @click="setSortCriteria('amount')">金额排序</span>
+            <span class="response" v-show="sortCriteria != 'startDate' && currentShow == 'black'" style="color:#a54f4f;padding-right: 10px;float: right; cursor:pointer" @click="setSortCriteria('startDate')">时间排序</span>
+            <span class="response" v-show="sortCriteria == 'startDate' && currentShow == 'black'" style="color:#274ed9;padding-right: 10px;float: right; cursor:pointer" @click="setSortCriteria('startDate')">时间排序</span>
+
+          </div>
+          <div class="tab-content-wrapper">
+            <div v-if="currentShow == 'black'" v-for="(item,index) in blackListData" :key="index" class="care-list">
+              <img src="../../public/img/focusB.png" alt="">
+
+              <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
+              <span v-show="!isOverLength(item.companyName)" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
+              <!--                <span @click="moreNews(item,'0')">{{item.companyName}}</span>-->
+
 
             </div>
-            <div class="tab-content-wrapper">
-              <div v-if="currentShow == 'black'" v-for="(item,index) in blackListData" :key="index" class="care-list">
-                <img src="../../public/img/focusB.png" alt="">
-
-                <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
-                <span v-show="!isOverLength(item.companyName)" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
-<!--                <span @click="moreNews(item,'0')">{{item.companyName}}</span>-->
-
-
-              </div>
-              <div v-if="currentShow == 'grey'" v-for="(item,index) in greyListData" :key="index" class="care-list">
-                <img src="../../public/img/focusGrey.png" alt="">
-                <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
-                <span v-show="!isOverLength(item.companyName)" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
-<!--                <span @click="moreNews(item,'0')">{{item.companyName}}</span>-->
-              </div>
+            <div v-if="currentShow == 'grey'" v-for="(item,index) in greyListData" :key="index" class="care-list">
+              <img src="../../public/img/focusGrey.png" alt="">
+              <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
+              <span v-show="!isOverLength(item.companyName)" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
+              <!--                <span @click="moreNews(item,'0')">{{item.companyName}}</span>-->
             </div>
-      <div v-if="currentShow == 'black'" style="text-align: center;margin-top: 10px;">
+          </div>
+          <div v-if="currentShow == 'black'" style="text-align: center;margin-top: 10px;">
             <el-pagination background layout="prev, pager, next, total, jumper"
                            :total="page2.total"
                            :current-page.sync="page2.currentPage"
@@ -176,7 +180,7 @@
                            pager-count="3"
                            @current-change="handleCurrentChange2">
             </el-pagination>
-        </div>
+          </div>
 
           <div v-if="currentShow == 'grey'" style="text-align: center;margin-top: 10px;">
             <el-pagination background layout="prev, pager, next, total, jumper"
@@ -198,7 +202,7 @@
             <span class="text">
               根据关键字，共搜索到 {{searchList.length>0?searchList.length:0}} 条数据结果，结果来自
               {{sourceType}}
-<!--              <a class="postLink" @click="blarSearch">模糊接口查询</a>-->
+              <!--              <a class="postLink" @click="blarSearch">模糊接口查询</a>-->
             </span>
           </div>
           <div class="main">
@@ -208,7 +212,7 @@
                   <span v-if="item.isBlack" style="color:white;background-color: #c1c1c1;padding: 3px;float: right">黑名单</span>
                   <span v-if="item.isGrey" style="color:white;background-color: #c1c1c1;padding: 3px;float: right">灰名单</span>
                   <p class="proList_txt" @click="moreNews(item,'0')"
-                    v-html="brightenKeyword(item.companyName,searchVal)">
+                     v-html="brightenKeyword(item.companyName,searchVal)">
                   </p>
                   <p>社会统一信用代码：{{item.creditCode}}</p>
                   <p>法人代表：{{item.operName}}</p>
@@ -274,13 +278,13 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-<!--        <el-button @click="userSettingDialogCompulsory = false">取 消</el-button>-->
+        <!--        <el-button @click="userSettingDialogCompulsory = false">取 消</el-button>-->
         <el-button type="primary" @click="saveUserInfo('userSettingForm')">保 存</el-button>
       </div>
     </el-dialog>
 
     <ZxbReportApply :dialogXBVisible.sync="dialogXBVisible"></ZxbReportApply>
-<!--    <InterfaceDownload :dialogInterfaceDownload.sync="dialogInterfaceDownload"></InterfaceDownload>-->
+    <!--    <InterfaceDownload :dialogInterfaceDownload.sync="dialogInterfaceDownload"></InterfaceDownload>-->
   </div>
 </template>
 
@@ -322,16 +326,16 @@ export default {
       //   backgroundImage: 'url(' + require('../../public/img/images/messageNumberIcon.png') + ')'
       // },
       otimer:null,
-	 	page1:{
-		    total:0,
-		    currentPage:0,
-		    pageSize:10
-		},
-		page2:{
-		    total:0,
-		    currentPage:0,
-		    pageSize:10
-		},
+      page1:{
+        total:0,
+        currentPage:0,
+        pageSize:10
+      },
+      page2:{
+        total:0,
+        currentPage:0,
+        pageSize:10
+      },
       page3:{
         total:0,
         currentPage:0,
@@ -362,8 +366,8 @@ export default {
         mobile: '',
         // permissionRoles: this.$Cookies.get('permissionRoles')
       },
-	  blacklistAudit:false,
-	  userManage: false,
+      blacklistAudit:false,
+      userManage: false,
       merchant:false,
       sub_manage: false,
       newsAll:false,
@@ -371,7 +375,7 @@ export default {
       zxbReportApply:false,
       InterfaceDownload:false,
       zxbReportlist:false,
-	  blacklistApply: false,
+      blacklistApply: false,
       dialogXBVisible: false,
       zxbMessageList:false,
       // dialogInterfaceDownload: false,
@@ -388,10 +392,10 @@ export default {
     }
   },
   created(){
-	  if(this.$route.query.searchVal){
-		  this.searchVal=this.$route.query.searchVal;
-		  this.seachContent()
-	  }
+    if(this.$route.query.searchVal){
+      this.searchVal=this.$route.query.searchVal;
+      this.seachContent()
+    }
     if(this.$route.query.tokenIsOut){
       this.message("您的帐号在另一地点登录，您已被迫下线");
     }
@@ -404,7 +408,7 @@ export default {
       this.getBlackListWithoutPagination();
       this.getGreyList(1);
       this.getGreyListWithoutPagination();
-	  this.verifyPermissions();
+      this.verifyPermissions();
     };
     if (this.$route.query.row == 1) {
       this.showUserInfoCompulsory();
@@ -427,36 +431,36 @@ export default {
     // beforeDestroy() {
     //   clearInterval(this.timer)
     // },
-	verifyPermissions(){
-		//权限
-		let param = {
-			userId: this.$Cookies.get("userId"),
-			permissionPoint:"user.manage,user.sub_manage,blacklist.audit,blacklist.apply,zxbreport.audit,merchant.screening,news.all,zxbreport.apply,zxbreport.list,zxbMessage.list"
-		}
-		this.$ajax.manage.verifyPermissions(param).then(res=>{
-			console.log(res)
-			if(res.data.code==0){
-				// for(let i in res.data.verifyPermissionResult){
-				// 	this.blacklistAudit = res.data.verifyPermissionResult
-				// }
-				this.blacklistAudit = res.data.verifyPermissionResult['blacklist.audit'];
-				this.blacklistApply = res.data.verifyPermissionResult['blacklist.apply']
-				this.userManage = res.data.verifyPermissionResult['user.manage']
-				this.sub_manage = res.data.verifyPermissionResult['user.sub_manage']
-        this.zxbreportAudit = res.data.verifyPermissionResult['zxbreport.audit'];
-				this.merchant = res.data.verifyPermissionResult['merchant.screening'];
-        this.newsAll = res.data.verifyPermissionResult['news.all'];
-        this.zxbReportApply = res.data.verifyPermissionResult['zxbreport.apply'];
-        // this.interfaceDownload = res.data.verifypermissions['InterfaceDownload.apply'];
-        this.zxbReportlist  = res.data.verifyPermissionResult['zxbreport.list'];
-        this.zxbMessageList = res.data.verifyPermissionResult['zxbMessage.list'];
-        if(this.userManage||this.sub_manage){
-          this.$Cookies.set('userManage','true');
+    verifyPermissions(){
+      //权限
+      let param = {
+        userId: this.$Cookies.get("userId"),
+        permissionPoint:"user.manage,user.sub_manage,blacklist.audit,blacklist.apply,zxbreport.audit,merchant.screening,news.all,zxbreport.apply,zxbreport.list,zxbMessage.list"
+      }
+      this.$ajax.manage.verifyPermissions(param).then(res=>{
+        console.log(res)
+        if(res.data.code==0){
+          // for(let i in res.data.verifyPermissionResult){
+          // 	this.blacklistAudit = res.data.verifyPermissionResult
+          // }
+          this.blacklistAudit = res.data.verifyPermissionResult['blacklist.audit'];
+          this.blacklistApply = res.data.verifyPermissionResult['blacklist.apply']
+          this.userManage = res.data.verifyPermissionResult['user.manage']
+          this.sub_manage = res.data.verifyPermissionResult['user.sub_manage']
+          this.zxbreportAudit = res.data.verifyPermissionResult['zxbreport.audit'];
+          this.merchant = res.data.verifyPermissionResult['merchant.screening'];
+          this.newsAll = res.data.verifyPermissionResult['news.all'];
+          this.zxbReportApply = res.data.verifyPermissionResult['zxbreport.apply'];
+          // this.interfaceDownload = res.data.verifypermissions['InterfaceDownload.apply'];
+          this.zxbReportlist  = res.data.verifyPermissionResult['zxbreport.list'];
+          this.zxbMessageList = res.data.verifyPermissionResult['zxbMessage.list'];
+          if(this.userManage||this.sub_manage){
+            this.$Cookies.set('userManage','true');
+          }
+          console.log(res.data)
         }
-        console.log(res.data)
-			}
-		})
-	},
+      })
+    },
 
     goHmdsb () {
       this.$router.push({
@@ -487,7 +491,7 @@ export default {
       })
     },
     goLog (){
-	  debugger;
+      debugger;
       this.$router.push({
         path: '/iframePage',
         query: {
@@ -617,60 +621,60 @@ export default {
       this.getUserInfo()
     },
     TycHandleCommand(command){
-        //TODO 组装天眼查URL
-        let username = "zjb_"+this.$Cookies.get('userCode');
-        let sign = this.$md5(username+"44bce5ef-873e-4689-b515-a1ef9775aa82");
-        this.tycUrl = `https://pro.tianyancha.com/cloud-std-security/aut/login.json?username=${username}&authId=lf2b4yqy4lsfgp1x&sign=${sign}&redirectUrl=`
+      //TODO 组装天眼查URL
+      let username = "zjb_"+this.$Cookies.get('userCode');
+      let sign = this.$md5(username+"44bce5ef-873e-4689-b515-a1ef9775aa82");
+      this.tycUrl = `https://pro.tianyancha.com/cloud-std-security/aut/login.json?username=${username}&authId=lf2b4yqy4lsfgp1x&sign=${sign}&redirectUrl=`
 
-        if(command == 1){
-          //幕后关系
-            this.goToTycPage("幕后关系","/found");
-        }else if(command == 2){
-          //关联关系
-          this.goToTycPage("关联关系","/shortpath");
-        }else if(command == 3){
-          //报告下载
-          this.goToTycPage("报告下载","/tools/download-report");
-        }else if(command == 4){
-          //天眼地图
-          this.goToTycPage("天眼地图","/map");
-        }else if(command == 5){
-          //资本市场公告
-          this.goToTycPage("资本市场公告","/announcement");
-        }else if(command == 6){
-          //资本市场法规
-          this.goToTycPage("资本市场法规","/regulations");
-        }else if(command == 7){
-          //资本成分穿透
-          this.goToTycPage("资本成分穿透","/tools/capital");
-        }else if(command == 8){
-          //企业画像
-          this.goToTycPage("企业画像","/tools/portrait");
-        }else if(command == 9){
-          //数据导出
-          this.goToTycPage("数据导出","/tools/export-company-list");
-        }else if(command == 10){
-          //高级搜索
-          this.goToTycPage("高级搜索","/searchx");
-        }else if(command == 11){
-          //监控管理
-          this.goToTycPage("监控管理","/std/monitor/event");
-        }
+      if(command == 1){
+        //幕后关系
+        this.goToTycPage("幕后关系","/found");
+      }else if(command == 2){
+        //关联关系
+        this.goToTycPage("关联关系","/shortpath");
+      }else if(command == 3){
+        //报告下载
+        this.goToTycPage("报告下载","/tools/download-report");
+      }else if(command == 4){
+        //天眼地图
+        this.goToTycPage("天眼地图","/map");
+      }else if(command == 5){
+        //资本市场公告
+        this.goToTycPage("资本市场公告","/announcement");
+      }else if(command == 6){
+        //资本市场法规
+        this.goToTycPage("资本市场法规","/regulations");
+      }else if(command == 7){
+        //资本成分穿透
+        this.goToTycPage("资本成分穿透","/tools/capital");
+      }else if(command == 8){
+        //企业画像
+        this.goToTycPage("企业画像","/tools/portrait");
+      }else if(command == 9){
+        //数据导出
+        this.goToTycPage("数据导出","/tools/export-company-list");
+      }else if(command == 10){
+        //高级搜索
+        this.goToTycPage("高级搜索","/searchx");
+      }else if(command == 11){
+        //监控管理
+        this.goToTycPage("监控管理","/std/monitor/event");
+      }
 
     },
     handleCommand (command) {
       console.log(command)
       if (command == 1) {
         //黑名单申报
-       // this.goHmdsb() 
-      this.$router.push({ path: '/BlackListDeclaration' }) 
+        // this.goHmdsb()
+        this.$router.push({ path: '/BlackListDeclaration' })
       } else if (command == 2) {
         //黑名单审批
-         // this.goHmdsp()
-       this.$router.push({ path: '/BlacklistApproval' }) 
+        // this.goHmdsp()
+        this.$router.push({ path: '/BlacklistApproval' })
       } else if (command == 3) {
         //客商初筛
-       // this.goKstb()
+        // this.goKstb()
         this.$router.push({ path: '/InitialScreeningOfMerchants' })
       } else if (command == 4) {
         //信保报告申请
@@ -715,20 +719,29 @@ export default {
       }else if(command == 17){
         this.$router.push({ path: '/InterfaceUsedLimit'})
       }
+      else if(command == 18){
+        this.goCreditCodeMaintenance()
+      }
+      else if(command == 19){
+        this.goLog()
+      }
+      else if(command == 20){
+        this.goOrgEdit()
+      }
     },
     toBlackListDetail() {
       this.$router.push({ path: '/BlacklistDetail'})
     },
     // getBlackList (page) {
     //   let param = {
-		// pageIndex: page ? page : 1,
-		// pageSize: this.page2.pageSize,
+    // pageIndex: page ? page : 1,
+    // pageSize: this.page2.pageSize,
     //     "userCode": sessionStorage.getItem('userCode')
     //   }
     //   this.$ajax.manage.getBlackList(param).then(res => {
     //     if (res.data.code == 0) {
     //       this.blackListData = res.data.blackList
-		//   this.page2.total = JSON.parse(res.data.total)
+    //   this.page2.total = JSON.parse(res.data.total)
     //     }
     //   })
     // },
@@ -789,7 +802,7 @@ export default {
 
     setSortCriteria (criteria) {
       this.sortCriteria = criteria;
-	    if(this.currentShow == 'black'){
+      if(this.currentShow == 'black'){
         this.getBlackList();
         this.page2.currentPage = 1;//重新查询刷新当前页
       }else {
@@ -897,24 +910,24 @@ export default {
     getCareList (page) {
       //关注清单列表
       let param = {
-		pageIndex: page ? page : 1,
-		pageSize: this.page1.pageSize,
+        pageIndex: page ? page : 1,
+        pageSize: this.page1.pageSize,
         userId: this.$Cookies.get('userId')
       }
       this.$ajax.manage.getCareList(param).then(res => {
         if (res.data.code == 0) {
           this.careList = JSON.parse(res.data.careList)
-		this.page1.total = JSON.parse(res.data.total)
+          this.page1.total = JSON.parse(res.data.total)
         }
       })
       console.log("开始自动刷新了: " + new Date())
     },
-	handleCurrentChange1(val){
-		this.getCareList (val)
-	},
-	handleCurrentChange2(val){
-		this.getBlackList (val)
-	},
+    handleCurrentChange1(val){
+      this.getCareList (val)
+    },
+    handleCurrentChange2(val){
+      this.getBlackList (val)
+    },
     handleCurrentChange3(val){
       this.getGreyList (val)
     },
@@ -967,8 +980,8 @@ export default {
         keywordArr.forEach(item => {
           if (val.indexOf(item) !== -1 && item !== "") {
             val = val.replace(
-              new RegExp(item, 'g'),
-              '<font color="#f75353">' + item + "</font>");
+                new RegExp(item, 'g'),
+                '<font color="#f75353">' + item + "</font>");
           }
         });
         return val;
@@ -1003,13 +1016,13 @@ export default {
       }
 
       this.$router.push({
-          path: '/messageCenter',
-          query: {
-            activeName: activeName,
-            companyName: companyNameStr,
-            careBy: careFlag
-          }
-        })
+        path: '/messageCenter',
+        query: {
+          activeName: activeName,
+          companyName: companyNameStr,
+          careBy: careFlag
+        }
+      })
     },
 
     OmitTheCompanyName(companyName, currentShow){
@@ -1039,10 +1052,10 @@ export default {
     },
 
     getMessageShow(messageNumber){
-	    if(messageNumber > 99){
-	      return '99+'
+      if(messageNumber > 99){
+        return '99+'
       }else{
-	      return messageNumber
+        return messageNumber
       }
     },
 
@@ -1054,22 +1067,22 @@ export default {
       }
       this.$ajax.manage.getPDF(param).then(res => {
         const content = res.data
-          const blob = new Blob([content])
-          console.log(res.data)
-          const fileName = '用户手册.docx'
-          if ('download' in document.createElement('a')) { // 非IE下载
-            const elink = document.createElement('a')
-            elink.download = '用户手册.docx'
-            elink.style.display = 'none'
-            elink.href = URL.createObjectURL(blob)
-            console.log(elink.href);
-            document.body.appendChild(elink)
-            elink.click()
-            URL.revokeObjectURL(elink.href) // 释放URL 对象
-            document.body.removeChild(elink)
-          } else { // IE10+下载
-            navigator.msSaveBlob(blob, '用户手册.docx')
-          }
+        const blob = new Blob([content])
+        console.log(res.data)
+        const fileName = '用户手册.docx'
+        if ('download' in document.createElement('a')) { // 非IE下载
+          const elink = document.createElement('a')
+          elink.download = '用户手册.docx'
+          elink.style.display = 'none'
+          elink.href = URL.createObjectURL(blob)
+          console.log(elink.href);
+          document.body.appendChild(elink)
+          elink.click()
+          URL.revokeObjectURL(elink.href) // 释放URL 对象
+          document.body.removeChild(elink)
+        } else { // IE10+下载
+          navigator.msSaveBlob(blob, '用户手册.docx')
+        }
       })
     },
     getIsBlack(blackList,searchList){
@@ -1122,7 +1135,7 @@ export default {
     background: url(../../public/img/bg.png) no-repeat;
     background-size: cover;
     .header-box {
-	  padding: 0 20px;
+      padding: 0 20px;
       height: 70px;
       background: none;
       display: flex;
@@ -1134,7 +1147,7 @@ export default {
         vertical-align: middle;
         position: relative;
         top: 10px;
-		height: 44px;
+        height: 44px;
       }
     }
     .title {
