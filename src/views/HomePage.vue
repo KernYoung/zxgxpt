@@ -39,19 +39,15 @@
               <!--              <el-dropdown-item command="13" v-if="true">信保信息</el-dropdown-item>-->
               <!-- jina-->
 			  <el-dropdown-item command="12" v-if="zxbReportlist">我的信保报告</el-dropdown-item>
-              <el-dropdown-item command="14" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">信保代码维护</el-dropdown-item>
-              <el-dropdown-item command="18" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">信保代码维护(旧)</el-dropdown-item>
+              <el-dropdown-item command="14" v-if="$Cookies.get('username')=='admin'">信保代码维护</el-dropdown-item>
               <el-dropdown-item command="5" v-if="userManage||sub_manage">用户管理</el-dropdown-item>
               <el-dropdown-item command="11" v-if="$Cookies.get('username')=='admin'">角色管理</el-dropdown-item>
               <el-dropdown-item command="6" v-if="newsAll">消息中心</el-dropdown-item>
               <el-dropdown-item command="8" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">访问日志</el-dropdown-item>
-              <el-dropdown-item command="19" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">访问日志(旧)</el-dropdown-item>
-              <el-dropdown-item command="9" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">组织架构维护</el-dropdown-item>
-              <el-dropdown-item command="20" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">组织架构维护(旧)</el-dropdown-item>
+              <el-dropdown-item command="9" v-if="$Cookies.get('username')=='admin'">组织架构维护</el-dropdown-item>
               <el-dropdown-item command="15" v-if="$Cookies.get('username')=='admin'">点数填报</el-dropdown-item>
               <el-dropdown-item command="16" v-if="$Cookies.get('username')=='admin'">下发Token管理</el-dropdown-item>
               <el-dropdown-item command="17" v-if="$Cookies.get('username')=='admin'">下发接口次数限制</el-dropdown-item>
-
             </el-dropdown-menu>
           </el-dropdown>
           <span style="margin-right: 15px;cursor:pointer" @click="showUserInfo">
@@ -718,15 +714,6 @@ export default {
         this.$router.push({ path: '/TokenManage'})
       }else if(command == 17){
         this.$router.push({ path: '/InterfaceUsedLimit'})
-      }
-      else if(command == 18){
-        this.goCreditCodeMaintenance()
-      }
-      else if(command == 19){
-        this.goLog()
-      }
-      else if(command == 20){
-        this.goOrgEdit()
       }
     },
     toBlackListDetail() {
