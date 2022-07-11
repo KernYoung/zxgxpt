@@ -143,8 +143,17 @@ export default {
           cancelButtonText: "取消",
           inputValue: row.clientNo !== "" ? row.clientNo : null,
           inputValidator: (val) => {
-            if (!val || val == "") {
-              return "请填写";
+            var judgeFn = new RegExp(/\s+/g);
+            if (val) {
+
+              if(val == ""){
+                return "请填写";
+              } else if(judgeFn.test(val)){
+                return "编码不能有空格";
+              }
+
+            }else{
+                return "请填写";
             }
           },
         }
