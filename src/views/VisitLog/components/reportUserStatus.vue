@@ -7,13 +7,13 @@
       size="small"
       :header-cell-style="{ background: '#ECF1FE' }"
     >
-      <el-table-column prop="reportCode" label="报告单号" align="center">
+      <el-table-column prop="reportCode" label="报告单号" width="80px" align="center">
       </el-table-column>
-      <el-table-column prop="xbCode" label="信保代码" align="center">
+      <el-table-column prop="xbCode" label="信保代码" width="130px" align="center">
       </el-table-column>
       <el-table-column prop="name" label="中/英文名称" align="center">
       </el-table-column>
-      <el-table-column prop="userName" label="申请人" align="center">
+      <el-table-column prop="userName" label="申请人" width="120px" align="center">
       </el-table-column>
       <el-table-column
         prop="applyCompanyName"
@@ -21,9 +21,9 @@
         align="center"
       >
       </el-table-column>
-      <el-table-column prop="applyTime" label="申请时间" align="center">
+      <el-table-column prop="applyTime" label="申请时间" width="90px" align="center">
       </el-table-column>
-      <el-table-column prop="approveTime" label="审核时间" align="center">
+      <el-table-column prop="approveTime" label="审核时间"width="90px" align="center">
       </el-table-column>
       <el-table-column
         prop="previewNum"

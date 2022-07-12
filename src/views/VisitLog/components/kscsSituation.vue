@@ -10,9 +10,9 @@
     >
       <el-table-column type="index" label="序号"></el-table-column>
       <el-table-column prop="applyCompanyName" label="已申请企业" align="center"> </el-table-column>
-      <el-table-column prop="applyUserName" label="最初申请人" align="center"> </el-table-column>
+      <el-table-column prop="applyUserName" label="最初申请人" width="120px" align="center"> </el-table-column>
       <el-table-column prop="companyName" label="申请人所在企业" align="center"> </el-table-column>
-      <el-table-column prop="applyTime" label="最初申请时间" align="center"> </el-table-column>
+      <el-table-column prop="applyTime" label="最初申请时间"  width="160px" align="center"> </el-table-column>
     </el-table>
   </div>
 </template>

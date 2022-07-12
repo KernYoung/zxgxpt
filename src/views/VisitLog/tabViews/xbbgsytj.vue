@@ -29,9 +29,9 @@
       size="small"
       :header-cell-style="{ background: '#ECF1FE' }"
     >
-      <el-table-column prop="reportCode" label="报告编号" align="center">
+      <el-table-column prop="reportCode" label="报告编号" width="100px" align="center">
       </el-table-column>
-      <el-table-column prop="xbCode" label="信保代码" align="center">
+      <el-table-column prop="xbCode" label="信保代码" width="150px" align="center">
       </el-table-column>
       <el-table-column prop="name" label="中/英文名称" align="center">
       </el-table-column>
@@ -39,15 +39,15 @@
       </el-table-column>
       <el-table-column prop="companyName" label="用户所在企业" align="center">
       </el-table-column>
-      <el-table-column prop="operateNote" label="操作记录" align="center">
+      <el-table-column prop="operateNote" label="操作记录" width="100px" align="center">
       </el-table-column>
-      <el-table-column prop="operateTime" label="操作时间" align="center">
+      <el-table-column prop="operateTime" label="操作时间" width="150px" align="center">
       </el-table-column>
     </el-table>
     <el-dialog
       title="在库报告使用情况"
       :visible.sync="dialog.visible"
-      width="1100px"
+      width="1300px"
     >
       <ReportUserStatus
         :options="{ ...searchOptions, activeCompany }"

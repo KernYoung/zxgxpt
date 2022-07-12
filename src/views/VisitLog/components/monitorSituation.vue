@@ -18,11 +18,11 @@
       <el-table-column prop="no" label="序号" width="50px" align="center"></el-table-column>
       <el-table-column prop="gzCompanyName" label="已关注企业" align="center">
       </el-table-column>
-      <el-table-column prop="userName" label="关注人" align="center">
+      <el-table-column prop="userName" label="关注人" width="120px" align="center">
       </el-table-column>
       <el-table-column prop="companyName" label="关注人所在企业" align="center">
       </el-table-column>
-      <el-table-column prop="gzTime" label="关注时间" align="center">
+      <el-table-column prop="gzTime" label="关注时间" width="160px" align="center">
       </el-table-column>
     </el-table>
   </div>
