@@ -2,9 +2,7 @@
   <div class="container-wrapper">
     <div style="margin-bottom: 15px;">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/homePage' }"
-          >首页</el-breadcrumb-item
-        >
+        <el-breadcrumb-item :to="{ path: '/homePage' }">首页</el-breadcrumb-item>
         <el-breadcrumb-item>组织架构维护</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -12,21 +10,22 @@
     <div class="container">
       <div class="left">
         <div class="search-box">
-          <el-input placeholder="输入关键字进行过滤" v-model="filterText">
-          </el-input>
+          <el-input placeholder="输入关键字进行过滤" v-model="filterText"> </el-input>
         </div>
         <div class="tree-box">
           <el-tree
             class="filter-tree"
             :data="data"
             node-key="code"
-            :default-expanded-keys="[defaultNode]"
+            :default-expanded-keys="defaultExpand"
             :current-node-key="defaultNode"
             :props="defaultProps"
             :filter-node-method="filterNode"
             ref="tree"
             highlight-current
             @node-click="nodeClick"
+            @node-expand="nodeExpand"
+            @node-collapse="nodeCollapse"
             v-loading="treeLoading"
           >
           </el-tree>
@@ -34,16 +33,10 @@
       </div>
       <div class="right">
         <div class="right-container">
-          <div
-            style="display:flex;justify-content:space-between;align-items:center"
-          >
+          <div style="display:flex;justify-content:space-between;align-items:center">
             <div>
-              <el-button type="primary" plain size="medium" @click="add"
-                >新增</el-button
-              >
-              <el-button type="primary" plain size="medium" @click="exportExcel"
-                >导出</el-button
-              >
+              <el-button type="primary" plain size="medium" @click="add">新增</el-button>
+              <el-button type="primary" plain size="medium" @click="exportExcel">导出</el-button>
             </div>
             <span class="note"
               >说明：手动添加的公司公司编码请附带公司简称英文缩写，便于维护，如中韩人寿，则维护ZHRS001</span
@@ -58,54 +51,26 @@
             :header-cell-style="{ background: '#ECF1FE' }"
             ref="table"
           >
-            <el-table-column prop="code" label="编码" width="100px">
-            </el-table-column>
+            <el-table-column prop="code" label="编码" width="100px"> </el-table-column>
             <el-table-column prop="name" label="名称"> </el-table-column>
-            <el-table-column prop="rule" label="用户前缀规则" width="100px">
-            </el-table-column>
-            <el-table-column prop="sname" label="上级组织名称">
-            </el-table-column>
-            <el-table-column prop="scode" label="上级组织编码" width="100px">
-            </el-table-column>
-            <el-table-column prop="shortName" label="单位简称">
-            </el-table-column>
-            <el-table-column
-              prop="enableState"
-              align="center"
-              label="启用状态"
-              width="80px"
-            >
+            <el-table-column prop="rule" label="用户前缀规则" width="100px"> </el-table-column>
+            <el-table-column prop="sname" label="上级组织名称"> </el-table-column>
+            <el-table-column prop="scode" label="上级组织编码" width="100px"> </el-table-column>
+            <el-table-column prop="shortName" label="单位简称"> </el-table-column>
+            <el-table-column prop="enableState" align="center" label="启用状态" width="80px">
               <template slot-scope="scope">
-                <el-tag
-                  type="primary"
-                  size="small"
-                  v-if="
-                    scope.row.enableState == 1 || scope.row.enableState == 2
-                  "
+                <el-tag type="primary" size="small" v-if="scope.row.enableState == 1 || scope.row.enableState == 2"
                   >是</el-tag
                 >
-                <el-tag
-                  type="danger"
-                  size="small"
-                  v-if="scope.row.enableState == 0"
-                  >否</el-tag
-                >
+                <el-tag type="danger" size="small" v-if="scope.row.enableState == 0">否</el-tag>
               </template>
             </el-table-column>
             <el-table-column align="center" label="操作" width="100px">
               <template slot-scope="scope">
-                <el-button
-                  type="text"
-                  size="small"
-                  v-if="scope.row.orgType !== 'NC'"
-                  @click="openDialog(scope.row)"
+                <el-button type="text" size="small" v-if="scope.row.orgType !== 'NC'" @click="openDialog(scope.row)"
                   >编辑</el-button
                 >
-                <el-button
-                  type="text"
-                  size="small"
-                  v-if="scope.row.orgType !== 'NC'"
-                  @click="deleteRow(scope.row)"
+                <el-button type="text" size="small" v-if="scope.row.orgType !== 'NC'" @click="deleteRow(scope.row)"
                   >删除</el-button
                 >
               </template>
@@ -124,35 +89,27 @@
         </div>
       </div>
     </div>
-    <el-dialog
-      :title="dialog.title"
-      :visible.sync="dialog.visible"
-      width="550px"
-    >
-      <AddAndEdit
-        :key="keys"
-        :currentRow="currentRow"
-        @savesuccess="savesuccess"
-      ></AddAndEdit>
+    <el-dialog :title="dialog.title" :visible.sync="dialog.visible" width="550px">
+      <AddAndEdit :key="keys" :currentRow="currentRow" @savesuccess="savesuccess"></AddAndEdit>
     </el-dialog>
   </div>
 </template>
 <script>
-import AddAndEdit from "./components/addAndEdit.vue";
-import XLSX from "xlsx";
-import FileSaver from "file-saver";
-import { export_json_to_excel } from "@/assets/Export2Excel";
+import AddAndEdit from './components/addAndEdit.vue'
+import XLSX from 'xlsx'
+import FileSaver from 'file-saver'
+import { export_json_to_excel } from '@/assets/Export2Excel'
 export default {
   components: {
     AddAndEdit,
   },
   data() {
     return {
-      filterText: "",
+      filterText: '',
       data: [],
       defaultProps: {
-        children: "childHrOrg",
-        label: "name",
+        children: 'childHrOrg',
+        label: 'name',
       },
       tableData: [],
       page: {
@@ -161,137 +118,127 @@ export default {
         total: 0,
       },
       dialog: {
-        title: "",
+        title: '',
         visible: false,
-        type: "",
+        type: '',
       },
       keys: +new Date(),
       currentRow: {},
       currentNode: null,
       treeLoading: true,
-      defaultNode: "010",
-    };
+      defaultNode: '010',
+      defaultExpand: ['010'],
+    }
   },
   watch: {
     filterText(val) {
-      this.$refs.tree.filter(val);
+      this.$refs.tree.filter(val)
     },
   },
   mounted() {
     // this.getTableData("");
-    this.getOrg(true);
+    this.getOrg(true)
   },
   methods: {
     getOrg(flag) {
-      this.$ajax.manage.getHrOrgEnable({ code: "" }).then((res) => {
-        this.treeLoading = false;
-        if (res.data.code == "0") {
-          this.data = [res.data.data[0]];
-          this.defaultNode = res.data.data[0].code;
+      this.$ajax.manage.getHrOrgEnable({ code: '' }).then((res) => {
+        this.treeLoading = false
+        if (res.data.code == '0') {
+          this.data = [res.data.data[0]]
+          // this.defaultNode = res.data.data[0].code
+          if (!this.currentNode) this.currentNode = res.data.data[0]
           if (flag) {
-            this.getTableData(this.defaultNode);
+            this.getTableData(this.currentNode.code)
           }
-          this.currentNode = res.data.data[0];
         }
-      });
+      })
     },
     getTableData(code) {
       this.$ajax.manage.getHrOrg({ code }).then((res) => {
-        if (res.data.code == "0") {
+        if (res.data.code == '0') {
           this.tableData = res.data.data.map((item) => {
-            item.enableStateText =
-              item.enableState == 1 || item.enableState == 2 ? "是" : "否";
-            return item;
-          });
-          this.page.total = res.data.data.length;
+            item.enableStateText = item.enableState == 1 || item.enableState == 2 ? '是' : '否'
+            return item
+          })
+          this.page.total = res.data.data.length
         }
-      });
+      })
     },
     filterNode(value, data) {
-      if (!value) return true;
-      return data.name.indexOf(value) !== -1;
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
     },
     openDialog(row) {
-      this.currentRow = row;
-      this.keys = +new Date();
-      this.dialog.title = "编辑";
-      this.dialog.visible = true;
+      this.currentRow = row
+      this.keys = +new Date()
+      this.dialog.title = '编辑'
+      this.dialog.visible = true
     },
     add() {
       if (!this.currentNode) {
-        this.$message.warning("请选择组织架构");
-        return;
+        this.$message.warning('请选择组织架构')
+        return
       }
       this.currentRow = {
         scode: this.currentNode.code,
         sname: this.currentNode.name,
         rule: this.currentNode.rule,
-      };
-      this.keys = +new Date();
-      this.dialog.title = "新增";
-      this.dialog.visible = true;
+      }
+      this.keys = +new Date()
+      this.dialog.title = '新增'
+      this.dialog.visible = true
     },
     savesuccess() {
-      this.dialog.visible = false;
-      this.getTableData(this.currentNode.code);
-      this.getOrg(false);
+      this.dialog.visible = false
+      this.getTableData(this.currentNode.code)
+      this.getOrg(false)
+    },
+    nodeExpand(data, node) {
+      this.defaultExpand.push(data.code)
+    },
+    nodeCollapse(data, node) {
+      this.defaultExpand = this.defaultExpand.filter((item) => item != data.code)
     },
     nodeClick(data) {
-      console.log(data);
-      this.currentNode = data;
-      this.getTableData(data.code);
+      console.log(data)
+      this.currentNode = data
+      this.getTableData(data.code)
     },
     handleCurrentChange(val) {
-      this.table;
+      this.table
     },
     deleteRow(row) {
-      this.$confirm("确定删除吗?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
+      this.$confirm('确定删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
       })
         .then(() => {
           let param = {
             dr: 1,
             pkOrg: row.pkOrg,
             orgType: row.orgType,
-            updateTimeBy: this.$Cookies.get("userCode"),
-          };
+            updateTimeBy: this.$Cookies.get('userCode'),
+          }
           this.$ajax.manage.SaveHrOrg(param).then((res) => {
-            if (res.data.code == "0") {
+            if (res.data.code == '0') {
               this.$message({
-                type: "success",
+                type: 'success',
                 message: res.data.msg,
-              });
-              this.getTableData(this.currentNode.code);
-              this.getOrg(false);
+              })
+              this.getTableData(this.currentNode.code)
+              this.getOrg(false)
             }
-          });
+          })
         })
-        .catch(() => {});
+        .catch(() => {})
     },
     exportExcel() {
-      var tHeader = [
-        "编码",
-        "名称",
-        "用户前缀规则",
-        "上级组织名称",
-        "上级组织编码",
-        "单位简称",
-        "启用状态",
-      ];
-      var filterVal = [
-        "code",
-        "name",
-        "rule",
-        "sname",
-        "scode",
-        "shortName",
-        "enableStateText",
-      ];
-      var filename = `组织架构维护(${this.currentNode.name})`;
-      var data = this.formatJson(filterVal, this.tableData);
-      export_json_to_excel(tHeader, data, filename);
+      var tHeader = ['编码', '名称', '用户前缀规则', '上级组织名称', '上级组织编码', '单位简称', '启用状态']
+      var filterVal = ['code', 'name', 'rule', 'sname', 'scode', 'shortName', 'enableStateText']
+      var filename = `组织架构维护(${this.currentNode.name})`
+      var data = this.formatJson(filterVal, this.tableData)
+      export_json_to_excel(tHeader, data, filename)
     },
     /**
      *  格式数据
@@ -301,9 +248,9 @@ export default {
     formatJson(filterVal, tableData) {
       return tableData.map((v) => {
         return filterVal.map((j) => {
-          return v[j];
-        });
-      });
+          return v[j]
+        })
+      })
     },
     // exportExcel() {
     //   const tableComp = this.$refs.table.$el;
@@ -339,7 +286,7 @@ export default {
     //   return wbout;
     // },
   },
-};
+}
 </script>
 <style scoped lang="less">
 .container-wrapper {
