@@ -21,6 +21,7 @@
             :current-node-key="defaultNode"
             :props="defaultProps"
             :filter-node-method="filterNode"
+            :auto-expand-parent ="false"
             ref="tree"
             highlight-current
             @node-click="nodeClick"
