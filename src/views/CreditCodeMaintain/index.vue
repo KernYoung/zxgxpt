@@ -24,7 +24,7 @@
           style="width:220px;margin:0 10px"
         ></el-input>
         <el-button type="primary" @click="search">查询</el-button>
-        <el-button type="primary" @click="download" :disabled="isEdit"
+        <el-button type="primary" @click="exportExcel" :disabled="isEdit"
           >导出</el-button
         >
         <el-button
@@ -95,6 +95,7 @@
 <script>
 import XLSX from "xlsx";
 import FileSaver from "file-saver";
+import { export_json_to_excel } from "@/assets/Export2Excel";
 export default {
   data() {
     return {
@@ -166,41 +167,72 @@ export default {
         })
         .catch(() => {});
     },
-    download() {
-      console.log(this.exportExcel());
-    },
+    // download() {
+    //   console.log(this.exportExcel());
+    // },
     exportExcel() {
-      const tableComp = this.$refs.table.$el;
-      var wb;
-      var fix = tableComp.querySelector(".el-table__fixed");
-      // 1.从el-table中生成Excel工作簿
-      if (fix) {
-        // 解决固定列时导出两份的bug
-        wb = XLSX.utils.table_to_book(tableComp.removeChild(fix), {
-          raw: true,
-        });
-        tableComp.appendChild(fix);
-      } else {
-        wb = XLSX.utils.table_to_book(tableComp, { raw: true });
-      }
-      // 2.输出二进制字符串
-      let wbout = XLSX.write(wb, {
-        bookType: "xlsx",
-        bookSST: true,
-        type: "array",
-      });
-      try {
-        FileSaver.saveAs(
-          new Blob([wbout], { type: "application/octet-stream" }),
-          `信保代码维护.xlsx`
-        );
-      } catch (e) {
-        if (typeof console !== "undefined") {
-          console.log(e, wbout);
-        }
-      }
-      return wbout;
+      var tHeader = [
+        "公司HR编码",
+        "公司HR名称",
+        "所属成员公司HR名称",
+        "数据来源",
+        "信保通买方代码",
+      ];
+      var filterVal = [
+        "code",
+        "name",
+        "companyName",
+        "companyType",
+        "clientNo",
+      ];
+      var filename = `信保代码维护`;
+      var data = this.formatJson(filterVal, this.tableData);
+      export_json_to_excel(tHeader, data, filename);
     },
+    /**
+     *  格式数据
+     *  @filterVal  格式头
+     *  @tableData  用来格式的表格数据
+     */
+    formatJson(filterVal, tableData) {
+      return tableData.map((v) => {
+        return filterVal.map((j) => {
+          return v[j];
+        });
+      });
+    },
+    // exportExcel() {
+    //   const tableComp = this.$refs.table.$el;
+    //   var wb;
+    //   var fix = tableComp.querySelector(".el-table__fixed");
+    //   // 1.从el-table中生成Excel工作簿
+    //   if (fix) {
+    //     // 解决固定列时导出两份的bug
+    //     wb = XLSX.utils.table_to_book(tableComp.removeChild(fix), {
+    //       raw: true,
+    //     });
+    //     tableComp.appendChild(fix);
+    //   } else {
+    //     wb = XLSX.utils.table_to_book(tableComp, { raw: true });
+    //   }
+    //   // 2.输出二进制字符串
+    //   let wbout = XLSX.write(wb, {
+    //     bookType: "xlsx",
+    //     bookSST: true,
+    //     type: "array",
+    //   });
+    //   try {
+    //     FileSaver.saveAs(
+    //       new Blob([wbout], { type: "application/octet-stream" }),
+    //       `信保代码维护.xlsx`
+    //     );
+    //   } catch (e) {
+    //     if (typeof console !== "undefined") {
+    //       console.log(e, wbout);
+    //     }
+    //   }
+    //   return wbout;
+    // },
   },
 };
 </script>
