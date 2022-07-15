@@ -3,10 +3,10 @@
     <!-- 用户访问统计 -->
     <div id="chart"></div>
     <div style="text-align:right; margin: 20px 0 10px 0">
-      <el-link type="primary" @click="exportExcel" style="margin-right:10px"
+      <el-link type="primary"  @click="exportExcel" style="margin-right:10px"
         >导出</el-link
       >
-      <el-link type="primary" @click="showStatisticalReport">统计月报</el-link>
+      <el-link type="primary" v-if="$Cookies.get('username')=='admin'" @click="showStatisticalReport">统计月报</el-link>
     </div>
     <el-table
       :data="tableData"

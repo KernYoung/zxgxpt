@@ -8,13 +8,13 @@
       :rules="rules"
     >
       <el-form-item label="编码：" prop="code">
-        <el-input v-model="form.code" style="width:300px"></el-input>
+        <el-input v-model="form.code" style="width:300px" :disabled="form.orgType"></el-input>
       </el-form-item>
       <el-form-item label="名称：" prop="name">
         <el-input v-model="form.name" style="width:300px"></el-input>
       </el-form-item>
-      <el-form-item label="用户前缀规则：" prop="rule">
-        <el-input v-model="form.rule" style="width:300px"></el-input>
+      <el-form-item label="用户前缀规则：" prop="rule" >
+        <el-input v-model="form.rule" style="width:300px" :disabled="form.orgType"></el-input>
       </el-form-item>
       <el-form-item label="上级组织名称：" prop="sname">
         <el-input v-model="form.sname" style="width:300px" disabled></el-input>
@@ -46,9 +46,12 @@ export default {
   },
   data() {
     var validateCode = (rule, value, callback) => {
+      var judgeFn = new RegExp(/\s+/g);
       if (value === "") {
         callback(new Error("请输入编码"));
-      } else {
+      }else if(judgeFn.test(value)){
+        callback(new Error("编码不能有空格"));
+      }else {
         if (this.orginData.code == value) {
           callback();
           return;

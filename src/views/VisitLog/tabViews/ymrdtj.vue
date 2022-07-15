@@ -66,7 +66,7 @@ export default {
     objectSpanMethod({ row, column, rowIndex, columnIndobjectSpanMethodex }) {
       const dataProvider = this.tableData;
       const cellValue = row[column.property];
-      if (column.property == "num" || column.property == "visitUserNum") return;
+      if (column.property == "num" || column.property == "visitUserNum"||column.property=='pagePath') return;
       if (cellValue) {
         // 上一条数据
         const prevRow = dataProvider[rowIndex - 1];
