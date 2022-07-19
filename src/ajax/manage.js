@@ -600,8 +600,18 @@ async function checkCompany(param) {
   let checkCompany = await ajax.post(`/api/visitLog/checkCompany`, param)
   return checkCompany
 }
-
+//查看国别-紧急度对照表
+async function getSpeedMapping(param) {
+  let getSpeedMapping = await ajax.post(`/api/common/ZXB/getSpeedMapping`, param)
+  return getSpeedMapping
+}
+async function uploadSpeedMapping(param) {
+  let uploadSpeedMapping = await ajax.post(`/api/common/ZXB/uploadSpeedMapping`, param)
+  return uploadSpeedMapping
+}
 const manage = {
+  getSpeedMapping,
+  uploadSpeedMapping,
   login: login,
   latestWords: latestWords,
   getSearchList: getSearchList,
@@ -714,7 +724,7 @@ const manage = {
   getHrOrg,
   SaveHrOrg,
   getHrOrgEnable,
-  checkCompany
+  checkCompany,
 }
 
 export default manage

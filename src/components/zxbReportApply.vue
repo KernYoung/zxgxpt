@@ -6,12 +6,7 @@
     width="1200px"
     class="report-dialog"
   >
-    <el-dialog
-      title="预览"
-      :visible.sync="pdfDialogVisible"
-      width="100%"
-      :fullscreen="true"
-    >
+    <el-dialog title="预览" :visible.sync="pdfDialogVisible" width="100%" :fullscreen="true">
       <el-progress
         v-if="pdfProgressVisible"
         :text-inside="true"
@@ -19,14 +14,10 @@
         :percentage="progressNum"
       ></el-progress>
       <div v-loading="pdfLoading" style="height: 100%;">
-        <iframe
-          :src="src"
-          frameborder="0"
-          width="100%"
-          :height="iframeHeight"
-        ></iframe>
+        <iframe :src="src" frameborder="0" width="100%" :height="iframeHeight"></iframe>
       </div>
     </el-dialog>
+    <el-button type="primary" @click="showInnerTable">查看国别-紧急度对照表</el-button>
 
     <div class="report-box">
       <table border="1" class="report-table">
@@ -67,12 +58,7 @@
           <td style="background:#FAFAFA"></td>
           <td>
             <el-select v-model="haveCreditCode.istranslation">
-              <el-option
-                v-for="(item, index) in istranslation"
-                :value="item.id"
-                :key="item.id"
-                :label="item.name"
-              >
+              <el-option v-for="(item, index) in istranslation" :value="item.id" :key="item.id" :label="item.name">
               </el-option>
             </el-select>
           </td>
@@ -80,19 +66,12 @@
           <td style="background:#FAFAFA"></td>
           <td>
             <el-select v-model="haveCreditCode.speed">
-              <el-option
-                v-for="(item, index) in speedSelected"
-                :value="item.id"
-                :key="item.id"
-                :label="item.name"
-              >
+              <el-option v-for="(item, index) in speedSelected" :value="item.id" :key="item.id" :label="item.name">
               </el-option>
             </el-select>
           </td>
           <td>
-            <el-button type="primary" size="mini" @click="applyHaveCode"
-              >点击申请</el-button
-            >
+            <el-button type="primary" size="mini" @click="applyHaveCode">点击申请</el-button>
           </td>
         </tr>
       </table>
@@ -126,11 +105,7 @@
           <td style="background:#FAFAFA"></td>
           <td>
             <!-- <el-input v-model="noCreditCode.reportCorpCountryCode"></el-input> -->
-            <el-select
-              v-model="noCreditCode.reportCorpCountryCode"
-              placeholder=""
-              filterable
-            >
+            <el-select v-model="noCreditCode.reportCorpCountryCode" placeholder="" filterable>
               <el-option
                 v-for="item in nationTypeOptions"
                 :key="item.nationCode"
@@ -138,9 +113,7 @@
                 :value="item.nationCode"
               >
                 <span style="float: left">{{ item.nationName }}</span>
-                <span style="float: right; color: #8492a6; font-size: 13px">{{
-                  item.nationCode
-                }}</span>
+                <span style="float: right; color: #8492a6; font-size: 13px">{{ item.nationCode }}</span>
               </el-option>
             </el-select>
           </td>
@@ -158,12 +131,7 @@
           </td>
           <td>
             <el-select v-model="noCreditCode.istranslation">
-              <el-option
-                v-for="(item, index) in istranslation"
-                :value="item.id"
-                :key="item.id"
-                :label="item.name"
-              >
+              <el-option v-for="(item, index) in istranslation" :value="item.id" :key="item.id" :label="item.name">
               </el-option>
             </el-select>
           </td>
@@ -175,190 +143,263 @@
           </td>
           <td>
             <el-select v-model="noCreditCode.speed">
-              <el-option
-                v-for="(item, index) in speedSelected"
-                :value="item.id"
-                :key="item.id"
-                :label="item.name"
-              >
+              <el-option v-for="(item, index) in speedSelected" :value="item.id" :key="item.id" :label="item.name">
               </el-option>
             </el-select>
           </td>
           <td>
-            <el-button type="primary" size="mini" @click="applyNoCode"
-              >点击申请</el-button
-            >
+            <el-button type="primary" size="mini" @click="applyNoCode">点击申请</el-button>
           </td>
         </tr>
       </table>
     </div>
+    <el-dialog title="国别-紧急度对照表" :visible.sync="innerTableVisible" width="1100px" append-to-body>
+      <div style="margin-bottom: 10px;">
+        <el-input v-model="search.nationName" placeholder="国家名称" style="width: 200px" clearable></el-input>
+        <el-select v-model="search.speed" placeholder="紧急程度" style="width: 200px;margin-left: 10px;" clearable>
+          <el-option label="一般" value="一般"></el-option>
+          <el-option label="加急" value="加急"></el-option>
+          <el-option label="特急" value="特急"></el-option>
+        </el-select>
+        <Upload style="margin-top:10px" :limit="1" @success="handleUploadSuccess"></Upload>
+      </div>
+      <el-table :data="tableData" border style="width: 100%" max-height="550px" v-loading="tableLoading">
+        <el-table-column prop="continent" label="洲"> </el-table-column>
+        <el-table-column prop="nationCode" label="国家编码"> </el-table-column>
+        <el-table-column prop="nationName" label="国家名称"> </el-table-column>
+        <el-table-column prop="reportType" label="报告类型"> </el-table-column>
+        <el-table-column prop="speed" label="紧急程度">
+          <template slot-scope="scope">
+            <el-tag type="primary" v-if="scope.row.speed == '一般'" size="small">{{ scope.row.speed }}</el-tag>
+            <el-tag type="warning" v-else-if="scope.row.speed == '加急'" size="small">{{ scope.row.speed }}</el-tag>
+            <el-tag type="danger" v-else-if="scope.row.speed == '特急'" size="small">{{ scope.row.speed }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="responseDays" label="时效"> </el-table-column>
+        <el-table-column prop="remark" label="说明"> </el-table-column>
+      </el-table>
+
+      <!-- <el-pagination
+        background
+        layout="prev, pager, next"
+        :current-page.sync="page.currentPage"
+        :page-size="page.pageSize"
+        :total="page.total"
+        @current-change="getSpeedMapping"
+        style="margin-top: 10px;"
+      >
+      </el-pagination> -->
+    </el-dialog>
   </el-dialog>
 </template>
 
 <script>
-import $ from "jquery";
+import $ from 'jquery'
+import Upload from '@/components/upload/index'
 export default {
-  name: "zxbReportApply",
+  name: 'zxbReportApply',
   props: {
     dialogXBVisible: {
       type: Boolean,
       require: false,
     },
   },
+  components: {
+    Upload,
+  },
   data() {
     return {
-      src: "",
-      result: "",
+      search: {
+        nationName: '',
+        speed: '',
+      },
+      page: {
+        currentPage: 1,
+        pageSize: 10,
+        total: 0,
+      },
+      fileList: [],
+      tableData: [],
+      innerTableVisible: false,
+      src: '',
+      result: '',
       dialogVisible: false,
       haveCreditCode: {
-        clientNo: "",
-        userId: parseInt(this.$Cookies.get("userId")),
-        reportbuyerNo: "",
-        reportCorpCountryCode: "",
-        reportCorpChnName: "",
-        reportCorpEngName: "",
-        reportCorpaddress: "",
-        creditno: "",
-        istranslation: "0",
-        speed: "1",
+        clientNo: '',
+        userId: parseInt(this.$Cookies.get('userId')),
+        reportbuyerNo: '',
+        reportCorpCountryCode: '',
+        reportCorpChnName: '',
+        reportCorpEngName: '',
+        reportCorpaddress: '',
+        creditno: '',
+        istranslation: '0',
+        speed: '1',
         forcedApply: false,
       },
       noCreditCode: {
-        clientNo: "",
-        userId: parseInt(this.$Cookies.get("userId")),
-        reportbuyerNo: "",
-        reportCorpCountryCode: "",
-        reportCorpChnName: "",
-        reportCorpEngName: "",
-        reportCorpaddress: "",
-        creditno: "",
-        istranslation: "0",
-        speed: "1",
+        clientNo: '',
+        userId: parseInt(this.$Cookies.get('userId')),
+        reportbuyerNo: '',
+        reportCorpCountryCode: '',
+        reportCorpChnName: '',
+        reportCorpEngName: '',
+        reportCorpaddress: '',
+        creditno: '',
+        istranslation: '0',
+        speed: '1',
       },
       nationTypeOptions: [],
       istranslation: [
-        { name: "否", id: "0" },
-        { name: "是", id: "1" },
+        { name: '否', id: '0' },
+        { name: '是', id: '1' },
       ],
       speedSelected: [
-        { name: "普通", id: "1" },
-        { name: "加急", id: "2" },
-        { name: "特急", id: "3" },
+        { name: '普通', id: '1' },
+        { name: '加急', id: '2' },
+        { name: '特急', id: '3' },
       ],
       isClientNo: false,
       isZxbreportAudit: false,
       pdfLoading: false,
       pdfProgressVisible: true,
       pdfBasicInformation: false,
-      startTimer: "",
+      startTimer: '',
       progressNum: 0,
       pdfDialogVisible: false,
-      iframeHeight:
-        document.documentElement.clientHeight * 0.99 ||
-        document.body.clientHeight * 0.99,
-      endTimer: "",
-    };
+      iframeHeight: document.documentElement.clientHeight * 0.99 || document.body.clientHeight * 0.99,
+      endTimer: '',
+      tableLoading: false,
+    }
   },
   // created() {
   //   this.haveCreditCode.speed = this.speedSelected[0].id
   //   this.noCreditCode.speed = this.speedSelected[0].id
   // },
-  mounted() {
-    this.getNationCode();
-    this.getCodeInfo();
-    this.getReviewer();
+  watch: {
+    dialogXBVisible(newVal) {
+      this.dialogVisible = newVal
+    },
+    search: {
+      handler() {
+        this.getSpeedMapping()
+      },
+      deep: true,
+    },
   },
+  mounted() {
+    this.getNationCode()
+    this.getCodeInfo()
+    this.getReviewer()
+  },
+
   methods: {
+    handleUploadSuccess() {
+      this.getSpeedMapping()
+    },
+    getSpeedMapping() {
+      this.tableLoading = true
+      this.$ajax.manage.getSpeedMapping(this.search).then((res) => {
+        this.tableLoading = false
+        if (res.data.code == '0') {
+          this.tableData = res.data.data
+        }
+      })
+    },
+    showInnerTable() {
+      this.innerTableVisible = true
+      this.getSpeedMapping()
+    },
     QualityDialogClose() {
-      this.$emit("update:dialogXBVisible", false);
+      this.$emit('update:dialogXBVisible', false)
     },
     startProgress() {
-      this.progressNum = 0;
+      this.progressNum = 0
       this.startTimer = setInterval(() => {
-        this.progressNum++;
+        this.progressNum++
         if (this.progressNum > 95) {
-          clearInterval(this.startTimer);
+          clearInterval(this.startTimer)
         }
-      }, 100);
+      }, 100)
     },
     endProgress() {
-      clearInterval(this.startTimer);
+      clearInterval(this.startTimer)
       this.endTimer = setInterval(() => {
-        this.progressNum++;
+        this.progressNum++
         if (this.progressNum > 99) {
-          clearInterval(this.endTimer);
-          this.finishProgress();
+          clearInterval(this.endTimer)
+          this.finishProgress()
         }
-      }, 10);
+      }, 10)
     },
     viewPdf(pdfName) {
-      let src = "";
+      let src = ''
       let param = {
-        userId: parseInt(this.$Cookies.get("userId")),
+        userId: parseInt(this.$Cookies.get('userId')),
         noticeSerialno: pdfName,
-      };
-      if (param.noticeSerialno == null) {
-        param.noticeSerialno = pdfName;
       }
-      this.pdfDialogVisible = true;
-      this.pdfProgressVisible = true;
-      this.startProgress();
-      this.pdfLoading = true;
+      if (param.noticeSerialno == null) {
+        param.noticeSerialno = pdfName
+      }
+      this.pdfDialogVisible = true
+      this.pdfProgressVisible = true
+      this.startProgress()
+      this.pdfLoading = true
       this.$ajax.manage.getPDF(param).then((res) => {
-        this.pdfLoading = false;
-        this.pdfProgressVisible = false;
-        const content = res.data;
+        this.pdfLoading = false
+        this.pdfProgressVisible = false
+        const content = res.data
         const blob = new Blob([content], {
-          type: "application/pdf;chartset=UTF-8",
-        });
-        let fileURL = URL.createObjectURL(blob);
-        this.src = fileURL;
-      });
+          type: 'application/pdf;chartset=UTF-8',
+        })
+        let fileURL = URL.createObjectURL(blob)
+        this.src = fileURL
+      })
     },
     //获取国家代码
     getNationCode() {
       this.$ajax.manage.getNationCode({}).then((res) => {
-        console.log(res);
+        console.log(res)
         if (res.status == 200) {
-          this.nationTypeOptions = res.data.nationCode;
+          this.nationTypeOptions = res.data.nationCode
         }
-      });
+      })
     },
     applyReport() {
       //打开报告申请弹框
-      this.dialogXBVisible = true;
-      this.getCodeInfo();
-      this.getReviewer();
+      this.dialogXBVisible = true
+      this.getCodeInfo()
+      this.getReviewer()
     },
     getCodeInfo() {
       let param = {
-        userId: this.$Cookies.get("userId"),
-      };
+        userId: this.$Cookies.get('userId'),
+      }
       this.$ajax.manage.getCodeInfoByUserId(param).then((res) => {
-        console.log(res.data);
-        if (res.data.code == "0") {
-          this.isClientNo = false;
+        console.log(res.data)
+        if (res.data.code == '0') {
+          this.isClientNo = false
           if (res.data.codeInfo) {
-            this.haveCreditCode.clientNo = res.data.codeInfo.clientNo;
-            this.noCreditCode.clientNo = res.data.codeInfo.clientNo;
+            this.haveCreditCode.clientNo = res.data.codeInfo.clientNo
+            this.noCreditCode.clientNo = res.data.codeInfo.clientNo
             //this.haveCreditCode.reportbuyerNo = res.data.codeInfo.reportbuyerNo
             if (res.data.codeInfo.clientNo) {
-              this.isClientNo = true;
+              this.isClientNo = true
             }
           }
         }
-      });
+      })
     },
     getReviewer() {
       let param = {
-        userName: this.$Cookies.get("userCode"),
-      };
+        userName: this.$Cookies.get('userCode'),
+      }
       this.$ajax.manage.getReviewer(param).then((res) => {
-        if (res.data.code == "0") {
-          this.isZxbreportAudit = res.data.isReviewer;
-          console.log(res.data.isReviewer);
+        if (res.data.code == '0') {
+          this.isZxbreportAudit = res.data.isReviewer
+          console.log(res.data.isReviewer)
         }
-      });
+      })
     },
     applyNoCode() {
       // if (!this.noCreditCode.clientNo || this.noCreditCode.clientNo === '') {
@@ -366,51 +407,39 @@ export default {
       //      return;
       // } else
       if ((!this.isClientNo && !this.isZxbreportAudit) || !this.isClientNo) {
-        this.$message.warning(
-          "您所在的二级公司没有开通信保通业务，如需使用该功能请咨询公司管理员。"
-        );
-        return;
+        this.$message.warning('您所在的二级公司没有开通信保通业务，如需使用该功能请咨询公司管理员。')
+        return
       } else if (!this.isZxbreportAudit) {
-        this.$message.warning(
-          "您所在的二级公司没有设置信保审核专员，如需使用该功能请咨询公司管理员。"
-        );
-        return;
-      } else if (this.noCreditCode.reportCorpCountryCode === "") {
-        this.$message.warning("请输入待调查企业国别");
-        return;
-      } else if (
-        this.noCreditCode.reportCorpChnName === "" &&
-        this.noCreditCode.reportCorpEngName === ""
-      ) {
-        this.$message.warning("请输入待调查企业中文名称或英文名称");
-        return;
-      } else if (this.noCreditCode.reportCorpaddress === "") {
-        this.$message.warning("请输入待调查企业地址");
-        return;
-      } else if (
-        this.noCreditCode.creditno === "" &&
-        this.noCreditCode.reportCorpEngName === ""
-      ) {
-        this.$message.warning("请输入待调查企业统一社会信用代码");
-        return;
-      } else if (this.noCreditCode.istranslation === "") {
-        this.$message.warning("请输入是否导读");
-        return;
+        this.$message.warning('您所在的二级公司没有设置信保审核专员，如需使用该功能请咨询公司管理员。')
+        return
+      } else if (this.noCreditCode.reportCorpCountryCode === '') {
+        this.$message.warning('请输入待调查企业国别')
+        return
+      } else if (this.noCreditCode.reportCorpChnName === '' && this.noCreditCode.reportCorpEngName === '') {
+        this.$message.warning('请输入待调查企业中文名称或英文名称')
+        return
+      } else if (this.noCreditCode.reportCorpaddress === '') {
+        this.$message.warning('请输入待调查企业地址')
+        return
+      } else if (this.noCreditCode.creditno === '' && this.noCreditCode.reportCorpEngName === '') {
+        this.$message.warning('请输入待调查企业统一社会信用代码')
+        return
+      } else if (this.noCreditCode.istranslation === '') {
+        this.$message.warning('请输入是否导读')
+        return
       }
       this.$ajax.manage.zhongxinbaoApply(this.noCreditCode).then((res) => {
-        console.log(!this.isClientNo);
-        console.log(!this.isZxbreportAudit);
+        console.log(!this.isClientNo)
+        console.log(!this.isZxbreportAudit)
         if (res.status == 200) {
-
-          if(res.data.returnCode =='500'){
-            this.$message.error(res.data.returnMsg);
-          }else{
-            this.$message.success(res.data.returnMsg);
-            this.dialogXBVisible = false;
+          if (res.data.returnCode == '500') {
+            this.$message.error(res.data.returnMsg)
+          } else {
+            this.$message.success(res.data.returnMsg)
+            this.dialogXBVisible = false
           }
-
         }
-      });
+      })
     },
     /* reportbuyerNoIsExist: async function(val){
 			    let param = {
@@ -441,89 +470,70 @@ export default {
       //     // this.$message.warning('请输入买方代码');
       //     // return;
       // } else
-      this.haveCreditCode.forcedApply = false;
+      this.haveCreditCode.forcedApply = false
       if ((!this.isClientNo && !this.isZxbreportAudit) || !this.isClientNo) {
-        this.$message.warning(
-          "您所在的二级公司没有开通信保通业务，如需使用该功能请咨询公司管理员。"
-        );
-        return;
+        this.$message.warning('您所在的二级公司没有开通信保通业务，如需使用该功能请咨询公司管理员。')
+        return
       } else if (!this.isZxbreportAudit) {
-        this.$message.warning(
-          "您所在的二级公司没有设置信保审核专员，如需使用该功能请咨询公司管理员。"
-        );
-        return;
-      } else if (
-        !this.haveCreditCode.reportbuyerNo ||
-        this.haveCreditCode.reportbuyerNo == ""
-      ) {
-        this.$message.warning("请输入待调查企业中国信保企业代码");
-        return;
-      } else if (
-        this.haveCreditCode.reportCorpChnName === "" &&
-        this.haveCreditCode.reportCorpEngName === ""
-      ) {
-        this.$message.warning("请输入待调查企业中文名称或英文名称");
-        return;
+        this.$message.warning('您所在的二级公司没有设置信保审核专员，如需使用该功能请咨询公司管理员。')
+        return
+      } else if (!this.haveCreditCode.reportbuyerNo || this.haveCreditCode.reportbuyerNo == '') {
+        this.$message.warning('请输入待调查企业中国信保企业代码')
+        return
+      } else if (this.haveCreditCode.reportCorpChnName === '' && this.haveCreditCode.reportCorpEngName === '') {
+        this.$message.warning('请输入待调查企业中文名称或英文名称')
+        return
       }
       this.$ajax.manage.zhongxinbaoApply(this.haveCreditCode).then((res) => {
-        console.log(!this.isClientNo);
-        console.log(!this.isZxbreportAudit);
-        console.log("============================");
-        console.log(res.data.isExist);
-        console.log("============================");
-        debugger;
+        console.log(!this.isClientNo)
+        console.log(!this.isZxbreportAudit)
+        console.log('============================')
+        console.log(res.data.isExist)
+        console.log('============================')
+        debugger
         if (res.status == 200) {
-          if(res.data.returnCode =='500'){
-            this.$message.error(res.data.returnMsg);
-
-          }else{
+          if (res.data.returnCode == '500') {
+            this.$message.error(res.data.returnMsg)
+          } else {
             if (res.data.isExist == true) {
-              console.log("============================");
-              console.log(res.data.isExist);
-              console.log("============================");
+              console.log('============================')
+              console.log(res.data.isExist)
+              console.log('============================')
               this.$confirm(res.data.confirmMessage, {
-                confirmButtonText: "是",
-                cancelButtonText: "放弃",
-                type: "warning",
+                confirmButtonText: '是',
+                cancelButtonText: '放弃',
+                type: 'warning',
               })
-                  .then(() => {
-                    this.haveCreditCode.forcedApply = true;
-                    this.$ajax.manage
-                        .zhongxinbaoApply(this.haveCreditCode)
-                        .then((res) => {
-                          if (res.status == 200) {
-                            this.$message.success(res.data.returnMsg);
-                            this.dialogXBVisible = false;
-                          }
-                        });
-                    console.log("是");
-                  })
-                  .catch(() => {
-                    if (res.data.isPreview) {
-                      this.viewPdf(res.data.pdfName);
-                      // this.$message.warning('预览功能暂未开放!');
-                      // this.dialogXBVisible = false
-                      // this.$router.push({ path: '/zxbReportList' });
+                .then(() => {
+                  this.haveCreditCode.forcedApply = true
+                  this.$ajax.manage.zhongxinbaoApply(this.haveCreditCode).then((res) => {
+                    if (res.status == 200) {
+                      this.$message.success(res.data.returnMsg)
+                      this.dialogXBVisible = false
                     }
-                    console.log("放弃");
-                  });
-              return;
+                  })
+                  console.log('是')
+                })
+                .catch(() => {
+                  if (res.data.isPreview) {
+                    this.viewPdf(res.data.pdfName)
+                    // this.$message.warning('预览功能暂未开放!');
+                    // this.dialogXBVisible = false
+                    // this.$router.push({ path: '/zxbReportList' });
+                  }
+                  console.log('放弃')
+                })
+              return
             } else {
-              this.$message.success(res.data.returnMsg);
-              this.dialogXBVisible = false;
+              this.$message.success(res.data.returnMsg)
+              this.dialogXBVisible = false
             }
           }
-
         }
-      });
+      })
     },
   },
-  watch: {
-    dialogXBVisible(newVal) {
-      this.dialogVisible = newVal;
-    },
-  },
-};
+}
 </script>
 
 <style scoped>
@@ -534,7 +544,7 @@ export default {
   padding-top: 30px;
 }
 /*jina*/
-/deep/.el-input__inner {
+/deep/.report-box .el-input__inner {
   border: none;
 }
 
@@ -580,5 +590,9 @@ export default {
       //border: none;
     }
   }
+}
+::v-deep .el-upload-list {
+  display: inline-block;
+  vertical-align: middle;
 }
 </style>
