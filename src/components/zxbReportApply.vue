@@ -401,8 +401,14 @@ export default {
         console.log(!this.isClientNo);
         console.log(!this.isZxbreportAudit);
         if (res.status == 200) {
-          this.$message.success(res.data.returnMsg);
-          this.dialogXBVisible = false;
+
+          if(res.data.returnCode =='500'){
+            this.$message.error(res.data.returnMsg);
+          }else{
+            this.$message.success(res.data.returnMsg);
+            this.dialogXBVisible = false;
+          }
+
         }
       });
     },
@@ -465,42 +471,49 @@ export default {
         console.log("============================");
         console.log(res.data.isExist);
         console.log("============================");
+        debugger;
         if (res.status == 200) {
-          if (res.data.isExist == true) {
-            console.log("============================");
-            console.log(res.data.isExist);
-            console.log("============================");
-            this.$confirm(res.data.confirmMessage, {
-              confirmButtonText: "是",
-              cancelButtonText: "放弃",
-              type: "warning",
-            })
-              .then(() => {
-                this.haveCreditCode.forcedApply = true;
-                this.$ajax.manage
-                  .zhongxinbaoApply(this.haveCreditCode)
-                  .then((res) => {
-                    if (res.status == 200) {
-                      this.$message.success(res.data.returnMsg);
-                      this.dialogXBVisible = false;
-                    }
-                  });
-                console.log("是");
+          if(res.data.returnCode =='500'){
+            this.$message.error(res.data.returnMsg);
+
+          }else{
+            if (res.data.isExist == true) {
+              console.log("============================");
+              console.log(res.data.isExist);
+              console.log("============================");
+              this.$confirm(res.data.confirmMessage, {
+                confirmButtonText: "是",
+                cancelButtonText: "放弃",
+                type: "warning",
               })
-              .catch(() => {
-                if (res.data.isPreview) {
-                  this.viewPdf(res.data.pdfName);
-                  // this.$message.warning('预览功能暂未开放!');
-                  // this.dialogXBVisible = false
-                  // this.$router.push({ path: '/zxbReportList' });
-                }
-                console.log("放弃");
-              });
-            return;
-          } else {
-            this.$message.success(res.data.returnMsg);
-            this.dialogXBVisible = false;
+                  .then(() => {
+                    this.haveCreditCode.forcedApply = true;
+                    this.$ajax.manage
+                        .zhongxinbaoApply(this.haveCreditCode)
+                        .then((res) => {
+                          if (res.status == 200) {
+                            this.$message.success(res.data.returnMsg);
+                            this.dialogXBVisible = false;
+                          }
+                        });
+                    console.log("是");
+                  })
+                  .catch(() => {
+                    if (res.data.isPreview) {
+                      this.viewPdf(res.data.pdfName);
+                      // this.$message.warning('预览功能暂未开放!');
+                      // this.dialogXBVisible = false
+                      // this.$router.push({ path: '/zxbReportList' });
+                    }
+                    console.log("放弃");
+                  });
+              return;
+            } else {
+              this.$message.success(res.data.returnMsg);
+              this.dialogXBVisible = false;
+            }
           }
+
         }
       });
     },
