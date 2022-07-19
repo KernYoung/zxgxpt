@@ -267,6 +267,14 @@ export default {
         this.$message.warning('请选择统计截至时间')
         return
       }
+
+      this.getLGHY();
+      this.getLGSY();
+      this.getDYHY();
+      this.getDYSY();
+
+    },
+    getLGHY(){
       let param = {
         tStart: this.form.tStart,
         zStart: this.form.zStart,
@@ -274,16 +282,60 @@ export default {
         startDate: this.form.startDate,
         endDate: this.form.endDate,
         companyName: this.options.companyName,
+        type:'累计活跃'
       }
       console.log(param)
       this.loading = true
+
       this.$ajax.visitLog.getLogMonth(param).then((res) => {
         this.loading = false
         if (res.data.code == '0') {
           this.activeDataEnd = res.data.sumActive
+          this.totalSumActive = res.data.totalSumActive
+        }
+      })
+    },
+    getLGSY(){
+      let param = {
+        tStart: this.form.tStart,
+        zStart: this.form.zStart,
+        bStart: this.form.bStart,
+        startDate: this.form.startDate,
+        endDate: this.form.endDate,
+        companyName: this.options.companyName,
+        type:'累计使用'
+      }
+
+      this.loading = true
+
+      this.$ajax.visitLog.getLogMonth(param).then((res) => {
+        this.loading = false
+
+        if (res.data.code == '0') {
+
           this.useDataEnd = res.data.sumUse
+        }
+      })
+    },
+    getDYHY(){
+      let param = {
+        tStart: this.form.tStart,
+        zStart: this.form.zStart,
+        bStart: this.form.bStart,
+        startDate: this.form.startDate,
+        endDate: this.form.endDate,
+        companyName: this.options.companyName,
+        type:'当月活跃'
+      }
+      console.log(param)
+      this.loading = true
+
+      this.$ajax.visitLog.getLogMonth(param).then((res) => {
+        this.loading = false
+
+        if (res.data.code == '0') {
           this.activeData = res.data.currentMonthActive
-          this.useData = res.data.currentMonthUse
+          this.totalCurrentActive = res.data.totalCurrentActive
           this.detail = {
             totalCount: res.data.totalCurrentActive.usernum,
             subAdminCount: res.data.totalCurrentActive.companynum,
@@ -294,8 +346,28 @@ export default {
             date: moment(this.form.endDate).format('YYYY年MM月'),
             date2: moment(this.form.endDate).format('MM'),
           }
-          this.totalSumActive = res.data.totalSumActive
-          this.totalCurrentActive = res.data.totalCurrentActive
+        }
+      })
+    },
+    getDYSY(){
+      let param = {
+        tStart: this.form.tStart,
+        zStart: this.form.zStart,
+        bStart: this.form.bStart,
+        startDate: this.form.startDate,
+        endDate: this.form.endDate,
+        companyName: this.options.companyName,
+        type:'当月使用'
+      }
+      console.log(param)
+      this.loading = true
+
+      this.$ajax.visitLog.getLogMonth(param).then((res) => {
+        this.loading = false
+
+        if (res.data.code == '0') {
+          this.useData = res.data.currentMonthUse
+
         }
       })
     },
