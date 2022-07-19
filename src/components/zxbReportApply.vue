@@ -17,7 +17,7 @@
         <iframe :src="src" frameborder="0" width="100%" :height="iframeHeight"></iframe>
       </div>
     </el-dialog>
-    <el-button type="primary" @click="showInnerTable">查看国别-紧急度对照表</el-button>
+    <el-button type="primary" v-if="$Cookies.get('username') == 'admin'" @click="showInnerTable">查看国别-紧急度对照表</el-button>
 
     <div class="report-box">
       <table border="1" class="report-table">
