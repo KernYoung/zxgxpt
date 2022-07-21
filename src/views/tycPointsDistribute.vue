@@ -417,7 +417,7 @@ export default {
     },
 
     PAFCCompanySync() {
-      this.$ajax.manage.syncODSCompany2PAFCCompany();
+      //this.$ajax.manage.syncODSCompany2PAFCCompany();
       this.getRecipientInfo();
     },
 

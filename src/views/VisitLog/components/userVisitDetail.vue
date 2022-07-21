@@ -11,7 +11,7 @@
       border
       :header-cell-style="{ background: '#ECF1FE' }"
     >
-      <el-table-column type="index" label="序号"> </el-table-column>
+      <el-table-column type="index" label="序号"  width="60px"> </el-table-column>
       <el-table-column prop="operationTime" label="操作时间"> </el-table-column>
       <el-table-column prop="visitResource" label="被访问资源">
       </el-table-column>
