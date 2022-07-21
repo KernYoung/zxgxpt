@@ -217,7 +217,12 @@ export default {
           sessionStorage.setItem('userCode', res.data.username);
           sessionStorage.setItem('userId', res.data.userId);
           this.loginUserName = res.data.name;
-          this.$router.push({ path: '/homePage' });
+          if(this.$route.query.redirectUrl){
+            this.$router.push({ path: '/'+ this.$route.query.redirectUrl });
+          }else{
+            this.$router.push({ path: '/homePage' });
+          }
+
         } else {
           this.$message.error(res.data.msg)
           this.$router.push({ path: '/' });
