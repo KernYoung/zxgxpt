@@ -127,10 +127,14 @@ export default {
         bookSST: true,
         type: "array",
       });
+      let filename = '天眼查添加监控情况';
+      if(this.searchOptions.flag=='0'){
+          filename='中诚信添加监控情况';
+      }
       try {
         FileSaver.saveAs(
           new Blob([wbout], { type: "application/octet-stream" }),
-          `天眼查添加监控情况(${this.searchOptions.handleTime[0]}-${this.searchOptions.handleTime[1]}).xlsx`
+            filename+`(${this.searchOptions.handleTime[0]}-${this.searchOptions.handleTime[1]}).xlsx`
         );
       } catch (e) {
         if (typeof console !== "undefined") {
