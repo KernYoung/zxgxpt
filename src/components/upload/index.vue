@@ -126,7 +126,7 @@ export default {
           this.$emit('success', res.data)
           param.onSuccess()
         } else {
-          this.$message.error('导入失败')
+          this.$message.error(res.data.msg)
           param.onError()
         }
       })
