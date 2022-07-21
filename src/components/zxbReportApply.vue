@@ -17,7 +17,7 @@
         <iframe :src="src" frameborder="0" width="100%" :height="iframeHeight"></iframe>
       </div>
     </el-dialog>
-    <el-button type="primary" v-if="$Cookies.get('username') == 'admin'" @click="showInnerTable">国别-紧急度对照表</el-button>
+    <el-button type="primary"  @click="showInnerTable">国别-紧急度对照表</el-button>
 
     <div class="report-box">
       <table border="1" class="report-table">
@@ -161,7 +161,7 @@
           <el-option label="加急" value="加急"></el-option>
           <el-option label="特急" value="特急"></el-option>
         </el-select>
-        <Upload style="margin-top:10px" :limit="1" @success="handleUploadSuccess"></Upload>
+        <Upload v-if="$Cookies.get('username') == 'admin'" style="margin-top:10px" :limit="1" @success="handleUploadSuccess"></Upload>
       </div>
       <el-table :data="tableData" border style="width: 100%" max-height="550px" v-loading="tableLoading">
         <el-table-column prop="continent" label="洲"> </el-table-column>
