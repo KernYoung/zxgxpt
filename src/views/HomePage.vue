@@ -487,10 +487,12 @@ export default {
         this.originPwdValidateSuccess = false
         callback(new Error('请输入密码'))
       } else {
+
+        value =this.$md5( this.$Cookies.get('userCode')+value);
         this.$ajax.manage
-          .verifyPassword({ userId: this.$Cookies.get('userId'), password: encrypt(value, '123412341234') })
+          .verifyPassword({ userId: this.$Cookies.get('userId'), password: encrypt(value, '+jFQRKK1iietbcX=') })
           .then((res) => {
-            if (res.code == '0' && res.flag) {
+            if (res.data.code == '0' && res.data.flag) {
               this.originPwdValidateSuccess = true
               callback()
             } else {
@@ -626,13 +628,21 @@ export default {
         if (valid) {
           let param = {
             userId: this.$Cookies.get('userId'),
-            password: encrypt(this.pwdForm.newPwd, '123412341234'),
-            newpassword: encrypt(this.pwdForm.confirmNewPwd, '123412341234'),
+            password: encrypt(this.$md5( this.$Cookies.get('userCode')+this.pwdForm.newPwd), '+jFQRKK2iietbcX='),
+            newpassword: encrypt(this.$md5( this.$Cookies.get('userCode')+this.pwdForm.confirmNewPwd), '+jFQRKK9iietbcX='),
           }
           this.$ajax.manage.modifyPassword(param).then((res) => {
-            if (res.code == '0') {
-              this.$message.success('修改成功')
+
+            if (res.data.code == '0') {
+              this.$msgbox.alert('密码修改成功');
+
               this.$refs[formName].resetFields()
+              this.updatePwdVisible = false
+            }else {
+              this.$msgbox.alert(res.data.msg);
+
+              this.$refs[formName].resetFields()
+
               this.updatePwdVisible = false
             }
           })
