@@ -3,14 +3,12 @@
   <div class="main-wrapper">
     <div class="search-content">
       <div class="header-box">
-        <img src="../../public/img/logo2.png" alt="" >
+        <img src="../../public/img/logo2.png" alt="" />
         <span style="font-size:16px">
           <el-button type="primary" round @click="vueInterfaceDownload" style="margin: 0 10px">下发接口服务</el-button>
           <el-button type="primary" round @click="downloadFile" style="margin: 0 10px">用户手册下载</el-button>
-           <el-dropdown style="margin-right:20px" @command="TycHandleCommand">
-            <el-button type="primary" round>
-              高级应用<i class="el-icon-arrow-down el-icon--right"></i>
-            </el-button>
+          <el-dropdown style="margin-right:20px" @command="TycHandleCommand">
+            <el-button type="primary" round> 高级应用<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="1">幕后关系</el-dropdown-item>
               <el-dropdown-item command="2">关联关系</el-dropdown-item>
@@ -18,7 +16,7 @@
               <el-dropdown-item command="4">天眼地图</el-dropdown-item>
               <el-dropdown-item command="5">资本市场公告</el-dropdown-item>
               <el-dropdown-item command="6">资本市场法规</el-dropdown-item>
-               <el-dropdown-item command="7">资本成分穿透</el-dropdown-item>
+              <el-dropdown-item command="7">资本成分穿透</el-dropdown-item>
               <el-dropdown-item command="8">企业画像</el-dropdown-item>
               <el-dropdown-item command="9">数据导出</el-dropdown-item>
               <el-dropdown-item command="10">高级搜索</el-dropdown-item>
@@ -26,9 +24,7 @@
             </el-dropdown-menu>
           </el-dropdown>
           <el-dropdown style="margin-right:20px" @command="handleCommand">
-            <el-button type="primary" round>
-              常用应用<i class="el-icon-arrow-down el-icon--right"></i>
-            </el-button>
+            <el-button type="primary" round> 常用应用<i class="el-icon-arrow-down el-icon--right"></i> </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="1" v-if="blacklistApply">黑名单申报</el-dropdown-item>
               <el-dropdown-item command="2" v-if="blacklistAudit">黑名单审批</el-dropdown-item>
@@ -38,36 +34,49 @@
               <el-dropdown-item command="10" v-if="zxbreportAudit">信保报告审核</el-dropdown-item>
               <!--              <el-dropdown-item command="13" v-if="true">信保信息</el-dropdown-item>-->
               <!-- jina-->
-			  <el-dropdown-item command="12" v-if="zxbReportlist">我的信保报告</el-dropdown-item>
-              <el-dropdown-item command="14" v-if="$Cookies.get('username')=='admin'">信保代码维护</el-dropdown-item>
-              <el-dropdown-item command="5" v-if="userManage||sub_manage">用户管理</el-dropdown-item>
-              <el-dropdown-item command="11" v-if="$Cookies.get('username')=='admin'">角色管理</el-dropdown-item>
+              <el-dropdown-item command="12" v-if="zxbReportlist">我的信保报告</el-dropdown-item>
+              <el-dropdown-item command="14" v-if="$Cookies.get('username') == 'admin'">信保代码维护</el-dropdown-item>
+              <el-dropdown-item command="5" v-if="userManage || sub_manage">用户管理</el-dropdown-item>
+              <el-dropdown-item command="11" v-if="$Cookies.get('username') == 'admin'">角色管理</el-dropdown-item>
               <el-dropdown-item command="6" v-if="newsAll">消息中心</el-dropdown-item>
-              <el-dropdown-item command="8" v-if="$Cookies.get('username')=='admin' || $Cookies.get('permissionRoles')=='访问日志权限'">访问日志</el-dropdown-item>
-              <el-dropdown-item command="9" v-if="$Cookies.get('username')=='admin'">组织架构维护</el-dropdown-item>
-              <el-dropdown-item command="15" v-if="$Cookies.get('username')=='admin'">点数填报</el-dropdown-item>
-              <el-dropdown-item command="16" v-if="$Cookies.get('username')=='admin'">下发Token管理</el-dropdown-item>
-              <el-dropdown-item command="17" v-if="$Cookies.get('username')=='admin'">下发接口次数限制</el-dropdown-item>
+              <el-dropdown-item
+                command="8"
+                v-if="$Cookies.get('username') == 'admin' || $Cookies.get('permissionRoles') == '访问日志权限'"
+                >访问日志</el-dropdown-item
+              >
+              <el-dropdown-item command="9" v-if="$Cookies.get('username') == 'admin'">组织架构维护</el-dropdown-item>
+              <el-dropdown-item command="15" v-if="$Cookies.get('username') == 'admin'">点数填报</el-dropdown-item>
+              <el-dropdown-item command="16" v-if="$Cookies.get('username') == 'admin'">下发Token管理</el-dropdown-item>
+              <el-dropdown-item command="17" v-if="$Cookies.get('username') == 'admin'"
+                >下发接口次数限制</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
           <span style="margin-right: 15px;cursor:pointer" @click="showUserInfo">
             <el-avatar icon="el-icon-user-solid" size="small"></el-avatar>
-            {{$Cookies.get('username')}}
+            {{ $Cookies.get('username') }}
           </span>
           <span style="cursor: pointer;" @click="logOut">安全退出</span>
         </span>
       </div>
       <div class="title">
-        <div style="margin-bottom:10px"><img src="../../public/img/title.png" alt=""></div>
-        <div><img src="../../public/img/subtitle.png" alt=""></div>
+        <div style="margin-bottom:10px"><img src="../../public/img/title.png" alt="" /></div>
+        <div><img src="../../public/img/subtitle.png" alt="" /></div>
       </div>
       <div class="content" style="position: relative">
-        <el-input placeholder="请输入内容" v-model="searchVal" class="search-input" style="width: 800px;height:60px;"
-                  clearable="" @keyup.enter.native="seachContent">
+        <el-input
+          placeholder="请输入内容"
+          v-model="searchVal"
+          class="search-input"
+          style="width: 800px;height:60px;"
+          clearable=""
+          @keyup.enter.native="seachContent"
+        >
         </el-input>
-        <el-button @click="seachContent" style="background-color: rgb(73, 136, 191);margin-left: 10px;">站内搜索
+        <el-button @click="seachContent" style="background-color: rgb(73, 136, 191);margin-left: 10px;"
+          >站内搜索
         </el-button>
-        <el-button @click="blarSearch" >全网搜索</el-button>
+        <el-button @click="blarSearch">全网搜索</el-button>
         <!-- <el-input @keyup.enter="seachContent" placeholder="请输入内容" v-model="searchVal" class="search-input" style="width: 800px;height: 60px;"
                    clearable="" @keyup.enter.native="seachContent">
          </el-input>
@@ -76,61 +85,74 @@
       </div>
       <div class="latest-search">
         最近搜索：
-        <span v-for="item in latestSearchList" :key="item.id" @click="searchCompany(item)">{{item.keyWord}}</span>
+        <span v-for="item in latestSearchList" :key="item.id" @click="searchCompany(item)">{{ item.keyWord }}</span>
       </div>
     </div>
-    <div v-if="showBox==1">
+    <div v-if="showBox == 1">
       <div class="main-content">
         <div class="content-item leftBox">
           <div class="title">
             <span>关注清单</span>
           </div>
           <div class="tab-content-wrapper">
-            <div v-for="(item,index) in careList" :key="index" class="care-list">
-
+            <div v-for="(item, index) in careList" :key="index" class="care-list">
               <!--              <span v-if="item.messageNumber >= 1" style="border-radius: 50%; height: 25px; width: 25px; display: inline-block; background: #ff9900; float:right">-->
               <!--                <span-->
               <!--                    @click="go2MessageCenter(item.tianyancha,item.companyName)"-->
               <!--                    style="display: block; font-size:1px; color: #FFFFFF; height: 25px; line-height: 25px; text-align: center">{{getMessageShow(item.messageNumber)}}</span>-->
               <!--              </span>-->
 
-              <img src="../../public/img/focus.png" alt="" @click="cancleFocus(item)">
+              <img src="../../public/img/focus.png" alt="" @click="cancleFocus(item)" />
               <!--              <span @click="moreNews(item,'0') ">{{item.companyName}}</span>-->
 
-              <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,null)}}</span>
-              <span v-show="!isOverLength(item.companyName)" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,null)}}</span>
+              <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item, '0')">{{
+                OmitTheCompanyName(item.companyName, null)
+              }}</span>
+              <span v-show="!isOverLength(item.companyName)" @click="moreNews(item, '0')">{{
+                OmitTheCompanyName(item.companyName, null)
+              }}</span>
 
               <!--              <span :title="item.companyName" style="width:100%;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;text-align: left;">item.companyNameitem.companyNameitem.companyName</span>-->
 
-              <img src="../../public/img/images/index_icon01.png" alt="" v-if="item.zhongchengxin===1" class="care">
-              <img src="../../public/img/images/index_icon02.png" alt="" v-if="item.tianyancha===1" class="care">
+              <img src="../../public/img/images/index_icon01.png" alt="" v-if="item.zhongchengxin === 1" class="care" />
+              <img src="../../public/img/images/index_icon02.png" alt="" v-if="item.tianyancha === 1" class="care" />
 
-              <span v-if="item.messageNumber >= 1" style="position:relative;width:45px;height:30px; float: right;margin: 0;">
-                <img src="../../public/img/images/messageNumberIcon.png"
-                     style="width:45px;height:29px"alt=""
-                     @click="go2MessageCenter(item.tianyancha, item.zhongchengxin, item.companyName)"
-                >
+              <span
+                v-if="item.messageNumber >= 1"
+                style="position:relative;width:45px;height:30px; float: right;margin: 0;"
+              >
+                <img
+                  src="../../public/img/images/messageNumberIcon.png"
+                  style="width:45px;height:29px"
+                  alt=""
+                  @click="go2MessageCenter(item.tianyancha, item.zhongchengxin, item.companyName)"
+                />
                 <span
-                    @click="go2MessageCenter(item.tianyancha, item.zhongchengxin, item.companyName)"
-                    style="position:absolute;top:80%;left:42%;transform: translate(-50%,-50%); text-align: center;color: white;font-size: 10px">{{getMessageShow(item.messageNumber)}}</span>
+                  @click="go2MessageCenter(item.tianyancha, item.zhongchengxin, item.companyName)"
+                  style="position:absolute;top:80%;left:42%;transform: translate(-50%,-50%); text-align: center;color: white;font-size: 10px"
+                  >{{ getMessageShow(item.messageNumber) }}</span
+                >
               </span>
-
             </div>
           </div>
           <div style="text-align: center;margin-top: 10px;">
-            <el-pagination background layout="prev, pager, next,total,jumper" :total="page1.total"
-                           :current-page.sync="page1.currentPage" :pageSize="page1.pageSize" @current-change="handleCurrentChange1">
+            <el-pagination
+              background
+              layout="prev, pager, next,total,jumper"
+              :total="page1.total"
+              :current-page.sync="page1.currentPage"
+              :pageSize="page1.pageSize"
+              @current-change="handleCurrentChange1"
+            >
             </el-pagination>
           </div>
         </div>
         <div class="content-item rightBox">
-
           <!--            <div class="title">-->
           <!--              <span class="response" style="color:#a54f4f;float: right; cursor:pointer" @click="toBlackListDetail()">详情》</span>-->
           <!--            </div>-->
 
           <div class="title">
-
             <span style="padding-right: 1%;cursor:pointer" @click="setCurrentShow('black')">黑名单</span>
             <el-tooltip class="item" effect="light" placement="top">
               <i class="el-icon-question smartTip"></i>
@@ -138,88 +160,129 @@
                 存在历史交易且对手违约导致形成一定金额以上历史风险资产的交易对手。
               </div>
             </el-tooltip>
-            <span style="padding-right: 1%;padding-left: 4%;cursor:pointer" @click="setCurrentShow('grey')">灰名单</span>
+            <span style="padding-right: 1%;padding-left: 4%;cursor:pointer" @click="setCurrentShow('grey')"
+              >灰名单</span
+            >
             <el-tooltip class="item" effect="light" placement="top">
               <i class="el-icon-question smartTip"></i>
               <div style="width: 200px;" slot="content">
                 存在历史交易且对手违约导致形成一定金额以下历史风险资产的交易对手。
               </div>
             </el-tooltip>
-            <span class="response" v-show="sortCriteria != 'amount' && currentShow == 'black'" style="color:#a54f4f;float: right; cursor:pointer" @click="setSortCriteria('amount')">金额排序</span>
-            <span class="response" v-show="sortCriteria == 'amount' && currentShow == 'black'" style="color:#274ed9;float: right; cursor:pointer" @click="setSortCriteria('amount')">金额排序</span>
-            <span class="response" v-show="sortCriteria != 'startDate' && currentShow == 'black'" style="color:#a54f4f;padding-right: 10px;float: right; cursor:pointer" @click="setSortCriteria('startDate')">时间排序</span>
-            <span class="response" v-show="sortCriteria == 'startDate' && currentShow == 'black'" style="color:#274ed9;padding-right: 10px;float: right; cursor:pointer" @click="setSortCriteria('startDate')">时间排序</span>
-
+            <span
+              class="response"
+              v-show="sortCriteria != 'amount' && currentShow == 'black'"
+              style="color:#a54f4f;float: right; cursor:pointer"
+              @click="setSortCriteria('amount')"
+              >金额排序</span
+            >
+            <span
+              class="response"
+              v-show="sortCriteria == 'amount' && currentShow == 'black'"
+              style="color:#274ed9;float: right; cursor:pointer"
+              @click="setSortCriteria('amount')"
+              >金额排序</span
+            >
+            <span
+              class="response"
+              v-show="sortCriteria != 'startDate' && currentShow == 'black'"
+              style="color:#a54f4f;padding-right: 10px;float: right; cursor:pointer"
+              @click="setSortCriteria('startDate')"
+              >时间排序</span
+            >
+            <span
+              class="response"
+              v-show="sortCriteria == 'startDate' && currentShow == 'black'"
+              style="color:#274ed9;padding-right: 10px;float: right; cursor:pointer"
+              @click="setSortCriteria('startDate')"
+              >时间排序</span
+            >
           </div>
           <div class="tab-content-wrapper">
-            <div v-if="currentShow == 'black'" v-for="(item,index) in blackListData" :key="index" class="care-list">
-              <img src="../../public/img/focusB.png" alt="">
+            <div v-if="currentShow == 'black'" v-for="(item, index) in blackListData" :key="index" class="care-list">
+              <img src="../../public/img/focusB.png" alt="" />
 
-              <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
-              <span v-show="!isOverLength(item.companyName)" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
+              <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item, '0')">{{
+                OmitTheCompanyName(item.companyName, currentShow)
+              }}</span>
+              <span v-show="!isOverLength(item.companyName)" @click="moreNews(item, '0')">{{
+                OmitTheCompanyName(item.companyName, currentShow)
+              }}</span>
               <!--                <span @click="moreNews(item,'0')">{{item.companyName}}</span>-->
-
-
             </div>
-            <div v-if="currentShow == 'grey'" v-for="(item,index) in greyListData" :key="index" class="care-list">
-              <img src="../../public/img/focusGrey.png" alt="">
-              <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
-              <span v-show="!isOverLength(item.companyName)" @click="moreNews(item,'0') ">{{OmitTheCompanyName(item.companyName,currentShow)}}</span>
+            <div v-if="currentShow == 'grey'" v-for="(item, index) in greyListData" :key="index" class="care-list">
+              <img src="../../public/img/focusGrey.png" alt="" />
+              <span v-show="isOverLength(item.companyName)" :title="item.companyName" @click="moreNews(item, '0')">{{
+                OmitTheCompanyName(item.companyName, currentShow)
+              }}</span>
+              <span v-show="!isOverLength(item.companyName)" @click="moreNews(item, '0')">{{
+                OmitTheCompanyName(item.companyName, currentShow)
+              }}</span>
               <!--                <span @click="moreNews(item,'0')">{{item.companyName}}</span>-->
             </div>
           </div>
           <div v-if="currentShow == 'black'" style="text-align: center;margin-top: 10px;">
-            <el-pagination background layout="prev, pager, next, total, jumper"
-                           :total="page2.total"
-                           :current-page.sync="page2.currentPage"
-                           :pageSize="page2.pageSize"
-                           pager-count="3"
-                           @current-change="handleCurrentChange2">
+            <el-pagination
+              background
+              layout="prev, pager, next, total, jumper"
+              :total="page2.total"
+              :current-page.sync="page2.currentPage"
+              :pageSize="page2.pageSize"
+              :pager-count="5"
+              @current-change="handleCurrentChange2"
+            >
             </el-pagination>
           </div>
 
           <div v-if="currentShow == 'grey'" style="text-align: center;margin-top: 10px;">
-            <el-pagination background layout="prev, pager, next, total, jumper"
-                           :total="page3.total"
-                           :current-page.sync="page3.currentPage"
-                           :pageSize="page3.pageSize"
-                           pager-count="3"
-                           @current-change="handleCurrentChange3">
+            <el-pagination
+              background
+              layout="prev, pager, next, total, jumper"
+              :total="page3.total"
+              :current-page.sync="page3.currentPage"
+              :pageSize="page3.pageSize"
+              :pager-count="5"
+              @current-change="handleCurrentChange3"
+            >
             </el-pagination>
           </div>
         </div>
       </div>
     </div>
-    <div v-if="showBox==2">
+    <div v-if="showBox == 2">
       <div class="main-content">
         <div class="content-item " style="width:80%">
           <div class="title">
             <span>检索结果</span>
             <span class="text">
-              根据关键字，共搜索到 {{searchList.length>0?searchList.length:0}} 条数据结果，结果来自
-              {{sourceType}}
+              根据关键字，共搜索到 {{ searchList.length > 0 ? searchList.length : 0 }} 条数据结果，结果来自
+              {{ sourceType }}
               <!--              <a class="postLink" @click="blarSearch">模糊接口查询</a>-->
             </span>
           </div>
           <div class="main">
-            <ul class="proList_li " v-if="searchList.length>0">
-              <li class="clear" v-for="(item,index) in searchList" :key=" index">
+            <ul class="proList_li " v-if="searchList.length > 0">
+              <li class="clear" v-for="(item, index) in searchList" :key="index">
                 <div class="fl-left proList_content">
-                  <span v-if="item.isBlack" style="color:white;background-color: #c1c1c1;padding: 3px;float: right">黑名单</span>
-                  <span v-if="item.isGrey" style="color:white;background-color: #c1c1c1;padding: 3px;float: right">灰名单</span>
-                  <p class="proList_txt" @click="moreNews(item,'0')"
-                     v-html="brightenKeyword(item.companyName,searchVal)">
-                  </p>
-                  <p>社会统一信用代码：{{item.creditCode}}</p>
-                  <p>法人代表：{{item.operName}}</p>
-                  <p>成立时间：{{item.buildDate}}</p>
-                  <p>关联代码：{{item.id}}</p>
+                  <span v-if="item.isBlack" style="color:white;background-color: #c1c1c1;padding: 3px;float: right"
+                    >黑名单</span
+                  >
+                  <span v-if="item.isGrey" style="color:white;background-color: #c1c1c1;padding: 3px;float: right"
+                    >灰名单</span
+                  >
+                  <p
+                    class="proList_txt"
+                    @click="moreNews(item, '0')"
+                    v-html="brightenKeyword(item.companyName, searchVal)"
+                  ></p>
+                  <p>社会统一信用代码：{{ item.creditCode }}</p>
+                  <p>法人代表：{{ item.operName }}</p>
+                  <p>成立时间：{{ item.buildDate }}</p>
+                  <p>关联代码：{{ item.id }}</p>
                 </div>
                 <dl class="fl-right proList_btn">
-                  <el-button plain type="primary" size="medium" @click="moreNews(item,'0')">企业基本信息
-                  </el-button>
-                  <el-button plain type="primary" size="medium" @click="moreNews(item,'1')">工商舆情
-                  </el-button>
+                  <el-button plain type="primary" size="medium" @click="moreNews(item, '0')">企业基本信息 </el-button>
+                  <el-button plain type="primary" size="medium" @click="moreNews(item, '1')">工商舆情 </el-button>
                 </dl>
               </li>
             </ul>
@@ -236,25 +299,70 @@
         <el-form-item label="姓名：" label-width="100px">
           <el-input v-model="userSettingForm.name" style="width:250px"></el-input>
         </el-form-item>
-        <el-form-item label="密码：" label-width="100px" prop="password">
+        <!-- <el-form-item label="密码：" label-width="100px" prop="password">
           <el-input v-model="userSettingForm.password" style="width:250px" type="password">
           </el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="手机：" label-width="100px" prop="mobile">
           <el-input v-model="userSettingForm.mobile" style="width:250px"></el-input>
         </el-form-item>
         <el-form-item label="邮箱：" label-width="100px">
           <el-input v-model="userSettingForm.email" style="width:250px"></el-input>
         </el-form-item>
+        <el-form-item label-width="100px">
+          <el-button type="primary" plain size="small" @click="updatePwdVisible = true">修改密码</el-button>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="userSettingDialog = false">取 消</el-button>
         <el-button type="primary" @click="saveUserInfo('userSettingForm')">保 存</el-button>
       </div>
+      <el-dialog width="410px" title="修改密码" :visible.sync="updatePwdVisible" append-to-body>
+        <el-form :model="pwdForm" :rules="rules2" ref="pwdForm">
+          <el-form-item label="原密码：" label-width="100px" prop="originPwd">
+            <el-input v-model="pwdForm.originPwd" size="small" type="password" clearable style="width:220px">
+              <i slot="suffix" class="el-icon-check" style="color: green;" v-if="originPwdValidateSuccess"></i>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="新密码：" label-width="100px" prop="newPwd">
+            <el-input v-model="pwdForm.newPwd" size="small" type="password" clearable style="width:220px"></el-input>
+          </el-form-item>
+          <el-form-item label="密码强度：" label-width="100px">
+            <div class="intensity">
+              <span class="line" :class="[level.includes('low') ? 'low' : '']"></span>
+              <span class="line" :class="[level.includes('middle') ? 'middle' : '']"></span>
+              <span class="line" :class="[level.includes('high') ? 'high' : '']"></span>
+              <div class="warningtext">
+                密码应由8-16位数字、字母、符号组成。
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item label="确认密码：" label-width="100px" prop="confirmNewPwd">
+            <el-input
+              v-model="pwdForm.confirmNewPwd"
+              size="small"
+              style="width:220px"
+              clearable
+              type="password"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="updatePwdVisible = false">取 消</el-button>
+          <el-button type="primary" @click="savePwd('pwdForm')">保 存</el-button>
+        </div></el-dialog
+      >
     </el-dialog>
 
-    <el-dialog title="账号设置" :visible.sync="userSettingDialogCompulsory" width="450px" :rules="rules"
-               :show-close="false" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog
+      title="账号设置"
+      :visible.sync="userSettingDialogCompulsory"
+      width="450px"
+      :rules="rules"
+      :show-close="false"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
       <el-form :model="userSettingForm" :rules="rules" ref="userSettingForm">
         <el-form-item label="用户名：" label-width="100px">
           <el-input v-model="userSettingForm.username" disabled style="width:250px"></el-input>
@@ -263,8 +371,7 @@
           <el-input v-model="userSettingForm.name" style="width:250px"></el-input>
         </el-form-item>
         <el-form-item label="密码：" label-width="100px" prop="password">
-          <el-input v-model="userSettingForm.password" style="width:250px" type="password">
-          </el-input>
+          <el-input v-model="userSettingForm.password" style="width:250px" type="password"> </el-input>
         </el-form-item>
         <el-form-item label="手机：" label-width="100px" prop="mobile">
           <el-input v-model="userSettingForm.mobile" style="width:250px"></el-input>
@@ -285,57 +392,146 @@
 </template>
 
 <script>
-import ZxbReportApply from "../components/zxbReportApply";
+import ZxbReportApply from '../components/zxbReportApply'
+import { encrypt, decrypt } from '@/utils/encrypt.js'
 // import InterfaceDownload from "../components/interfaceDownload";
 
 export default {
-  components:{
+  components: {
     ZxbReportApply,
   },
-  data () {
+  data() {
     var validateMobile = (rule, value, callback) => {
-      let TEL_REGEXP = /^[1][3,4,5,7,8,9][0-9]{9}$/;
-      if (value === ""||typeof value=='undefined') {
-        callback();
+      let TEL_REGEXP = /^[1][3,4,5,7,8,9][0-9]{9}$/
+      if (value === '' || typeof value == 'undefined') {
+        callback()
       } else if (value && !TEL_REGEXP.test(value)) {
-        callback(new Error("请输入正确的手机号!"));
+        callback(new Error('请输入正确的手机号!'))
       } else {
-        callback();
+        callback()
       }
-    };
+    }
     var validatePassword = (rule, value, callback) => {
-      let modes = 0;
-      if (value.length < 8) callback(new Error("密码长度不小于8位,需由数字、字母、字符中的两种组成。"));
-      if (/\d/.test(value)) modes++; //数字
-      if ((/[a-z]/.test(value)) || (/[A-Z]/.test(value)) )modes++; //字母
+      let modes = 0
+      if (value.length < 8) callback(new Error('密码长度不小于8位,需由数字、字母、字符中的两种组成。'))
+      if (/\d/.test(value)) modes++ //数字
+      if (/[a-z]/.test(value) || /[A-Z]/.test(value)) modes++ //字母
       // if (/[A-Z]/.test(value)) modes++; //大写
-      if (/\W/.test(value)) modes++; //特殊字符
+      if (/\W/.test(value)) modes++ //特殊字符
 
       if (value && modes < 2) {
-        callback(new Error("密码长度不小于8位,需由数字、字母、字符中的两种组成。"));
-      }else {
-        callback();
+        callback(new Error('密码长度不小于8位,需由数字、字母、字符中的两种组成。'))
+      } else {
+        callback()
       }
-    };
+    }
+
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (value.length < 8) callback(new Error('密码长度不小于8位。'))
+        // 校验是数字
+        const regex1 = /^\d+$/
+        // 校验字母
+        const regex2 = /^[A-Za-z]+$/
+        // 校验符号
+        const regex3 = /^[`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘'，。、]+$/
+        if (regex1.test(value)) {
+          this.level.push('low')
+        } else if (regex2.test(value)) {
+          this.level.push('low')
+        } else if (regex3.test(value)) {
+          this.level.push('low')
+        } else if (/^[A-Za-z\d]+$/.test(value)) {
+          this.level.push('low')
+          this.level.push('middle')
+        } else if (
+          /^[`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘'，。、\d]+$/.test(value)
+        ) {
+          this.level.push('low')
+          this.level.push('middle')
+        } else if (
+          /^[`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘'，。、A-Za-z]+$/.test(
+            value
+          )
+        ) {
+          this.level.push('low')
+          this.level.push('middle')
+        } else if (
+          /^[`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘'，。、A-Za-z\d]+$/.test(
+            value
+          )
+        ) {
+          this.level.push('low')
+          this.level.push('middle')
+          this.level.push('high')
+        }
+        if (this.pwdForm.confirmNewPwd !== '') {
+          this.$refs.pwdForm.validateField('confirmNewPwd')
+        }
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.pwdForm.newPwd) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
+    var validateOriginPass = (rule, value, callback) => {
+      if (value === '') {
+        this.originPwdValidateSuccess = false
+        callback(new Error('请输入密码'))
+      } else {
+        this.$ajax.manage
+          .verifyPassword({ userId: this.$Cookies.get('userId'), password: encrypt(value, '123412341234') })
+          .then((res) => {
+            if (res.code == '0' && res.flag) {
+              this.originPwdValidateSuccess = true
+              callback()
+            } else {
+              this.originPwdValidateSuccess = false
+              callback(new Error('原密码输入错误'))
+            }
+          })
+      }
+    }
     return {
       // backgroundDiv: {
       //   backgroundImage: 'url(' + require('../../public/img/images/messageNumberIcon.png') + ')'
       // },
-      otimer:null,
-      page1:{
-        total:0,
-        currentPage:0,
-        pageSize:10
+      originPwdValidateSuccess: false,
+      level: [],
+      rules2: {
+        originPwd: [{ required: true, validator: validateOriginPass, trigger: 'blur' }],
+        newPwd: [{ required: true, validator: validatePass, trigger: 'change' }],
+        confirmNewPwd: [{ required: true, validator: validatePass2, trigger: 'change' }],
       },
-      page2:{
-        total:0,
-        currentPage:0,
-        pageSize:10
+      pwdForm: {
+        originPwd: '',
+        newPwd: '',
+        confirmNewPwd: '',
       },
-      page3:{
-        total:0,
-        currentPage:0,
-        pageSize:10
+      updatePwdVisible: false,
+      otimer: null,
+      page1: {
+        total: 0,
+        currentPage: 0,
+        pageSize: 10,
+      },
+      page2: {
+        total: 0,
+        currentPage: 0,
+        pageSize: 10,
+      },
+      page3: {
+        total: 0,
+        currentPage: 0,
+        pageSize: 10,
       },
       currentShow: 'black',
       currentSort: '',
@@ -349,8 +545,8 @@ export default {
       careList: [],
       blackListData: [],
       greyListData: [],
-      blackListWithoutPagination:[],
-      greyListWithoutPagination:[],
+      blackListWithoutPagination: [],
+      greyListWithoutPagination: [],
       userSettingDialog: false,
       userSettingDialogCompulsory: false,
       userSettingForm: {
@@ -362,52 +558,50 @@ export default {
         mobile: '',
         // permissionRoles: this.$Cookies.get('permissionRoles')
       },
-      blacklistAudit:false,
+      blacklistAudit: false,
       userManage: false,
-      merchant:false,
+      merchant: false,
       sub_manage: false,
-      newsAll:false,
-      zxbreportAudit:false,
-      zxbReportApply:false,
-      InterfaceDownload:false,
-      zxbReportlist:false,
+      newsAll: false,
+      zxbreportAudit: false,
+      zxbReportApply: false,
+      InterfaceDownload: false,
+      zxbReportlist: false,
       blacklistApply: false,
       dialogXBVisible: false,
-      zxbMessageList:false,
+      zxbMessageList: false,
       // dialogInterfaceDownload: false,
       rules: {
-        mobile: [
-          {  validator: validateMobile, trigger: 'blur' },
-        ],
+        mobile: [{ validator: validateMobile, trigger: 'blur' }],
         password: [
           { required: true, message: '请输入密码', trigger: 'change' },
           //新增密码复杂度校验(Kern on 20210615)
-          { validator: validatePassword, trigger: 'blur' }
+          { validator: validatePassword, trigger: 'blur' },
         ],
       },
     }
   },
-  created(){
-    if(this.$route.query.searchVal){
-      this.searchVal=this.$route.query.searchVal;
+  created() {
+    if (this.$route.query.searchVal) {
+      this.searchVal = this.$route.query.searchVal
       this.seachContent()
     }
-    if(this.$route.query.tokenIsOut){
-      this.message("您的帐号在另一地点登录，您已被迫下线");
+    if (this.$route.query.tokenIsOut) {
+      this.message('您的帐号在另一地点登录，您已被迫下线')
     }
   },
-  mounted () {
+  mounted() {
     if (this.$Cookies.get(this.$getCookieKey())) {
-      this.getLatestSearchList();
-      this.getCareList();//关注清单
-      this.getBlackList(1);//黑名单
-      this.getBlackListWithoutPagination();
-      this.getGreyList(1);
-      this.getGreyListWithoutPagination();
-      this.verifyPermissions();
-    };
+      this.getLatestSearchList()
+      this.getCareList() //关注清单
+      this.getBlackList(1) //黑名单
+      this.getBlackListWithoutPagination()
+      this.getGreyList(1)
+      this.getGreyListWithoutPagination()
+      this.verifyPermissions()
+    }
     if (this.$route.query.row == 1) {
-      this.showUserInfoCompulsory();
+      this.showUserInfoCompulsory()
     }
 
     // this.timer = setInterval(this.getCareList, 5000)
@@ -415,168 +609,223 @@ export default {
     //   setInterval(this.getCareList, 5000);
     // });
     this.otimer = setInterval(() => {
-      this.getCareList(this.page1.currentPage);
-    }, 30 * 1000);
-    this.$once('hook:beforeDestroy', () => {//页面关闭
+      this.getCareList(this.page1.currentPage)
+    }, 30 * 1000)
+    this.$once('hook:beforeDestroy', () => {
+      //页面关闭
       console.log('自动刷新已停止')
-      clearInterval(this.otimer);//停止
-    });
-
+      clearInterval(this.otimer) //停止
+    })
   },
   methods: {
     // beforeDestroy() {
     //   clearInterval(this.timer)
     // },
-    verifyPermissions(){
+    savePwd(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let param = {
+            userId: this.$Cookies.get('userId'),
+            password: encrypt(this.pwdForm.newPwd, '123412341234'),
+            newpassword: encrypt(this.pwdForm.confirmNewPwd, '123412341234'),
+          }
+          this.$ajax.manage.modifyPassword(param).then((res) => {
+            if (res.code == '0') {
+              this.$message.success('修改成功')
+              this.$refs[formName].resetFields()
+              this.updatePwdVisible = false
+            }
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    verifyPermissions() {
       //权限
       let param = {
-        userId: this.$Cookies.get("userId"),
-        permissionPoint:"user.manage,user.sub_manage,blacklist.audit,blacklist.apply,zxbreport.audit,merchant.screening,news.all,zxbreport.apply,zxbreport.list,zxbMessage.list"
+        userId: this.$Cookies.get('userId'),
+        permissionPoint:
+          'user.manage,user.sub_manage,blacklist.audit,blacklist.apply,zxbreport.audit,merchant.screening,news.all,zxbreport.apply,zxbreport.list,zxbMessage.list',
       }
-      this.$ajax.manage.verifyPermissions(param).then(res=>{
+      this.$ajax.manage.verifyPermissions(param).then((res) => {
         console.log(res)
-        if(res.data.code==0){
+        if (res.data.code == 0) {
           // for(let i in res.data.verifyPermissionResult){
           // 	this.blacklistAudit = res.data.verifyPermissionResult
           // }
-          this.blacklistAudit = res.data.verifyPermissionResult['blacklist.audit'];
+          this.blacklistAudit = res.data.verifyPermissionResult['blacklist.audit']
           this.blacklistApply = res.data.verifyPermissionResult['blacklist.apply']
           this.userManage = res.data.verifyPermissionResult['user.manage']
           this.sub_manage = res.data.verifyPermissionResult['user.sub_manage']
-          this.zxbreportAudit = res.data.verifyPermissionResult['zxbreport.audit'];
-          this.merchant = res.data.verifyPermissionResult['merchant.screening'];
-          this.newsAll = res.data.verifyPermissionResult['news.all'];
-          this.zxbReportApply = res.data.verifyPermissionResult['zxbreport.apply'];
+          this.zxbreportAudit = res.data.verifyPermissionResult['zxbreport.audit']
+          this.merchant = res.data.verifyPermissionResult['merchant.screening']
+          this.newsAll = res.data.verifyPermissionResult['news.all']
+          this.zxbReportApply = res.data.verifyPermissionResult['zxbreport.apply']
           // this.interfaceDownload = res.data.verifypermissions['InterfaceDownload.apply'];
-          this.zxbReportlist  = res.data.verifyPermissionResult['zxbreport.list'];
-          this.zxbMessageList = res.data.verifyPermissionResult['zxbMessage.list'];
-          if(this.userManage||this.sub_manage){
-            this.$Cookies.set('userManage','true');
+          this.zxbReportlist = res.data.verifyPermissionResult['zxbreport.list']
+          this.zxbMessageList = res.data.verifyPermissionResult['zxbMessage.list']
+          if (this.userManage || this.sub_manage) {
+            this.$Cookies.set('userManage', 'true')
           }
           console.log(res.data)
         }
       })
     },
 
-    goHmdsb () {
+    goHmdsb() {
       this.$router.push({
         path: '/iframePage',
         query: {
           title: encodeURIComponent('黑名单申报'),
-          url: encodeURIComponent(`${process.env.VUE_APP_FR_URL}/webroot/decision/view/form?viewlet=/Homepage/BlackList.cpt&op=write&userCode=${sessionStorage.getItem('userCode')}`)
-        }
+          url: encodeURIComponent(
+            `${
+              process.env.VUE_APP_FR_URL
+            }/webroot/decision/view/form?viewlet=/Homepage/BlackList.cpt&op=write&userCode=${sessionStorage.getItem(
+              'userCode'
+            )}`
+          ),
+        },
       })
     },
-    goHmdsp () {
+    goHmdsp() {
       this.$router.push({
         path: '/iframePage',
         query: {
           title: encodeURIComponent('黑名单审批'),
-          url: encodeURIComponent(`${process.env.VUE_APP_FR_URL}/webroot/decision/view/form?viewlet=/Homepage/BlackList_check.cpt&op=write&userCode=${sessionStorage.getItem('userCode')}`)
-        }
+          url: encodeURIComponent(
+            `${
+              process.env.VUE_APP_FR_URL
+            }/webroot/decision/view/form?viewlet=/Homepage/BlackList_check.cpt&op=write&userCode=${sessionStorage.getItem(
+              'userCode'
+            )}`
+          ),
+        },
       })
     },
-    goKstb () {
-      console.log(process.env);
+    goKstb() {
+      console.log(process.env)
       this.$router.push({
         path: '/iframePage',
         query: {
           title: encodeURIComponent('客商填报'),
-          url: encodeURIComponent(`${process.env.VUE_APP_FR_URL}/webroot/decision/view/form?viewlet=/Homepage/Merchants_Input.cpt&op=write&userCode=${sessionStorage.getItem('userCode')}`)
-        }
+          url: encodeURIComponent(
+            `${
+              process.env.VUE_APP_FR_URL
+            }/webroot/decision/view/form?viewlet=/Homepage/Merchants_Input.cpt&op=write&userCode=${sessionStorage.getItem(
+              'userCode'
+            )}`
+          ),
+        },
       })
     },
-    goLog (){
-      debugger;
+    goLog() {
+      debugger
       this.$router.push({
         path: '/iframePage',
         query: {
           title: encodeURIComponent('访问日志'),
-          url: encodeURIComponent(`${process.env.VUE_APP_FR_URL}/webroot/decision/view/form?viewlet=/Homepage/LOG.frm&userCode=${sessionStorage.getItem('userCode')}`)
-        }
+          url: encodeURIComponent(
+            `${
+              process.env.VUE_APP_FR_URL
+            }/webroot/decision/view/form?viewlet=/Homepage/LOG.frm&userCode=${sessionStorage.getItem('userCode')}`
+          ),
+        },
       })
-      debugger;
+      debugger
     },
-    goCreditCodeMaintenance (){
+    goCreditCodeMaintenance() {
       this.$router.push({
         path: '/iframePage',
         query: {
           title: encodeURIComponent('信保代码维护'),
-          url: encodeURIComponent(`${process.env.VUE_APP_FR_URL}/webroot/decision/view/form?viewlet=/Homepage/INPUT_HR_ZXB_CLINETNO.cpt&op=write&userCode=${sessionStorage.getItem('userCode')}`)
-        }
+          url: encodeURIComponent(
+            `${
+              process.env.VUE_APP_FR_URL
+            }/webroot/decision/view/form?viewlet=/Homepage/INPUT_HR_ZXB_CLINETNO.cpt&op=write&userCode=${sessionStorage.getItem(
+              'userCode'
+            )}`
+          ),
+        },
       })
     },
 
-    goOrgEdit (){
+    goOrgEdit() {
       this.$router.push({
         path: '/iframePage',
         query: {
           title: encodeURIComponent('组织架构维护'),
-          url: encodeURIComponent(`${process.env.VUE_APP_FR_URL}/webroot/decision/view/form?viewlet=/Homepage/组织架构树填报.frm&userCode=${sessionStorage.getItem('userCode')}`)
-        }
+          url: encodeURIComponent(
+            `${
+              process.env.VUE_APP_FR_URL
+            }/webroot/decision/view/form?viewlet=/Homepage/组织架构树填报.frm&userCode=${sessionStorage.getItem(
+              'userCode'
+            )}`
+          ),
+        },
       })
     },
-    getUserInfo () {
+    getUserInfo() {
       //获取用户信息
       let param = {
-        userId: this.$Cookies.get("userId")
-      };
-      this.$ajax.manage.getUserInfo(param).then(res => {
-        console.log(res);
+        userId: this.$Cookies.get('userId'),
+      }
+      this.$ajax.manage.getUserInfo(param).then((res) => {
+        console.log(res)
         if (res.status == 200) {
-          this.userSettingForm.name = res.data.user.name;
-          this.userSettingForm.password = res.data.user.password;
-          this.userSettingForm.email = res.data.user.email;
-          this.userSettingForm.mobile = res.data.user.mobile;
+          this.userSettingForm.name = res.data.user.name
+          this.userSettingForm.password = res.data.user.password
+          this.userSettingForm.email = res.data.user.email
+          this.userSettingForm.mobile = res.data.user.mobile
         }
       })
     },
-    goToTycPage(title,uri){
+    goToTycPage(title, uri) {
       this.$router.push({
         path: '/iframePage',
         query: {
           title: encodeURIComponent(title),
-          url: encodeURIComponent(this.tycUrl+uri)
-        }
+          url: encodeURIComponent(this.tycUrl + uri),
+        },
       })
     },
-    logOut () {
+    logOut() {
       //退出
-      this.$Cookies.remove(this.$getCookieKey());
-      this.$Cookies.remove('username');
-      this.$Cookies.remove('userCode');
-      this.$Cookies.remove('userId');
-      this.$Cookies.remove('companyCode');
-      sessionStorage.removeItem('username');
-      sessionStorage.removeItem('userCode');
-      sessionStorage.removeItem('userId');
-      this.$router.push({ path: '/' });
+      this.$Cookies.remove(this.$getCookieKey())
+      this.$Cookies.remove('username')
+      this.$Cookies.remove('userCode')
+      this.$Cookies.remove('userId')
+      this.$Cookies.remove('companyCode')
+      sessionStorage.removeItem('username')
+      sessionStorage.removeItem('userCode')
+      sessionStorage.removeItem('userId')
+      this.$router.push({ path: '/' })
       // this.$router.go(0);
     },
-    saveUserInfo (formName) {
+    saveUserInfo(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let param = {
-            userId: this.$Cookies.get("userId"),
-            username: this.$Cookies.get("userCode"),
+            userId: this.$Cookies.get('userId'),
+            username: this.$Cookies.get('userCode'),
             name: this.userSettingForm.name,
             password: this.userSettingForm.password,
             email: this.userSettingForm.email,
             mobile: this.userSettingForm.mobile,
             // permissionRoles: this.$Cookies.get("permissionRoles"),
           }
-          this.$ajax.manage.updateUser(param).then(res => {
-            console.log(res);
+          this.$ajax.manage.updateUser(param).then((res) => {
+            console.log(res)
             if (res.data.code == 0) {
-              this.$message.success(res.data.msg);
+              this.$message.success(res.data.msg)
               this.userSettingDialog = false
               this.userSettingDialogCompulsory = false
             }
           })
         } else {
-          return false;
+          return false
         }
-      });
+      })
     },
     // saveUserInfo () {
     //   let param = {
@@ -595,7 +844,7 @@ export default {
     //     }
     //   })
     // },
-    clearUserForm () {
+    clearUserForm() {
       this.userSettingForm = {
         // username: this.$Cookies.get('username'),
         username: this.$Cookies.get('userCode'),
@@ -606,59 +855,58 @@ export default {
         // permissionRoles: this.$Cookies.get('permissionRoles')
       }
     },
-    showUserInfo () {
+    showUserInfo() {
       //维护用户基本信息弹框
-      this.userSettingDialog = true;
+      this.userSettingDialog = true
       this.getUserInfo()
     },
-    showUserInfoCompulsory () {
+    showUserInfoCompulsory() {
       //维护用户基本信息弹框
-      this.userSettingDialogCompulsory = true;
+      this.userSettingDialogCompulsory = true
       this.getUserInfo()
     },
-    TycHandleCommand(command){
+    TycHandleCommand(command) {
       //TODO 组装天眼查URL
-      let username = "zjb_"+this.$Cookies.get('userCode');
-      let sign = this.$md5(username+"44bce5ef-873e-4689-b515-a1ef9775aa82");
+      let username = 'zjb_' + this.$Cookies.get('userCode')
+      let sign = this.$md5(username + '44bce5ef-873e-4689-b515-a1ef9775aa82')
       this.tycUrl = `https://pro.tianyancha.com/cloud-std-security/aut/login.json?username=${username}&authId=lf2b4yqy4lsfgp1x&sign=${sign}&redirectUrl=`
 
-      if(command == 1){
+      if (command == 1) {
         //幕后关系
-        this.goToTycPage("幕后关系","/found");
-      }else if(command == 2){
+        this.goToTycPage('幕后关系', '/found')
+      } else if (command == 2) {
         //关联关系
-        this.goToTycPage("关联关系","/shortpath");
-      }else if(command == 3){
+        this.goToTycPage('关联关系', '/shortpath')
+      } else if (command == 3) {
         //报告下载
-        this.goToTycPage("报告下载","/tools/download-report");
-      }else if(command == 4){
+        this.goToTycPage('报告下载', '/tools/download-report')
+      } else if (command == 4) {
         //天眼地图
-        this.goToTycPage("天眼地图","/map");
-      }else if(command == 5){
+        this.goToTycPage('天眼地图', '/map')
+      } else if (command == 5) {
         //资本市场公告
-        this.goToTycPage("资本市场公告","/announcement");
-      }else if(command == 6){
+        this.goToTycPage('资本市场公告', '/announcement')
+      } else if (command == 6) {
         //资本市场法规
-        this.goToTycPage("资本市场法规","/regulations");
-      }else if(command == 7){
+        this.goToTycPage('资本市场法规', '/regulations')
+      } else if (command == 7) {
         //资本成分穿透
-        this.goToTycPage("资本成分穿透","/tools/capital");
-      }else if(command == 8){
+        this.goToTycPage('资本成分穿透', '/tools/capital')
+      } else if (command == 8) {
         //企业画像
-        this.goToTycPage("企业画像","/tools/portrait");
-      }else if(command == 9){
+        this.goToTycPage('企业画像', '/tools/portrait')
+      } else if (command == 9) {
         //数据导出
-        this.goToTycPage("数据导出","/tools/export-company-list");
-      }else if(command == 10){
+        this.goToTycPage('数据导出', '/tools/export-company-list')
+      } else if (command == 10) {
         //高级搜索
-        this.goToTycPage("高级搜索","/searchx");
-      }else if(command == 11){
+        this.goToTycPage('高级搜索', '/searchx')
+      } else if (command == 11) {
         //监控管理
-        this.goToTycPage("监控管理","/std/monitor/event");
+        this.goToTycPage('监控管理', '/std/monitor/event')
       }
-
     },
-    handleCommand (command) {
+    handleCommand(command) {
       console.log(command)
       if (command == 1) {
         //黑名单申报
@@ -687,37 +935,38 @@ export default {
         this.$router.push({
           path: '/messageCenter',
           query: {
-            activeName: 'first'
-          } })
+            activeName: 'first',
+          },
+        })
       } else if (command == 7) {
         this.$router.push({ path: '/zxbReportList' })
-      } else if (command == 8){
-        this.$router.push({path: '/visitLog'})
+      } else if (command == 8) {
+        this.$router.push({ path: '/visitLog' })
         // this.goLog()
       } else if (command == 9) {
-        this.$router.push({path: '/orgManage'})
+        this.$router.push({ path: '/orgManage' })
         // this.goOrgEdit()
       } else if (command == 10) {
         this.$router.push({ path: '/ZxbApplyList' })
-      }else if(command == 11){
+      } else if (command == 11) {
         this.$router.push({ path: '/RoleManage' })
-      }else if(command == 12){
+      } else if (command == 12) {
         this.$router.push({ path: '/zxbApplyProgressList' })
-      }else if(command == 13){
-        this.$router.push({ path: '/zxbMessageList'})
-      }else if (command == 14){
-        this.$router.push({ path: '/creditCodeMaintain'})
+      } else if (command == 13) {
+        this.$router.push({ path: '/zxbMessageList' })
+      } else if (command == 14) {
+        this.$router.push({ path: '/creditCodeMaintain' })
         // this.goCreditCodeMaintenance()
-      }else if(command == 15){
-        this.$router.push({ path: '/tycPointsDistribute'})
-      }else if(command == 16){
-        this.$router.push({ path: '/TokenManage'})
-      }else if(command == 17){
-        this.$router.push({ path: '/InterfaceUsedLimit'})
+      } else if (command == 15) {
+        this.$router.push({ path: '/tycPointsDistribute' })
+      } else if (command == 16) {
+        this.$router.push({ path: '/TokenManage' })
+      } else if (command == 17) {
+        this.$router.push({ path: '/InterfaceUsedLimit' })
       }
     },
     toBlackListDetail() {
-      this.$router.push({ path: '/BlacklistDetail'})
+      this.$router.push({ path: '/BlacklistDetail' })
     },
     // getBlackList (page) {
     //   let param = {
@@ -732,15 +981,15 @@ export default {
     //     }
     //   })
     // },
-    getBlackList (page) {
+    getBlackList(page) {
       let param = {
         pageIndex: page ? page : 1,
         pageSize: this.page2.pageSize,
-        "userCode": sessionStorage.getItem('userCode'),
+        userCode: sessionStorage.getItem('userCode'),
 
         sortCriteria: this.sortCriteria == '' ? 'startDate' : this.sortCriteria,
       }
-      this.$ajax.manage.getBlackList(param).then(res => {
+      this.$ajax.manage.getBlackList(param).then((res) => {
         if (res.data.code == 0) {
           this.blackListData = res.data.blackList
           this.page2.total = JSON.parse(res.data.total)
@@ -748,15 +997,15 @@ export default {
       })
     },
 
-    getGreyList (page) {
+    getGreyList(page) {
       let param = {
         pageIndex: page ? page : 1,
         pageSize: this.page3.pageSize,
-        "userCode": sessionStorage.getItem('userCode'),
+        userCode: sessionStorage.getItem('userCode'),
 
         sortCriteria: this.sortCriteria == '' ? 'startDate' : this.sortCriteria,
       }
-      this.$ajax.manage.getGreyList(param).then(res => {
+      this.$ajax.manage.getGreyList(param).then((res) => {
         if (res.data.code == 0) {
           this.greyListData = res.data.greyList
           this.page3.total = JSON.parse(res.data.total)
@@ -764,83 +1013,82 @@ export default {
       })
     },
 
-    getBlackListWithoutPagination () {
+    getBlackListWithoutPagination() {
       let paramWithoutPagination = {
-        "userCode": sessionStorage.getItem('userCode'),
+        userCode: sessionStorage.getItem('userCode'),
       }
-      this.$ajax.manage.getBlackListDetailList(paramWithoutPagination).then(res => {
+      this.$ajax.manage.getBlackListDetailList(paramWithoutPagination).then((res) => {
         if (res.data.code == 0) {
           this.blackListWithoutPagination = res.data.blackListDetailResultList
         }
       })
     },
 
-    getGreyListWithoutPagination () {
+    getGreyListWithoutPagination() {
       let paramWithoutPagination = {
-        "userCode": sessionStorage.getItem('userCode'),
+        userCode: sessionStorage.getItem('userCode'),
       }
-      this.$ajax.manage.getGreyList(paramWithoutPagination).then(res => {
+      this.$ajax.manage.getGreyList(paramWithoutPagination).then((res) => {
         if (res.data.code == 0) {
           this.greyListWithoutPagination = res.data.greyList
         }
       })
     },
 
-
-    setSortCriteria (criteria) {
-      this.sortCriteria = criteria;
-      if(this.currentShow == 'black'){
-        this.getBlackList();
-        this.page2.currentPage = 1;//重新查询刷新当前页
-      }else {
-        this.getGreyList();
-        this.page3.currentPage = 1;//重新查询刷新当前页
+    setSortCriteria(criteria) {
+      this.sortCriteria = criteria
+      if (this.currentShow == 'black') {
+        this.getBlackList()
+        this.page2.currentPage = 1 //重新查询刷新当前页
+      } else {
+        this.getGreyList()
+        this.page3.currentPage = 1 //重新查询刷新当前页
       }
     },
 
-    setCurrentShow (currentValue){
-      this.currentShow = currentValue;
+    setCurrentShow(currentValue) {
+      this.currentShow = currentValue
 
-      this.setSortCriteria('startDate');
+      this.setSortCriteria('startDate')
     },
 
-    seachContent () {
+    seachContent() {
       if (this.searchVal == '') {
-        this.showBox = 1;
-        this.$message.warning('请输入查询内容');
-        return;
+        this.showBox = 1
+        this.$message.warning('请输入查询内容')
+        return
       } else {
         //已登录=>搜索
         let param = {
-          "keyword": this.searchVal,
-          "page": 1,
-          "userId": parseInt(this.$Cookies.get('userId'))
+          keyword: this.searchVal,
+          page: 1,
+          userId: parseInt(this.$Cookies.get('userId')),
         }
-        this.$ajax.manage.getSearchList(param).then(res => {
-          console.log("getSearchList: "+ res);
+        this.$ajax.manage.getSearchList(param).then((res) => {
+          console.log('getSearchList: ' + res)
           if (res.status == 200) {
             //console.log(res.data);
             this.searchList = res.data.searchList
-            this.getIsBlack(this.blackListWithoutPagination,this.searchList)
-            this.isGrey(this.greyListWithoutPagination,this.searchList)
-            this.sourceType = res.data.sourceType;
-            this.showBox = 2;
+            this.getIsBlack(this.blackListWithoutPagination, this.searchList)
+            this.isGrey(this.greyListWithoutPagination, this.searchList)
+            this.sourceType = res.data.sourceType
+            this.showBox = 2
             this.getLatestSearchList()
           }
         })
       }
     },
-    getLatestSearchList () {
+    getLatestSearchList() {
       let param = {
-        userId: this.$Cookies.get('userId')
+        userId: this.$Cookies.get('userId'),
       }
-      this.$ajax.manage.latestWords(param).then(res => {
+      this.$ajax.manage.latestWords(param).then((res) => {
         if (res.status == 200) {
           this.latestSearchList = res.data.latestWords
         }
       })
     },
-    moreNews (item, index) {
+    moreNews(item, index) {
       if (index === 0) {
         //基本信息
       } else if (index === 1) {
@@ -852,20 +1100,20 @@ export default {
       } else if (index === 4) {
         //更多详情
       }
-      if(item.companyName){
+      if (item.companyName) {
         let param = {
           userId: this.$Cookies.get('userId'),
-          companyName:item.companyName
+          companyName: item.companyName,
         }
 
-        this.$ajax.manage.getCompanyInfoByName(param).then(res=>{
-          if(res.status == 200){
-            if(res.data.code == 0){
+        this.$ajax.manage.getCompanyInfoByName(param).then((res) => {
+          if (res.status == 200) {
+            if (res.data.code == 0) {
               item.id = res.data.company.id
               item.companyName = res.data.company.companyName
               item.companyId = res.data.company.companyId
               item.creditCode = res.data.company.creditCode
-            }else{
+            } else {
               this.$message.error(res.data.msg)
               return
             }
@@ -876,12 +1124,12 @@ export default {
                 companyName: item.companyName,
                 companyId: item.companyId,
                 creditCode: item.creditCode,
-                index: index
-              }
+                index: index,
+              },
             })
           }
-        });
-      }else{
+        })
+      } else {
         this.$router.push({
           path: '/essInfo',
           query: {
@@ -889,116 +1137,114 @@ export default {
             companyName: item.companyName,
             companyId: item.companyId,
             creditCode: item.creditCode,
-            index: index
-          }
+            index: index,
+          },
         })
       }
     },
-    getCareList (page) {
+    getCareList(page) {
       //关注清单列表
       let param = {
         pageIndex: page ? page : 1,
         pageSize: this.page1.pageSize,
-        userId: this.$Cookies.get('userId')
+        userId: this.$Cookies.get('userId'),
       }
-      this.$ajax.manage.getCareList(param).then(res => {
+      this.$ajax.manage.getCareList(param).then((res) => {
         if (res.data.code == 0) {
           this.careList = JSON.parse(res.data.careList)
           this.page1.total = JSON.parse(res.data.total)
         }
       })
-      console.log("开始自动刷新了: " + new Date())
+      console.log('开始自动刷新了: ' + new Date())
     },
-    handleCurrentChange1(val){
-      this.getCareList (val)
+    handleCurrentChange1(val) {
+      this.getCareList(val)
     },
-    handleCurrentChange2(val){
-      this.getBlackList (val)
+    handleCurrentChange2(val) {
+      this.getBlackList(val)
     },
-    handleCurrentChange3(val){
-      this.getGreyList (val)
+    handleCurrentChange3(val) {
+      this.getGreyList(val)
     },
-    cancleFocus (item) {
+    cancleFocus(item) {
       //取消关注
       let param = {
-        "userId": this.$Cookies.get('userId'),
-        "companyId": item.companyId,
-        "zhongchengxin": 0,
-        "zhongxinbao": 0
+        userId: this.$Cookies.get('userId'),
+        companyId: item.companyId,
+        zhongchengxin: 0,
+        zhongxinbao: 0,
       }
-      this.$ajax.manage.careOrNot(param).then(res => {
-        console.log(res);
+      this.$ajax.manage.careOrNot(param).then((res) => {
+        console.log(res)
         if (res.data.code == 0) {
-          this.$message.success(res.data.msg);
+          this.$message.success(res.data.msg)
           this.getCareList()
         } else {
-          this.$message.error(res.data.msg);
+          this.$message.error(res.data.msg)
         }
       })
     },
-    blarSearch () {
+    blarSearch() {
       //模糊接口查询
       let param = {
         keyword: this.searchVal,
         userId: this.$Cookies.get('userId'),
-        page: 1
+        page: 1,
       }
-      this.$ajax.manage.directSearchList(param).then(res => {
+      this.$ajax.manage.directSearchList(param).then((res) => {
         if (res.status == 200) {
           this.searchList = res.data.searchList
-          this.getIsBlack(this.blackListWithoutPagination,this.searchList)
-          this.isGrey(this.greyListWithoutPagination,this.searchList)
+          this.getIsBlack(this.blackListWithoutPagination, this.searchList)
+          this.isGrey(this.greyListWithoutPagination, this.searchList)
           // this.getIsBlack(this.blackListData,this.searchList);
-          this.sourceType = res.data.sourceType;
-          this.showBox = 2;
+          this.sourceType = res.data.sourceType
+          this.showBox = 2
         }
       })
     },
-    searchCompany (item) {
-      this.searchVal = item.keyWord;
+    searchCompany(item) {
+      this.searchVal = item.keyWord
       this.seachContent()
     },
     //搜索高亮
-    brightenKeyword (val, keyword) {
-      keyword = keyword.replace(/\s*/g,'');
+    brightenKeyword(val, keyword) {
+      keyword = keyword.replace(/\s*/g, '')
       if (keyword.length > 0) {
-        let keywordArr = keyword.split("");
-        val = val + "";
-        keywordArr.forEach(item => {
-          if (val.indexOf(item) !== -1 && item !== "") {
-            val = val.replace(
-                new RegExp(item, 'g'),
-                '<font color="#f75353">' + item + "</font>");
+        let keywordArr = keyword.split('')
+        val = val + ''
+        keywordArr.forEach((item) => {
+          if (val.indexOf(item) !== -1 && item !== '') {
+            val = val.replace(new RegExp(item, 'g'), '<font color="#f75353">' + item + '</font>')
           }
-        });
-        return val;
+        })
+        return val
       } else {
-        return val;
+        return val
       }
     },
-    applyReport () {
+    applyReport() {
       //打开报告申请弹框
-      this.dialogXBVisible = true;
+      this.dialogXBVisible = true
     },
     vueInterfaceDownload() {
       //打开下发接口服务页面
       this.$router.push({ path: '/InterfaceDownload' })
     },
-    go2MessageCenter(tycFlag, zcxFlag, companyNameStr){
-      let activeName;
-      let careFlag;
+    go2MessageCenter(tycFlag, zcxFlag, companyNameStr) {
+      let activeName
+      let careFlag
 
-      if(tycFlag === 1){
+      if (tycFlag === 1) {
         activeName = 'first'
-      }else{
+      } else {
         activeName = 'second'
       }
 
-      if(tycFlag === 1 && zcxFlag != 1){
+      if (tycFlag === 1 && zcxFlag != 1) {
         careFlag = 'tycOnly'
-      }else if(tycFlag != 1 && zcxFlag === 1){
+      } else if (tycFlag != 1 && zcxFlag === 1) {
         careFlag = 'zcxOnly'
-      }else{
+      } else {
         careFlag = 'both'
       }
 
@@ -1007,41 +1253,40 @@ export default {
         query: {
           activeName: activeName,
           companyName: companyNameStr,
-          careBy: careFlag
-        }
+          careBy: careFlag,
+        },
       })
     },
 
-    OmitTheCompanyName(companyName, currentShow){
-      let nameLength = companyName.length;
-      let scope;
-      if(currentShow != null){
+    OmitTheCompanyName(companyName, currentShow) {
+      let nameLength = companyName.length
+      let scope
+      if (currentShow != null) {
         scope = 22
-      }else{
+      } else {
         scope = 16
       }
-      if(nameLength > scope){
-        let shortName = companyName.substring(0,scope);
-        let symbol = '...';
-        return shortName + symbol;
-      }else{
-        return companyName;
-      }
-
-    },
-    isOverLength(companyName){
-      let nameLength = companyName.length;
-      if(nameLength > 16){
-        return true;
-      }else{
-        return false;
+      if (nameLength > scope) {
+        let shortName = companyName.substring(0, scope)
+        let symbol = '...'
+        return shortName + symbol
+      } else {
+        return companyName
       }
     },
+    isOverLength(companyName) {
+      let nameLength = companyName.length
+      if (nameLength > 16) {
+        return true
+      } else {
+        return false
+      }
+    },
 
-    getMessageShow(messageNumber){
-      if(messageNumber > 99){
+    getMessageShow(messageNumber) {
+      if (messageNumber > 99) {
         return '99+'
-      }else{
+      } else {
         return messageNumber
       }
     },
@@ -1050,49 +1295,51 @@ export default {
       //用户手册下载
       let param = {
         userId: parseInt(this.$Cookies.get('userId')),
-        "noticeSerialno":"用户手册.docx",
+        noticeSerialno: '用户手册.docx',
       }
-      this.$ajax.manage.getPDF(param).then(res => {
+      this.$ajax.manage.getPDF(param).then((res) => {
         const content = res.data
         const blob = new Blob([content])
         console.log(res.data)
         const fileName = '用户手册.docx'
-        if ('download' in document.createElement('a')) { // 非IE下载
+        if ('download' in document.createElement('a')) {
+          // 非IE下载
           const elink = document.createElement('a')
           elink.download = '用户手册.docx'
           elink.style.display = 'none'
           elink.href = URL.createObjectURL(blob)
-          console.log(elink.href);
+          console.log(elink.href)
           document.body.appendChild(elink)
           elink.click()
           URL.revokeObjectURL(elink.href) // 释放URL 对象
           document.body.removeChild(elink)
-        } else { // IE10+下载
+        } else {
+          // IE10+下载
           navigator.msSaveBlob(blob, '用户手册.docx')
         }
       })
     },
-    getIsBlack(blackList,searchList){
-      for(let i = 0; i < searchList.length; i++){
-        searchList[i].isBlack = false;
-        for(let j = 0; j < blackList.length; j++){
-          if(blackList[j].tycCompanyId == searchList[i].id){
-            searchList[i].isBlack = true;
+    getIsBlack(blackList, searchList) {
+      for (let i = 0; i < searchList.length; i++) {
+        searchList[i].isBlack = false
+        for (let j = 0; j < blackList.length; j++) {
+          if (blackList[j].tycCompanyId == searchList[i].id) {
+            searchList[i].isBlack = true
           }
         }
       }
-      console.log("searchList:"+searchList)
+      console.log('searchList:' + searchList)
     },
-    isGrey(greyList,searchList){
-      for(let i = 0; i < searchList.length; i++){
-        searchList[i].isGrey = false;
-        for(let j = 0; j < greyList.length; j++){
-          if(greyList[j].tycCompanyId == searchList[i].id){
-            searchList[i].isGrey = true;
+    isGrey(greyList, searchList) {
+      for (let i = 0; i < searchList.length; i++) {
+        searchList[i].isGrey = false
+        for (let j = 0; j < greyList.length; j++) {
+          if (greyList[j].tycCompanyId == searchList[i].id) {
+            searchList[i].isGrey = true
           }
         }
       }
-      console.log("searchList:"+searchList)
+      console.log('searchList:' + searchList)
     },
   },
 }
@@ -1208,7 +1455,6 @@ export default {
       }
     }
   }
-
 
   .main-content {
     margin: auto;
@@ -1427,16 +1673,14 @@ export default {
     .gbGray {
       background: #f1f3f4;
     }
-
-
   }
   .response {
-    font-size:14px;
+    font-size: 14px;
     color: #3e3e3e;
-    &:hover{
+    &:hover {
       font-weight: bold;
     }
-    &+.response {
+    & + .response {
       font-weight: bold;
     }
   }
@@ -1447,7 +1691,36 @@ export default {
     background: no-repeat center top;
     background-size: contain;
   }
-
-
+}
+.intensity {
+  .psdText {
+    font-size: 14px;
+    margin-right: 10px;
+  }
+  .line {
+    display: inline-block;
+    width: 48px;
+    height: 4px;
+    background: #d8d8d8;
+    border-radius: 3px;
+    margin-right: 8px;
+    &.low {
+      background: #f4664a;
+    }
+    &.middle {
+      background: #ffb700;
+    }
+    &.high {
+      background: #2cbb79;
+    }
+  }
+  .level {
+    margin: 0 16px 0 8px;
+  }
+  .warningtext {
+    color: #5a5a5a;
+    font-size: 12px;
+    margin-top: 5px;
+  }
 }
 </style>

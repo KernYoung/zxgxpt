@@ -609,7 +609,18 @@ async function uploadSpeedMapping(param) {
   let uploadSpeedMapping = await ajax.post(`/api/common/ZXB/uploadSpeedMapping`, param)
   return uploadSpeedMapping
 }
+async function verifyPassword(param) {
+  let verifyPassword = await ajax.post(`/api/user/verifyPassword`, param)
+  return verifyPassword
+}
+//修改密码
+async function modifyPassword(param) {
+  let modifyPassword = await ajax.post(`/api/user/modifyPassword`, param)
+  return modifyPassword
+}
 const manage = {
+  modifyPassword,
+  verifyPassword,
   getSpeedMapping,
   uploadSpeedMapping,
   login: login,
