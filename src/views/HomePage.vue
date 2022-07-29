@@ -332,9 +332,7 @@
               <span class="line" :class="[level.includes('low') ? 'low' : '']"></span>
               <span class="line" :class="[level.includes('middle') ? 'middle' : '']"></span>
               <span class="line" :class="[level.includes('high') ? 'high' : '']"></span>
-              <div class="warningtext">
-
-              </div>
+              <div class="warningtext"></div>
             </div>
           </el-form-item>
           <el-form-item label="确认密码：" label-width="100px" prop="confirmNewPwd">
@@ -348,7 +346,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="updatePwdVisible = false">取 消</el-button>
+          <el-button @click="resetPwdForm('pwdForm')">取 消</el-button>
           <el-button type="primary" @click="savePwd('pwdForm')">提 交</el-button>
         </div></el-dialog
       >
@@ -427,7 +425,6 @@ export default {
     }
 
     var validatePass = (rule, value, callback) => {
-      debugger;
       /*if (value === '') {
         callback(new Error('请输入密码'))
       } else {
@@ -491,46 +488,61 @@ export default {
         }
         callback()*/
       if (value === '') {
-        callback(new Error('请输入密码'));
+        callback(new Error('请输入密码'))
       } else {
         //6-20位包含字符、数字和特殊字符
-        var ls = 0;
+        var ls = 0
         if (value !== '') {
           if (value.match(/([a-z])+/)) {
-            ls++;
+            ls++
           }
           if (value.match(/([0-9])+/)) {
-            ls++;
+            ls++
           }
           if (value.match(/([A-Z])+/)) {
-            ls++;
+            ls++
           }
           if (value.match(/([\W])+/) && !value.match(/(![\u4E00-\u9FA5])+/)) {
-            ls++;
+            ls++
           }
-          if (value.length< 8 || value.length > 20) {
-            callback(new Error('要求8-20位字符'));
-            ls = 0;
+          if (value.length < 8 || value.length > 20) {
+            callback(new Error('要求8-20位字符'))
+            ls = 0
           }
           if (value.match(/([\u4E00-\u9FA5])+/)) {
-            callback(new Error('不能包含中文字符'));
-            ls = 0;
+            callback(new Error('不能包含中文字符'))
+            ls = 0
           }
-          if(value==this.pwdForm.originPwd){
-            callback(new Error('新密码不能与旧密码相同'));
-            ls = 0;
+          if (value == this.pwdForm.originPwd) {
+            callback(new Error('新密码不能与旧密码相同'))
+            ls = 0
           }
           switch (ls) {
-            case 0: this.level=[]; callback(new Error('数字、小写字母、大写字母以及特殊字符')); break;
-            case 1: this.level=['low']; callback(new Error('数字、小写字母、大写字母以及特殊字符')); break;
-            case 2: this.level=['low','middle']; callback(new Error('数字、小写字母、大写字母以及特殊字符')); break;
-            case 3: this.level=['low','middle']; callback(new Error('数字、小写字母、大写字母以及特殊字符')); break;
-            case 4:  this.level=['low','middle','high']; break;
-            default:  this.level=[]; break;
+            case 0:
+              this.level = []
+              callback(new Error('数字、小写字母、大写字母以及特殊字符'))
+              break
+            case 1:
+              this.level = ['low']
+              callback(new Error('数字、小写字母、大写字母以及特殊字符'))
+              break
+            case 2:
+              this.level = ['low', 'middle']
+              callback(new Error('数字、小写字母、大写字母以及特殊字符'))
+              break
+            case 3:
+              this.level = ['low', 'middle']
+              callback(new Error('数字、小写字母、大写字母以及特殊字符'))
+              break
+            case 4:
+              this.level = ['low', 'middle', 'high']
+              break
+            default:
+              this.level = []
+              break
           }
         }
-        callback();
-
+        callback()
       }
     }
     var validatePass2 = (rule, value, callback) => {
@@ -547,8 +559,7 @@ export default {
         this.originPwdValidateSuccess = false
         callback(new Error('请输入密码'))
       } else {
-
-        value =this.$md5( this.$Cookies.get('userCode')+value);
+        value = this.$md5(this.$Cookies.get('userCode') + value)
         this.$ajax.manage
           .verifyPassword({ userId: this.$Cookies.get('userId'), password: encrypt(value, '+jFQRKK1iietbcX=') })
           .then((res) => {
@@ -683,27 +694,34 @@ export default {
     // beforeDestroy() {
     //   clearInterval(this.timer)
     // },
+    resetPwdForm(formName) {
+      this.level = []
+      this.$refs[formName].resetFields()
+      this.updatePwdVisible = false
+    },
     savePwd(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let param = {
             userId: this.$Cookies.get('userId'),
-            password: encrypt(this.$md5( this.$Cookies.get('userCode')+this.pwdForm.originPwd), '+jFQRKK2iietbcX='),
-            newpassword: encrypt(this.$md5( this.$Cookies.get('userCode')+this.pwdForm.confirmNewPwd), '+jFQRKK9iietbcX='),
+            password: encrypt(this.$md5(this.$Cookies.get('userCode') + this.pwdForm.originPwd), '+jFQRKK2iietbcX='),
+            newpassword: encrypt(
+              this.$md5(this.$Cookies.get('userCode') + this.pwdForm.confirmNewPwd),
+              '+jFQRKK9iietbcX='
+            ),
           }
           this.$ajax.manage.modifyPassword(param).then((res) => {
-
             if (res.data.code == '0') {
-              this.$msgbox.alert('密码修改成功');
+              this.$msgbox.alert('密码修改成功')
 
               this.$refs[formName].resetFields()
-              this.level=[];
+              this.level = []
               this.updatePwdVisible = false
-            }else {
-              this.$msgbox.alert(res.data.msg);
+            } else {
+              this.$msgbox.alert(res.data.msg)
 
               this.$refs[formName].resetFields()
-              this.level=[];
+              this.level = []
               this.updatePwdVisible = false
             }
           })
@@ -791,7 +809,6 @@ export default {
       })
     },
     goLog() {
-      debugger
       this.$router.push({
         path: '/iframePage',
         query: {
