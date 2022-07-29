@@ -446,7 +446,7 @@ export default {
           let param2 = {}
           this.$ajax.manage.updateUserStatus(param2).then(res2 => {
             if (res2.status == 200) {
-              this.$message.success("已同步用户启用状态到数据中心")
+              this.$message.success("操作成功")
             }
           })
         }

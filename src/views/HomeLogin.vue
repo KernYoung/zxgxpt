@@ -163,6 +163,7 @@ export default {
         username: this.form.username,
         password: this.form.password,
       }
+      this.$Cookies.remove('isOverdue');
       this.$ajax.manage.login(param).then((res) => {
         console.log(res)
         if (res.data.code === '0') {

@@ -139,7 +139,9 @@
               <span class="line" :class="[level.includes('low') ? 'low' : '']"></span>
               <span class="line" :class="[level.includes('middle') ? 'middle' : '']"></span>
               <span class="line" :class="[level.includes('high') ? 'high' : '']"></span>
-              <div class="warningtext"></div>
+              <div class="warningtext">
+                由数字，小写字母，大写字母和字符中的任意二种组成，且长度不小于8位。
+              </div>
             </div>
           </el-form-item>
           <el-form-item label="确认密码：" label-width="100px" prop="confirmNewPwd">
@@ -316,20 +318,16 @@ export default {
           switch (ls) {
             case 0:
               this.level = []
-              callback(new Error('数字、小写字母、大写字母以及特殊字符'))
+              callback(new Error('需由数字、字母、字符中的两种组成。'))
               break
             case 1:
               this.level = ['low']
-              callback(new Error('数字、小写字母、大写字母以及特殊字符'))
+              callback(new Error('需由数字、字母、字符中的两种组成。'))
               break
             case 2:
               this.level = ['low', 'middle']
-              callback(new Error('数字、小写字母、大写字母以及特殊字符'))
               break
             case 3:
-              this.level = ['low', 'middle']
-              callback(new Error('数字、小写字母、大写字母以及特殊字符'))
-              break
             case 4:
               this.level = ['low', 'middle', 'high']
               break
