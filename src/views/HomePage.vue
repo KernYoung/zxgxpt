@@ -352,7 +352,7 @@
       >
     </el-dialog>
 
-    <el-dialog
+<!--    <el-dialog
       title="账号设置"
       :visible.sync="userSettingDialogCompulsory"
       width="450px"
@@ -379,10 +379,47 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <!--        <el-button @click="userSettingDialogCompulsory = false">取 消</el-button>-->
+        &lt;!&ndash;        <el-button @click="userSettingDialogCompulsory = false">取 消</el-button>&ndash;&gt;
         <el-button type="primary" @click="saveUserInfo('userSettingForm')">保 存</el-button>
       </div>
-    </el-dialog>
+    </el-dialog>-->
+    <el-dialog width="410px" title="修改密码" :visible.sync="userSettingDialogCompulsory" append-to-body
+
+               :show-close="false"
+               :close-on-click-modal="false"
+               :close-on-press-escape="false">
+      <el-form :model="pwdForm" :rules="rules2" ref="pwdForm">
+        <el-form-item label="原密码：" label-width="100px" prop="originPwd">
+          <el-input v-model="pwdForm.originPwd" size="small" type="password" clearable style="width:220px">
+            <i slot="suffix" class="el-icon-check" style="color: green;" v-if="originPwdValidateSuccess"></i>
+          </el-input>
+        </el-form-item>
+        <el-form-item label="新密码：" label-width="100px" prop="newPwd">
+          <el-input v-model="pwdForm.newPwd" size="small" type="password" clearable style="width:220px"></el-input>
+        </el-form-item>
+        <el-form-item label="密码强度：" label-width="100px">
+          <div class="intensity">
+            <span class="line" :class="[level.includes('low') ? 'low' : '']"></span>
+            <span class="line" :class="[level.includes('middle') ? 'middle' : '']"></span>
+            <span class="line" :class="[level.includes('high') ? 'high' : '']"></span>
+            <div class="warningtext"></div>
+          </div>
+        </el-form-item>
+        <el-form-item label="确认密码：" label-width="100px" prop="confirmNewPwd">
+          <el-input
+              v-model="pwdForm.confirmNewPwd"
+              size="small"
+              style="width:220px"
+              clearable
+              type="password"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+<!--        <el-button @click="resetPwdForm('pwdForm')">取 消</el-button>-->
+        <el-button type="primary" @click="savePwd('pwdForm')">提 交</el-button>
+      </div></el-dialog
+    >
 
     <ZxbReportApply :dialogXBVisible.sync="dialogXBVisible"></ZxbReportApply>
     <!--    <InterfaceDownload :dialogInterfaceDownload.sync="dialogInterfaceDownload"></InterfaceDownload>-->
@@ -673,7 +710,7 @@ export default {
       this.getGreyListWithoutPagination()
       this.verifyPermissions()
     }
-    if (this.$route.query.row == 1) {
+    if (this.$Cookies.get('isOverdue') == '1') {
       this.showUserInfoCompulsory()
     }
 
@@ -717,6 +754,12 @@ export default {
               this.$refs[formName].resetFields()
               this.level = []
               this.updatePwdVisible = false
+
+              if(this.userSettingDialogCompulsory){
+                this.userSettingDialogCompulsory=false;
+                this.$Cookies.remove('isOverdue');
+              }
+
             } else {
               this.$msgbox.alert(res.data.msg)
 

@@ -181,12 +181,13 @@ export default {
 
           if (res.data.isOverdue == '1') {
             this.$message.warning('密码过期！请及时修改。')
+            this.$Cookies.set('isOverdue','1')
             this.$router.push({
               path: '/homePage',
               //根据params：{参数} 来进行传值
-              query: {
+              /*query: {
                 row: 1,
-              },
+              },*/
             })
             // this.$router.push({ path: '/homePage' , query: 1});
           } else {
