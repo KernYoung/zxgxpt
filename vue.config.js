@@ -13,10 +13,10 @@ module.exports = {
             '/api': {
                 //target: 'http://10.0.130.28:9292/',
                 //target: 'http://192.168.1.54:80/',
-                target: 'http://zibchina.com:9001',
+                target: 'http://localhost:9292/',
                 ws: true,
                 pathRewrite: {
-                    '^/api': '/api'
+                    '^/api': '/'
                 },
                 logLevel: 'debug'
             },

@@ -163,6 +163,7 @@ export default {
         username: this.form.username,
         password: this.form.password,
       }
+      this.$Cookies.remove('skip');
       this.$Cookies.remove('isOverdue');
       this.$ajax.manage.login(param).then((res) => {
         console.log(res)
@@ -204,6 +205,8 @@ export default {
         username: this.$route.query.username,
         loginType: 'skip',
       }
+      this.$Cookies.remove('skip');
+      this.$Cookies.remove('isOverdue');
       this.$ajax.manage.login(param).then((res) => {
         console.log(res)
         if (res.data.code === '0') {
@@ -217,6 +220,7 @@ export default {
           sessionStorage.setItem('username', res.data.name)
           sessionStorage.setItem('userCode', res.data.username)
           sessionStorage.setItem('userId', res.data.userId)
+          this.$Cookies.set('skip','1');
           this.loginUserName = res.data.name
           if (this.$route.query.redirectUrl) {
             this.$router.push({ path: '/' + this.$route.query.redirectUrl })

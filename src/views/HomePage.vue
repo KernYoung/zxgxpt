@@ -506,6 +506,7 @@
         width="410px"
         title="修改密码"
         :visible.sync="updatePwdVisible"
+        @close="resetPwdForm('pwdForm')"
         append-to-body
       >
         <el-form :model="pwdForm" :rules="rules2" ref="pwdForm">
@@ -790,7 +791,7 @@ export default {
         }
         callback()*/
       if (value === "") {
-        callback(new Error("请输入密码"));
+        callback(new Error("请输入新密码"));
       } else {
         //6-20位包含字符、数字和特殊字符
         var ls = 0;
@@ -845,9 +846,9 @@ export default {
     };
     var validatePass2 = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error("请再次输入密码"));
+        callback(new Error("请再次输入新密码"));
       } else if (value !== this.pwdForm.newPwd) {
-        callback(new Error("两次输入密码不一致!"));
+        callback(new Error("两次输入新密码不一致!"));
       } else {
         callback();
       }
@@ -855,7 +856,7 @@ export default {
     var validateOriginPass = (rule, value, callback) => {
       if (value === "") {
         this.originPwdValidateSuccess = false;
-        callback(new Error("请输入密码"));
+        callback(new Error("请输入原密码"));
       } else {
         value = this.$md5(this.$Cookies.get("userCode") + value);
         this.$ajax.manage
@@ -1005,6 +1006,7 @@ export default {
       this.level = [];
       this.$refs[formName].resetFields();
       this.updatePwdVisible = false;
+      this.originPwdValidateSuccess = false;
     },
     savePwd(formName) {
       this.$refs[formName].validate((valid) => {
@@ -1024,19 +1026,27 @@ export default {
           };
           this.$ajax.manage.modifyPassword(param).then((res) => {
             if (res.data.code == "0") {
-              this.$msgbox.alert("密码修改成功");
+              //this.$msgbox.alert("密码修改成功");
 
+              this.originPwdValidateSuccess = false;
               this.$refs[formName].resetFields();
               this.level = [];
               this.updatePwdVisible = false;
-
+              this.$Cookies.remove("isOverdue");
               if (this.userSettingDialogCompulsory) {
                 this.userSettingDialogCompulsory = false;
-                this.$Cookies.remove("isOverdue");
+
               }
+             if(!this.$Cookies.get("skip") == "1"){
+               this.$alert("密码修改成功，请重新登录。");
+               this.logOut()
+              }else{
+               this.$alert('密码修改成功。');
+             }
+
             } else {
               this.$msgbox.alert(res.data.msg);
-
+              this.originPwdValidateSuccess = false;
               this.$refs[formName].resetFields();
               this.level = [];
               this.updatePwdVisible = false;
